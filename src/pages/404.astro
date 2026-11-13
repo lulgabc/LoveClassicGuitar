@@ -1,0 +1,148 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Bat from "../components/Bat.astro";
+import Icon from "../components/Icon.astro";
+import { url } from "../lib/url";
+---
+
+<BaseLayout title="迷路了" noindex>
+  <section class="not-found">
+    <div class="container not-found-inner">
+      <div class="lost-art" aria-hidden="true">
+        <span class="lost-star star-a">✦</span>
+        <span class="lost-star star-b">✧</span>
+        <span class="lost-moon"></span>
+        <div class="lost-bat"><Bat /></div>
+        <span class="lost-note">♪</span>
+      </div>
+      <div class="lost-copy">
+        <span class="eyebrow"><Icon name="compass" size={14} /> 404 · 星星迷路了</span>
+        <h1>这个音，<br />好像不在<em>这把琴上</em>。</h1>
+        <p>也许链接写错了一个字母，也许页面搬去别的小星球了。不如回到首页，重新拨一根空弦。</p>
+        <div class="btn-row">
+          <a class="btn btn-primary" href={url("/")}>回到首页 <Icon name="arrow-right" size={14} /></a>
+          <a class="btn btn-ghost" href={url("/practice/")}>去练习室</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: grid;
+    place-items: center;
+    min-height: calc(100vh - var(--header-h) - 300px);
+    padding-block: 60px 90px;
+  }
+
+  .not-found-inner {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.2fr);
+    align-items: center;
+    gap: clamp(28px, 7vw, 90px);
+  }
+
+  .lost-art {
+    position: relative;
+    width: min(100%, 370px);
+    aspect-ratio: 1;
+    margin-inline: auto;
+    border: 1px dashed var(--line-strong);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 65% 28%, rgba(255, 216, 111, 0.18), transparent 22%),
+      radial-gradient(circle at 30% 70%, rgba(139, 114, 255, 0.15), transparent 32%),
+      var(--surface-2);
+  }
+
+  .lost-moon {
+    position: absolute;
+    right: 13%;
+    top: 12%;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #fff5c8, #ffd86f);
+    box-shadow: 0 0 0 9px rgba(255, 216, 111, 0.1), 0 0 35px rgba(255, 216, 111, 0.25);
+  }
+
+  .lost-bat {
+    position: absolute;
+    left: 11%;
+    top: 30%;
+    width: 53%;
+    animation: lost-float 6s ease-in-out infinite;
+  }
+
+  .lost-star {
+    position: absolute;
+    color: var(--sun-700);
+    animation: lost-twinkle 4s ease-in-out infinite;
+  }
+
+  .star-a { right: 22%; bottom: 21%; font-size: 24px; }
+  .star-b { left: 14%; top: 17%; font-size: 18px; color: var(--sky-500); animation-delay: -1.8s; }
+  .lost-note { position: absolute; right: 15%; bottom: 34%; color: var(--pink-500); font-family: Georgia, serif; font-size: 28px; animation: lost-float 5s ease-in-out infinite reverse; }
+
+  .lost-copy h1 {
+    margin: 14px 0;
+    font-size: clamp(38px, 5.5vw, 68px);
+    line-height: 1.08;
+  }
+
+  .lost-copy h1 em {
+    font-style: normal;
+    color: var(--violet-600);
+    background: linear-gradient(180deg, transparent 67%, var(--sun-200) 67%);
+  }
+
+  .lost-copy p {
+    max-width: 500px;
+    margin-bottom: 22px;
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  @keyframes lost-float {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-10px) rotate(3deg); }
+  }
+
+  @keyframes lost-twinkle {
+    0%, 100% { opacity: 0.45; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.15); }
+  }
+
+  @media (max-width: 750px) {
+    .not-found-inner {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+
+    .lost-art {
+      width: 230px;
+    }
+
+    .lost-copy .eyebrow {
+      justify-content: center;
+    }
+
+    .lost-copy p {
+      margin-inline: auto;
+    }
+
+    .btn-row {
+      justify-content: center;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lost-bat,
+    .lost-star,
+    .lost-note {
+      animation: none;
+    }
+  }
+</style>

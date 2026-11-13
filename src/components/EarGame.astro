@@ -1,0 +1,609 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<div class="ear-game card" data-ear-game>
+  <div class="ear-head">
+    <div>
+      <span class="tool-kicker">Ear sprite · 耳朵小精灵</span>
+      <h3>听一听：第二个音是更高，还是更低？</h3>
+      <p>不用看谱，也不用知道音名。先让耳朵玩游戏，它会慢慢变灵敏。</p>
+    </div>
+    <span class="ear-score"><Icon name="star" size={13} /> <strong data-ear-score>0</strong> / 5</span>
+  </div>
+
+  <div class="ear-body">
+    <div class="ear-visual" aria-hidden="true">
+      <span class="ear-orbit orbit-a"></span>
+      <span class="ear-orbit orbit-b"></span>
+      <span class="ear-headphones"><Icon name="headphones" size={44} /></span>
+      <span class="ear-note note-a">♪</span>
+      <span class="ear-note note-b">♫</span>
+      <span class="ear-note note-c">♪</span>
+    </div>
+
+    <div class="ear-panel">
+      <div class="ear-progress">
+        <span data-ear-progress>第 1 / 5 题</span>
+        <span class="ear-hint">先点“听两个音”</span>
+      </div>
+      <button class="ear-play" type="button" data-ear-play>
+        <span class="ear-play-icon"><Icon name="play" size={19} /></span>
+        <span><strong>听两个音</strong><small data-ear-play-label>点击播放</small></span>
+        <span class="ear-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+      </button>
+
+      <div class="ear-options">
+        <button type="button" data-ear-answer="higher" disabled><span>↗</span><strong>第二个更高</strong><small>听起来往上走</small></button>
+        <button type="button" data-ear-answer="lower" disabled><span>↘</span><strong>第二个更低</strong><small>听起来往下走</small></button>
+      </div>
+
+      <div class="ear-feedback" data-ear-feedback hidden aria-live="polite"></div>
+      <div class="ear-bottom">
+        <span class="ear-tip"><Icon name="ear" size={13} /> 如果听不出来，可以哼一下两个音。</span>
+        <button class="btn btn-primary btn-sm" type="button" data-ear-next hidden>下一个 <Icon name="arrow-right" size={13} /></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ear-result" data-ear-result hidden>
+    <span class="result-sparkle">✦</span>
+    <h4 data-ear-result-title>耳朵开始发亮了！</h4>
+    <p data-ear-result-text></p>
+    <button class="btn btn-sun btn-sm" type="button" data-ear-restart><Icon name="refresh" size={14} /> 再听一轮</button>
+  </div>
+
+  <noscript><p class="ear-noscript">耳朵游戏需要 JavaScript 和声音。你仍然可以听音乐厅的曲子来练耳朵。</p></noscript>
+</div>
+
+<script>
+  import { playPair } from "../lib/audio";
+  import { playChime } from "../lib/audio";
+  import { celebrate } from "../lib/celebrate";
+  import { copyScope } from "../lib/scope";
+
+  const root = document.querySelector<HTMLElement>("[data-ear-game]")!;
+  if (root) {
+    const playBtn = root.querySelector<HTMLButtonElement>("[data-ear-play]");
+    const playLabel = root.querySelector<HTMLElement>("[data-ear-play-label]");
+    const options = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-ear-answer]"));
+    const feedback = root.querySelector<HTMLElement>("[data-ear-feedback]");
+    const nextBtn = root.querySelector<HTMLButtonElement>("[data-ear-next]");
+    const progress = root.querySelector<HTMLElement>("[data-ear-progress]");
+    const scoreEl = root.querySelector<HTMLElement>("[data-ear-score]");
+    const result = root.querySelector<HTMLElement>("[data-ear-result]");
+    const resultTitle = root.querySelector<HTMLElement>("[data-ear-result-title]");
+    const resultText = root.querySelector<HTMLElement>("[data-ear-result-text]");
+    const restart = root.querySelector<HTMLButtonElement>("[data-ear-restart]");
+    const head = root.querySelector<HTMLElement>(".ear-head");
+    const body = root.querySelector<HTMLElement>(".ear-body");
+    const roundLength = 5;
+    let current = { first: 0, second: 0, higher: true };
+    let index = 0;
+    let score = 0;
+    let heard = false;
+    let answered = false;
+
+    function midiToFreq(midi: number): number {
+      return 440 * Math.pow(2, (midi - 69) / 12);
+    }
+
+    function makePair(): void {
+      const first = 55 + Math.floor(Math.random() * 15);
+      const direction = Math.random() > 0.5 ? 1 : -1;
+      const distance = 2 + Math.floor(Math.random() * 6);
+      const second = Math.min(79, Math.max(48, first + direction * distance));
+      current = { first, second, higher: second > first };
+    }
+
+    function resetRound(): void {
+      heard = false;
+      answered = false;
+      options.forEach((option) => {
+        option.disabled = true;
+        option.classList.remove("is-correct", "is-wrong");
+      });
+      feedback?.setAttribute("hidden", "");
+      nextBtn?.setAttribute("hidden", "");
+      if (playLabel) playLabel.textContent = "点击播放";
+      makePair();
+    }
+
+    function playSounds(): void {
+      if (answered) return;
+      heard = true;
+      options.forEach((option) => (option.disabled = false));
+      if (playLabel) playLabel.textContent = "再听一次";
+      playBtn?.classList.add("is-playing");
+      playPair(midiToFreq(current.first), midiToFreq(current.second), 0.8);
+      window.setTimeout(() => playBtn?.classList.remove("is-playing"), 1500);
+    }
+
+    function renderProgress(): void {
+      if (progress) progress.textContent = `第 ${index + 1} / ${roundLength} 题`;
+    }
+
+    function answer(choice: string): void {
+      if (!heard || answered) return;
+      answered = true;
+      const isCorrect = (choice === "higher") === current.higher;
+      if (isCorrect) score += 1;
+      if (scoreEl) scoreEl.textContent = String(score);
+      options.forEach((option) => {
+        const optionChoice = option.dataset.earAnswer;
+        const correctChoice = current.higher ? "higher" : "lower";
+        option.classList.toggle("is-correct", optionChoice === correctChoice);
+        option.classList.toggle("is-wrong", optionChoice === choice && !isCorrect);
+        option.disabled = true;
+      });
+      if (feedback) {
+        feedback.hidden = false;
+        feedback.className = `ear-feedback ${isCorrect ? "is-correct" : "is-wrong"}`;
+        feedback.innerHTML = `<strong>${isCorrect ? "答对啦！" : "再听一次就会更清楚。"}</strong><span>第二个音比第一个音${current.higher ? "更高" : "更低"}。${current.higher ? "像小鸟往上飞。" : "像小球往下滚。"}</span>`;
+        copyScope(root, feedback);
+      }
+      if (isCorrect) playChime();
+      nextBtn?.removeAttribute("hidden");
+      nextBtn?.focus({ preventScroll: true });
+    }
+
+    function showResult(): void {
+      body?.setAttribute("hidden", "");
+      head?.setAttribute("hidden", "");
+      if (result) result.hidden = false;
+      if (resultTitle) resultTitle.textContent = score >= 4 ? "小耳朵，亮晶晶！" : "耳朵开始发亮了！";
+      if (resultText) resultText.textContent = `这一轮你答对了 ${score} / ${roundLength} 题。每天听两分钟，耳朵会越来越会分辨方向。`;
+      playChime();
+      celebrate(score >= 4 ? 30 : 14);
+    }
+
+    function reset(): void {
+      index = 0;
+      score = 0;
+      if (scoreEl) scoreEl.textContent = "0";
+      if (result) result.hidden = true;
+      head?.removeAttribute("hidden");
+      body?.removeAttribute("hidden");
+      renderProgress();
+      resetRound();
+    }
+
+    playBtn?.addEventListener("click", playSounds);
+    options.forEach((option) => option.addEventListener("click", () => answer(option.dataset.earAnswer ?? "")));
+    nextBtn?.addEventListener("click", () => {
+      index += 1;
+      if (index >= roundLength) showResult();
+      else {
+        renderProgress();
+        resetRound();
+      }
+    });
+    restart?.addEventListener("click", reset);
+    reset();
+  }
+</script>
+
+<style>
+  .ear-game {
+    padding: clamp(20px, 3.2vw, 30px);
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 95% 4%, rgba(255, 151, 209, 0.15), transparent 25%),
+      var(--surface);
+  }
+
+  .ear-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .tool-kicker {
+    display: block;
+    color: #b23879;
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html[data-theme="night"] .tool-kicker {
+    color: var(--pink-500);
+  }
+
+  .ear-head h3 {
+    margin: 4px 0;
+    color: var(--ink);
+    font-size: clamp(20px, 2.4vw, 26px);
+    line-height: 1.4;
+  }
+
+  .ear-head p {
+    max-width: 530px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 11.5px;
+    line-height: 1.65;
+  }
+
+  .ear-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+    padding: 5px 9px;
+    color: var(--sun-700);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--sun-wash);
+    font-size: 9px;
+    white-space: nowrap;
+  }
+
+  .ear-body {
+    display: grid;
+    grid-template-columns: minmax(170px, 0.55fr) minmax(0, 1.45fr);
+    gap: 23px;
+    align-items: center;
+    padding-top: 15px;
+  }
+
+  .ear-visual {
+    position: relative;
+    width: min(100%, 225px);
+    aspect-ratio: 1;
+    margin-inline: auto;
+  }
+
+  .ear-orbit {
+    position: absolute;
+    border: 1px dashed var(--line-strong);
+    border-radius: 50%;
+  }
+
+  .ear-visual .orbit-a {
+    inset: 9%;
+    animation: orbit-spin 35s linear infinite;
+  }
+
+  .ear-visual .orbit-b {
+    inset: 24%;
+    border-color: rgba(223, 98, 167, 0.25);
+    animation: orbit-spin 23s linear infinite reverse;
+  }
+
+  .ear-headphones {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 105px;
+    height: 105px;
+    color: var(--violet-700);
+    border: 1.5px solid var(--line);
+    border-radius: 50%;
+    background: var(--surface-2);
+    box-shadow: 0 9px 20px rgba(55, 30, 115, 0.09);
+    transform: translate(-50%, -50%);
+  }
+
+  .ear-note {
+    position: absolute;
+    color: var(--pink-500);
+    font-family: Georgia, serif;
+    font-size: 20px;
+    animation: ear-note-float 4.5s ease-in-out infinite;
+  }
+
+  .ear-note.note-a { left: 10%; top: 25%; }
+  .ear-note.note-b { right: 9%; top: 33%; color: var(--sky-500); animation-delay: -1.5s; }
+  .ear-note.note-c { left: 30%; bottom: 9%; color: var(--sun-500); animation-delay: -2.7s; }
+
+  .ear-panel {
+    min-width: 0;
+  }
+
+  .ear-progress {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 8px;
+  }
+
+  .ear-play {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 57px;
+    margin-top: 9px;
+    padding: 8px 11px;
+    text-align: left;
+    color: var(--ink);
+    border: 1.5px solid var(--violet-300);
+    border-radius: 13px;
+    background: var(--violet-wash);
+    transition: background 150ms ease, border-color 150ms ease;
+  }
+
+  .ear-play:hover {
+    border-color: var(--violet-500);
+    background: var(--violet-wash-2);
+  }
+
+  .ear-play.is-playing {
+    animation: play-pulse 700ms ease-in-out infinite alternate;
+  }
+
+  .ear-play-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    padding-left: 2px;
+    color: #3e2a0d;
+    border-radius: 50%;
+    background: var(--sun-500);
+  }
+
+  .ear-play > span:nth-child(2) {
+    flex: 1;
+  }
+
+  .ear-play strong {
+    display: block;
+    color: var(--ink);
+    font-size: 10.5px;
+    line-height: 1.4;
+  }
+
+  .ear-play small {
+    display: block;
+    margin-top: 1px;
+    color: var(--muted);
+    font-size: 8px;
+  }
+
+  .ear-wave {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 22px;
+    color: var(--violet-600);
+  }
+
+  .ear-wave i {
+    display: block;
+    width: 2px;
+    border-radius: 99px;
+    background: currentColor;
+    animation: wave 1.2s ease-in-out infinite;
+  }
+
+  .ear-wave i:nth-child(1) { height: 8px; animation-delay: -0.2s; }
+  .ear-wave i:nth-child(2) { height: 15px; animation-delay: -0.4s; }
+  .ear-wave i:nth-child(3) { height: 21px; animation-delay: -0.6s; }
+  .ear-wave i:nth-child(4) { height: 13px; animation-delay: -0.8s; }
+  .ear-wave i:nth-child(5) { height: 7px; animation-delay: -1s; }
+
+  .ear-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+    margin-top: 8px;
+  }
+
+  .ear-options button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 54px;
+    padding: 7px 9px;
+    color: var(--ink);
+    border: 1.5px solid var(--line);
+    border-radius: 11px;
+    background: var(--surface-2);
+    text-align: left;
+    transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+  }
+
+  .ear-options button:hover:not(:disabled) {
+    border-color: var(--violet-300);
+    background: var(--violet-wash);
+    transform: translateY(-2px);
+  }
+
+  .ear-options button:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
+
+  .ear-options button > span {
+    display: grid;
+    place-items: center;
+    flex: 0 0 26px;
+    width: 26px;
+    height: 26px;
+    color: var(--violet-700);
+    border-radius: 50%;
+    background: var(--violet-wash);
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .ear-options strong {
+    display: block;
+    color: var(--ink);
+    font-size: 11.5px;
+    line-height: 1.4;
+  }
+
+  .ear-options small {
+    display: block;
+    margin-top: 1px;
+    color: var(--faint);
+    font-size: 9px;
+  }
+
+  .ear-options button.is-correct {
+    border-color: var(--mint-500);
+    background: var(--mint-wash);
+    opacity: 1;
+  }
+
+  .ear-options button.is-wrong {
+    border-color: var(--coral-500);
+    background: var(--coral-wash);
+    opacity: 1;
+  }
+
+  .ear-feedback {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 9px;
+    padding: 8px 10px;
+    border-radius: 9px;
+    color: var(--ink-soft);
+    background: var(--surface-2);
+    font-size: 10.5px;
+    line-height: 1.55;
+  }
+
+  .ear-feedback strong {
+    color: var(--ink);
+    font-size: 11.5px;
+  }
+
+  .ear-feedback.is-correct { background: var(--mint-wash); }
+  .ear-feedback.is-wrong { background: var(--coral-wash); }
+
+  .ear-bottom {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 9px;
+  }
+
+  .ear-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    max-width: 72%;
+    color: var(--faint);
+    font-size: 9px;
+    line-height: 1.5;
+  }
+
+  .ear-tip .icon {
+    margin-top: 1px;
+    color: var(--pink-500);
+  }
+
+  .ear-result {
+    padding: 17px 10px 7px;
+    text-align: center;
+  }
+
+  .result-sparkle {
+    display: block;
+    color: var(--sun-700);
+    font-size: 24px;
+    letter-spacing: 0.16em;
+  }
+
+  .ear-result h4 {
+    margin: 4px 0 3px;
+    color: var(--ink);
+    font-size: 21px;
+  }
+
+  .ear-result p {
+    max-width: 460px;
+    margin: 0 auto 13px;
+    color: var(--ink-soft);
+    font-size: 11.5px;
+    line-height: 1.7;
+  }
+
+  .ear-noscript {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 9.5px;
+  }
+
+  @keyframes orbit-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes ear-note-float {
+    0%, 100% { transform: translateY(0) rotate(-5deg); opacity: 0.55; }
+    50% { transform: translateY(-9px) rotate(8deg); opacity: 1; }
+  }
+
+  @keyframes play-pulse {
+    from { border-color: var(--violet-300); }
+    to { border-color: var(--violet-500); }
+  }
+
+  @keyframes wave {
+    0%, 100% { transform: scaleY(0.45); }
+    50% { transform: scaleY(1); }
+  }
+
+  @media (max-width: 760px) {
+    .ear-body {
+      grid-template-columns: 1fr;
+    }
+
+    .ear-visual {
+      width: 150px;
+      margin-bottom: -8px;
+    }
+
+    .ear-headphones {
+      width: 80px;
+      height: 80px;
+    }
+  }
+
+  @media (max-width: 460px) {
+    .ear-head {
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .ear-options {
+      grid-template-columns: 1fr;
+    }
+
+    .ear-bottom {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .ear-tip {
+      max-width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ear-visual .orbit-a,
+    .ear-visual .orbit-b,
+    .ear-note,
+    .ear-wave i,
+    .ear-play.is-playing {
+      animation: none;
+    }
+  }
+</style>

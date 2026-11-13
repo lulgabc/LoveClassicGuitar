@@ -1,0 +1,255 @@
+---
+import type { Master } from "../data/concert";
+import Icon from "./Icon.astro";
+
+interface Props {
+  master: Master;
+}
+
+const { master } = Astro.props;
+const href = `https://www.youtube.com/watch?v=${master.videoId}`;
+const colorClass = `master-${master.color}`;
+---
+
+<article class:list={["master-card", "card", "card-hover", colorClass]}>
+  <div class="master-top">
+    <div class="master-avatar" aria-hidden="true">
+      <span class="avatar-glow"></span>
+      <span class="avatar-initials">{master.initials}</span>
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 12v9M42 21h16M45 21v38c-11 2-18 10-18 21 0 9 7 15 16 15s16-6 16-15c0-11-7-19-18-21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
+      </svg>
+    </div>
+    <span class="master-country">{master.country}</span>
+  </div>
+
+  <div class="master-copy">
+    <p class="master-name-en">{master.name}</p>
+    <h3>{master.zhName}</h3>
+    <p class="master-keyword">“{master.keyword}”</p>
+    <p class="master-bio">{master.bio}</p>
+    <p class="master-fun"><Icon name="sparkle" size={13} /> {master.funFact}</p>
+  </div>
+
+  <a class="master-link" href={href} target="_blank" rel="noopener noreferrer">
+    <span><Icon name="headphones" size={14} /> 听：{master.piece}</span>
+    <Icon name="external" size={13} />
+  </a>
+</article>
+
+<style>
+  .master-card {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    overflow: hidden;
+    height: 100%;
+    background:
+      linear-gradient(180deg, var(--surface), var(--surface-2));
+  }
+
+  .master-card::before {
+    content: "";
+    position: absolute;
+    right: -40px;
+    top: -50px;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: var(--master-soft, var(--violet-wash));
+    filter: blur(2px);
+    pointer-events: none;
+  }
+
+  .master-top {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .master-avatar {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 82px;
+    height: 82px;
+    overflow: hidden;
+    color: var(--master-ink, #fff);
+    border-radius: 26px;
+    background: var(--master-bg, linear-gradient(145deg, #7457f2, #34207b));
+    box-shadow: 0 7px 18px var(--master-shadow, rgba(71, 45, 162, 0.22));
+    transform: rotate(-2deg);
+  }
+
+  .master-avatar svg {
+    position: absolute;
+    right: -6px;
+    bottom: -10px;
+    width: 62px;
+    height: 62px;
+    color: var(--master-ink, #fff);
+    opacity: 0.2;
+    transform: rotate(22deg);
+  }
+
+  .avatar-initials {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+  }
+
+  .avatar-glow {
+    position: absolute;
+    left: -15px;
+    top: -18px;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+    filter: blur(2px);
+  }
+
+  .master-country {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    background: var(--surface);
+    font-size: 10.5px;
+    font-weight: 750;
+    white-space: nowrap;
+  }
+
+  .master-copy {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding-top: 13px;
+  }
+
+  .master-name-en {
+    margin: 0;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .master-copy h3 {
+    margin: 2px 0 4px;
+    color: var(--ink);
+    font-size: 20px;
+  }
+
+  .master-keyword {
+    margin: 0;
+    color: var(--violet-700);
+    font-size: 13px;
+    font-weight: 850;
+    line-height: 1.5;
+  }
+
+  .master-bio {
+    margin: 9px 0 0;
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  .master-fun {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin: 10px 0 0;
+    padding-top: 9px;
+    border-top: 1px dashed var(--line);
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .master-fun .icon {
+    margin-top: 1px;
+    color: var(--sun-700);
+  }
+
+  .master-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 13px;
+    padding: 9px 11px;
+    border-radius: 12px;
+    color: var(--violet-700);
+    background: var(--violet-wash);
+    text-decoration: none;
+    font-size: 11.5px;
+    font-weight: 800;
+    line-height: 1.45;
+    transition: background 160ms ease, transform 160ms ease;
+  }
+
+  .master-link span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
+  }
+
+  .master-link:hover {
+    color: var(--violet-800);
+    background: var(--violet-wash-2);
+    transform: translateY(-1px);
+  }
+
+  .master-violet {
+    --master-bg: linear-gradient(145deg, #8b72ff, #4b2ab4);
+    --master-soft: rgba(139, 114, 255, 0.18);
+    --master-shadow: rgba(83, 51, 186, 0.24);
+  }
+
+  .master-sky {
+    --master-bg: linear-gradient(145deg, #67d0fa, #216fa8);
+    --master-soft: rgba(93, 202, 250, 0.16);
+    --master-shadow: rgba(42, 137, 185, 0.24);
+    --master-ink: #08243a;
+  }
+
+  .master-pink {
+    --master-bg: linear-gradient(145deg, #ff9fda, #b43c83);
+    --master-soft: rgba(255, 151, 209, 0.17);
+    --master-shadow: rgba(189, 61, 138, 0.22);
+  }
+
+  .master-mint {
+    --master-bg: linear-gradient(145deg, #7be9c4, #218a72);
+    --master-soft: rgba(100, 223, 180, 0.16);
+    --master-shadow: rgba(34, 141, 113, 0.22);
+    --master-ink: #052e27;
+  }
+
+  .master-sun {
+    --master-bg: linear-gradient(145deg, #ffe28d, #d18a2f);
+    --master-soft: rgba(255, 216, 111, 0.19);
+    --master-shadow: rgba(196, 128, 42, 0.22);
+    --master-ink: #40280b;
+  }
+
+  .master-coral {
+    --master-bg: linear-gradient(145deg, #ff9d90, #bf4b4b);
+    --master-soft: rgba(255, 139, 123, 0.16);
+    --master-shadow: rgba(190, 72, 70, 0.22);
+  }
+</style>

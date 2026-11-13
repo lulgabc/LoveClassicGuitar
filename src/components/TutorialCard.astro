@@ -1,0 +1,321 @@
+---
+import type { Tutorial } from "../data/videos";
+import Icon from "./Icon.astro";
+
+interface Props {
+  tutorial: Tutorial;
+  compact?: boolean;
+}
+
+const { tutorial, compact = false } = Astro.props;
+const href = `https://www.youtube.com/watch?v=${tutorial.youtubeId}`;
+const topicClass: Record<string, string> = {
+  姿势: "shell-sky",
+  右手: "shell-violet",
+  左手: "shell-pink",
+  读谱: "shell-sun",
+  练习: "shell-mint",
+  曲目: "shell-coral",
+  调音: "shell-blue",
+};
+const shell = topicClass[tutorial.topic] ?? "shell-violet";
+---
+
+<a
+  class:list={["tutorial-card", "card", "card-hover", compact && "is-compact"]}
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <div class:list={["video-art", shell]}>
+    <span class="video-level">{tutorial.level}</span>
+    <span class="video-topic"><Icon name={tutorial.topic === "读谱" ? "book" : tutorial.topic === "曲目" ? "music" : tutorial.topic === "调音" ? "tuning" : tutorial.topic === "练习" ? "timer" : "guitar"} size={18} /> {tutorial.topic}</span>
+    <span class="video-ring" aria-hidden="true"></span>
+    <span class="video-play" aria-hidden="true"><Icon name="play" size={22} /></span>
+    <span class="video-duration">{tutorial.duration}</span>
+    <span class="youtube-mark" aria-hidden="true"><Icon name="youtube" size={15} /> YouTube</span>
+  </div>
+  <div class="video-body">
+    <p class="video-channel">{tutorial.channel}</p>
+    <h3>{tutorial.zhTitle}</h3>
+    {!compact && <p class="video-title-en">{tutorial.title}</p>}
+    <p class="video-desc">{tutorial.description}</p>
+    {!compact && <p class="video-why"><strong>为什么看：</strong>{tutorial.why}</p>}
+    {tutorial.note && !compact && <p class="video-note"><Icon name="info" size={13} /> {tutorial.note}</p>}
+    <span class="video-cta">去 YouTube 看 <Icon name="external" size={13} /></span>
+  </div>
+</a>
+
+<style>
+  .tutorial-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: var(--ink);
+    text-decoration: none;
+    height: 100%;
+  }
+
+  .tutorial-card:hover {
+    color: var(--ink);
+  }
+
+  .video-art {
+    position: relative;
+    min-height: 148px;
+    overflow: hidden;
+    padding: 13px 14px;
+    color: #fff;
+    background: linear-gradient(145deg, #5135c5, #241557);
+    isolation: isolate;
+  }
+
+  .is-compact .video-art {
+    min-height: 122px;
+  }
+
+  .video-art::before,
+  .video-art::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+  }
+
+  .video-art::before {
+    width: 168px;
+    height: 168px;
+    right: -48px;
+    top: -68px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow:
+      0 0 0 22px rgba(255, 255, 255, 0.045),
+      0 0 0 47px rgba(255, 255, 255, 0.028);
+  }
+
+  .video-art::after {
+    width: 100px;
+    height: 100px;
+    left: -40px;
+    bottom: -50px;
+    background: radial-gradient(circle, rgba(255, 216, 111, 0.22), transparent 68%);
+  }
+
+  .shell-sky {
+    background: linear-gradient(145deg, #208bb5, #1a2b6f 78%);
+  }
+
+  .shell-violet {
+    background: linear-gradient(145deg, #7257ec, #2a1667 80%);
+  }
+
+  .shell-pink {
+    background: linear-gradient(145deg, #d85c9e, #432368 82%);
+  }
+
+  .shell-sun {
+    color: #3e2910;
+    background: linear-gradient(145deg, #ffdb78, #e99d56 82%);
+  }
+
+  .shell-mint {
+    color: #103b31;
+    background: linear-gradient(145deg, #7be6c1, #228b83 82%);
+  }
+
+  .shell-coral {
+    background: linear-gradient(145deg, #f2796b, #5d2769 82%);
+  }
+
+  .shell-blue {
+    background: linear-gradient(145deg, #5dcafa, #2a3b99 82%);
+  }
+
+  .video-level,
+  .video-topic,
+  .video-duration,
+  .youtube-mark {
+    position: absolute;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 9.5px;
+    font-weight: 850;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+
+  .video-level {
+    top: 12px;
+    left: 12px;
+    color: #3a2a13;
+    background: #fff0c0;
+  }
+
+  .video-topic {
+    top: 12px;
+    right: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(22, 12, 55, 0.38);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(6px);
+  }
+
+  .shell-sun .video-topic,
+  .shell-mint .video-topic {
+    color: #fff;
+    background: rgba(22, 12, 55, 0.24);
+  }
+
+  .video-duration {
+    right: 12px;
+    bottom: 12px;
+    color: #fff;
+    background: rgba(12, 7, 32, 0.64);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .youtube-mark {
+    left: 12px;
+    bottom: 12px;
+    color: rgba(255, 255, 255, 0.86);
+    background: rgba(12, 7, 32, 0.35);
+    font-size: 9px;
+    text-transform: uppercase;
+  }
+
+  .video-ring {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 92px;
+    height: 92px;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: video-ring-spin 28s linear infinite;
+  }
+
+  .video-play {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 50px;
+    height: 50px;
+    padding-left: 2px;
+    color: #3a265f;
+    background: #fff9eb;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    box-shadow: 0 7px 18px rgba(12, 7, 32, 0.25);
+    transform: translate(-50%, -50%);
+    transition: transform 180ms var(--ease), background 180ms ease;
+  }
+
+  .tutorial-card:hover .video-play {
+    transform: translate(-50%, -50%) scale(1.1);
+    background: #ffe593;
+  }
+
+  .video-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 16px 17px 15px;
+  }
+
+  .video-channel {
+    margin: 0 0 4px;
+    color: var(--violet-700);
+    font-size: 10.5px;
+    font-weight: 900;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .video-body h3 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 17.5px;
+    line-height: 1.45;
+  }
+
+  .video-title-en {
+    margin: 4px 0 0;
+    color: var(--faint);
+    font-size: 11.5px;
+    line-height: 1.4;
+  }
+
+  .video-desc {
+    margin: 9px 0 0;
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    line-height: 1.65;
+  }
+
+  .video-why {
+    margin: 10px 0 0;
+    padding-top: 9px;
+    border-top: 1px dashed var(--line);
+    color: var(--ink-soft);
+    font-size: 12.5px;
+    line-height: 1.65;
+  }
+
+  .video-why strong {
+    color: var(--violet-700);
+  }
+
+  .video-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin: 9px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.55;
+  }
+
+  .video-note .icon {
+    margin-top: 1px;
+  }
+
+  .video-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    width: fit-content;
+    margin-top: auto;
+    padding-top: 11px;
+    color: var(--violet-700);
+    font-size: 11.5px;
+    font-weight: 850;
+  }
+
+  .is-compact .video-body {
+    padding: 13px 15px;
+  }
+
+  .is-compact .video-desc {
+    margin-top: 6px;
+  }
+
+  @keyframes video-ring-spin {
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .video-ring {
+      animation: none;
+    }
+  }
+</style>

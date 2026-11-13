@@ -1,0 +1,557 @@
+---
+import Bat from "./Bat.astro";
+import Icon from "./Icon.astro";
+---
+
+<div class="metronome card" data-metronome>
+  <div class="metro-copy">
+    <span class="tool-kicker">Metronome · 节拍器</span>
+    <h3>让拍子像脚步一样稳</h3>
+    <p>先跟着点拍手，再上琴。60 BPM 就是每秒一下，慢一点，反而更容易听清。</p>
+    <div class="metro-presets" role="group" aria-label="速度预设">
+      <button type="button" data-bpm="60" class="is-active">60<small>散步</small></button>
+      <button type="button" data-bpm="72">72<small>走路</small></button>
+      <button type="button" data-bpm="88">88<small>小跑</small></button>
+      <button type="button" data-bpm="100">100<small>跳舞</small></button>
+    </div>
+    <div class="metro-controls">
+      <div class="bpm-display">
+        <strong data-bpm-display>60</strong><span>BPM</span>
+      </div>
+      <label class="bpm-slider">
+        <span class="sr-only">调整速度</span>
+        <input type="range" min="40" max="120" step="1" value="60" data-bpm-range />
+      </label>
+    </div>
+    <div class="metro-options">
+      <label>每小节
+        <select data-beats aria-label="每小节拍数">
+          <option value="2">2 拍</option>
+          <option value="3">3 拍</option>
+          <option value="4" selected>4 拍</option>
+        </select>
+      </label>
+      <span class="metro-hint"><Icon name="lightbulb" size={13} /> 第一拍会亮得更大</span>
+    </div>
+    <button class="metro-toggle" type="button" data-metro-toggle aria-pressed="false">
+      <span class="toggle-icon" data-metro-icon>▶</span><span data-metro-label>开始数拍</span>
+    </button>
+  </div>
+
+  <div class="metro-visual">
+    <div class="metro-stage" data-metro-stage>
+      <span class="metro-glow" aria-hidden="true"></span>
+      <div class="metro-bat" aria-hidden="true"><Bat /></div>
+      <div class="beat-dots" data-beat-dots aria-hidden="true">
+        <span class="is-first is-on"></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="metro-count" data-metro-count>1</div>
+      <span class="metro-caption" data-metro-caption>准备好了吗？</span>
+    </div>
+    <div class="metro-legend">
+      <span><span class="legend-dot legend-strong"></span> 第 1 拍</span>
+      <span><span class="legend-dot"></span> 其他拍</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { playClick } from "../lib/audio";
+
+  const root = document.querySelector<HTMLElement>("[data-metronome]")!;
+  if (root) {
+    const toggle = root.querySelector<HTMLButtonElement>("[data-metro-toggle]");
+    const range = root.querySelector<HTMLInputElement>("[data-bpm-range]");
+    const bpmDisplay = root.querySelector<HTMLElement>("[data-bpm-display]");
+    const beatsSelect = root.querySelector<HTMLSelectElement>("[data-beats]");
+    const dots = Array.from(root.querySelectorAll<HTMLElement>("[data-beat-dots] span"));
+    const countEl = root.querySelector<HTMLElement>("[data-metro-count]");
+    const caption = root.querySelector<HTMLElement>("[data-metro-caption]");
+    const presets = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-bpm]"));
+    const stage = root.querySelector<HTMLElement>("[data-metro-stage]");
+    const toggleIcon = root.querySelector<HTMLElement>("[data-metro-icon]");
+    const toggleLabel = root.querySelector<HTMLElement>("[data-metro-label]");
+
+    let bpm = 60;
+    let beats = 4;
+    let currentBeat = 0;
+    let running = false;
+    let nextTick = 0;
+    let raf = 0;
+
+    function setBpm(next: number): void {
+      bpm = Math.max(40, Math.min(120, next));
+      if (range) range.value = String(bpm);
+      if (bpmDisplay) bpmDisplay.textContent = String(bpm);
+      presets.forEach((button) => button.classList.toggle("is-active", Number(button.dataset.bpm) === bpm));
+      if (running) {
+        nextTick = performance.now() + (60000 / bpm);
+      }
+    }
+
+    function renderBeat(): void {
+      dots.forEach((dot, index) => {
+        dot.classList.toggle("is-on", index === currentBeat);
+        dot.classList.toggle("is-strong", index === 0);
+      });
+      if (countEl) countEl.textContent = String(currentBeat + 1);
+      if (stage) {
+        stage.classList.toggle("beat-left", currentBeat % 2 === 0);
+        stage.classList.toggle("beat-right", currentBeat % 2 === 1);
+        stage.classList.remove("beat-pop");
+        void stage.offsetWidth;
+        stage.classList.add("beat-pop");
+      }
+    }
+
+    function tick(now: number): void {
+      if (!running) return;
+      if (now >= nextTick) {
+        playClick(currentBeat === 0, currentBeat === 0 ? 0.09 : 0.055);
+        renderBeat();
+        currentBeat = (currentBeat + 1) % beats;
+        nextTick += 60000 / bpm;
+        if (nextTick < now - 1000) nextTick = now + 60000 / bpm;
+      }
+      raf = window.requestAnimationFrame(tick);
+    }
+
+    function start(): void {
+      running = true;
+      currentBeat = 0;
+      nextTick = performance.now() + 80;
+      if (toggle) {
+        if (toggleIcon) toggleIcon.textContent = "Ⅱ";
+        if (toggleLabel) toggleLabel.textContent = "暂停数拍";
+        toggle.classList.add("is-running");
+        toggle.setAttribute("aria-pressed", "true");
+      }
+      if (caption) caption.textContent = "跟着亮起来的点，数 1、2、3、4";
+      if (stage) stage.classList.add("is-running");
+      raf = window.requestAnimationFrame(tick);
+    }
+
+    function stop(): void {
+      running = false;
+      window.cancelAnimationFrame(raf);
+      if (toggle) {
+        if (toggleIcon) toggleIcon.textContent = "▶";
+        if (toggleLabel) toggleLabel.textContent = "开始数拍";
+        toggle.classList.remove("is-running");
+        toggle.setAttribute("aria-pressed", "false");
+      }
+      if (caption) caption.textContent = "停一停，听听刚才的拍子还在心里吗？";
+      if (stage) stage.classList.remove("is-running");
+    }
+
+    toggle?.addEventListener("click", () => (running ? stop() : start()));
+    range?.addEventListener("input", () => setBpm(Number(range.value)));
+    presets.forEach((button) => button.addEventListener("click", () => setBpm(Number(button.dataset.bpm))));
+    beatsSelect?.addEventListener("change", () => {
+      beats = Number(beatsSelect.value) || 4;
+      currentBeat = 0;
+      dots.forEach((dot, index) => {
+        dot.hidden = index >= beats;
+        dot.classList.toggle("is-on", index === 0);
+      });
+      if (countEl) countEl.textContent = "1";
+    });
+
+    window.addEventListener("pagehide", stop);
+    setBpm(60);
+    beats = 4;
+    renderBeat();
+  }
+</script>
+
+<style>
+  .metronome {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(240px, 0.95fr);
+    gap: 20px;
+    padding: clamp(20px, 3vw, 29px);
+    overflow: hidden;
+  }
+
+  .tool-kicker {
+    display: block;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .metro-copy h3 {
+    margin: 4px 0 5px;
+    color: var(--ink);
+    font-size: clamp(21px, 2.6vw, 27px);
+  }
+
+  .metro-copy > p {
+    max-width: 470px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .metro-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 14px;
+  }
+
+  .metro-presets button {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    min-height: 32px;
+    padding: 5px 9px;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--surface-2);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 800;
+  }
+
+  .metro-presets button small {
+    color: var(--faint);
+    font-family: var(--font-body);
+    font-size: 7px;
+    font-weight: 500;
+  }
+
+  .metro-presets button:hover,
+  .metro-presets button.is-active {
+    color: var(--violet-700);
+    border-color: var(--violet-300);
+    background: var(--violet-wash);
+  }
+
+  .metro-controls {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-top: 15px;
+  }
+
+  .bpm-display {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    flex: 0 0 auto;
+    padding: 4px 11px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+  }
+
+  .bpm-display strong {
+    color: var(--violet-700);
+    font-family: var(--font-display);
+    font-size: 27px;
+    font-weight: 900;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bpm-display span {
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 7px;
+    font-weight: 700;
+  }
+
+  .bpm-slider {
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .bpm-slider input {
+    width: 100%;
+    height: 6px;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--violet-500), var(--sky-500));
+    appearance: none;
+    cursor: pointer;
+  }
+
+  .bpm-slider input::-webkit-slider-thumb {
+    appearance: none;
+    width: 19px;
+    height: 19px;
+    border: 2px solid var(--surface);
+    border-radius: 50%;
+    background: var(--violet-600);
+    box-shadow: 0 2px 5px rgba(51, 29, 121, 0.24);
+  }
+
+  .bpm-slider input::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--surface);
+    border-radius: 50%;
+    background: var(--violet-600);
+  }
+
+  .metro-options {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 13px;
+    color: var(--muted);
+    font-size: 10px;
+  }
+
+  .metro-options label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .metro-options select {
+    min-height: 28px;
+    padding: 3px 6px;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--surface-2);
+    font-size: 8px;
+  }
+
+  .metro-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    color: var(--faint);
+  }
+
+  .metro-hint .icon {
+    color: var(--sun-700);
+  }
+
+  .metro-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 43px;
+    margin-top: 14px;
+    padding: 8px 18px;
+    color: #fff;
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--violet-600), #5b3ed1);
+    box-shadow: 0 4px 0 #4a31b4;
+    font-size: 12.5px;
+    font-weight: 850;
+  }
+
+  .metro-toggle:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 0 #4a31b4;
+  }
+
+  .metro-toggle.is-running {
+    background: linear-gradient(135deg, var(--coral-500), #db6759);
+    box-shadow: 0 4px 0 #a8443c;
+  }
+
+  .toggle-icon {
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  .metro-visual {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    border-radius: 17px;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.7), transparent 24%),
+      var(--surface-2);
+  }
+
+  .metro-stage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 205px;
+    padding: 8px 8px 15px;
+  }
+
+  .metro-glow {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    top: 25px;
+    border-radius: 50%;
+    background: var(--violet-wash);
+    filter: blur(5px);
+    transition: transform 120ms ease, background 120ms ease;
+  }
+
+  .metro-bat {
+    position: relative;
+    z-index: 1;
+    width: 130px;
+    transform-origin: 50% 10%;
+    transition: transform 120ms ease;
+    filter: drop-shadow(0 9px 12px rgba(57, 31, 111, 0.13));
+  }
+
+  .beat-left .metro-bat {
+    transform: rotate(-5deg);
+  }
+
+  .beat-right .metro-bat {
+    transform: rotate(5deg);
+  }
+
+  .beat-pop .metro-glow {
+    transform: scale(1.18);
+    background: var(--violet-wash-2);
+  }
+
+  .beat-dots {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    gap: 7px;
+    margin-top: 1px;
+  }
+
+  .beat-dots span {
+    display: block;
+    width: 9px;
+    height: 9px;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: var(--surface);
+    transition: transform 90ms ease, background 90ms ease;
+  }
+
+  .beat-dots span.is-on {
+    background: var(--violet-500);
+    border-color: var(--violet-500);
+    transform: scale(1.2);
+  }
+
+  .beat-dots span.is-first {
+    width: 12px;
+    height: 12px;
+    margin-top: -1px;
+  }
+
+  .beat-dots span.is-first.is-on {
+    background: var(--sun-500);
+    border-color: #d7a531;
+    transform: scale(1.25);
+  }
+
+  .metro-count {
+    position: relative;
+    z-index: 2;
+    margin-top: 8px;
+    color: var(--violet-700);
+    font-family: var(--font-display);
+    font-size: 25px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .metro-caption {
+    margin-top: 5px;
+    color: var(--faint);
+    font-size: 9.5px;
+    text-align: center;
+  }
+
+  .metro-legend {
+    display: flex;
+    gap: 12px;
+    margin-top: 9px;
+    color: var(--faint);
+    font-size: 9px;
+  }
+
+  .metro-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .legend-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: var(--surface);
+  }
+
+  .legend-strong {
+    width: 8px;
+    height: 8px;
+    background: var(--sun-500);
+    border-color: #d7a531;
+  }
+
+  @media (max-width: 850px) {
+    .metronome {
+      grid-template-columns: 1fr;
+    }
+
+    .metro-visual {
+      order: -1;
+    }
+
+    .metro-stage {
+      min-height: 175px;
+    }
+
+    .metro-bat {
+      width: 108px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .metro-controls {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .bpm-slider {
+      width: 100%;
+      flex-basis: auto;
+    }
+
+    .metro-visual {
+      padding: 10px;
+    }
+
+    .metro-stage {
+      min-height: 155px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .metro-bat,
+    .metro-glow,
+    .beat-dots span {
+      transition: none;
+    }
+  }
+</style>

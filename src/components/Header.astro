@@ -1,0 +1,376 @@
+---
+import { NAV } from "../data/site";
+import { stripBase, url } from "../lib/url";
+import Icon from "./Icon.astro";
+
+const current = stripBase(Astro.url.pathname).replace(/\/+$/, "") || "/";
+const isActive = (href: string) => {
+  if (href === "/") return current === "/";
+  return current === href.replace(/\/$/, "") || current.startsWith(href.replace(/\/$/, "") + "/");
+};
+---
+
+<header class="site-header" data-header>
+  <div class="header-inner container">
+    <a class="brand" href={url("/")}>
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12 21C8 16 4 15 2 18c4 1 5 5 5 9 3-2 6-1 7 1 1-3 2-5 4-6M40 21c4-5 8-6 10-3-4 1-5 5-5 9-3-2-6-1-7 1-1-3-2-5-4-6"
+            fill="#CDBDFF"
+            stroke="#24165A"
+            stroke-width="2"
+            stroke-linejoin="round"
+          ></path>
+          <path d="M17 14 13 4l9 7M35 14l4-10-9 7" fill="#8C6DF0" stroke="#24165A" stroke-width="2.2" stroke-linejoin="round"></path>
+          <circle cx="26" cy="26" r="17" fill="#7457F2" stroke="#24165A" stroke-width="2.5"></circle>
+          <ellipse cx="20" cy="25" rx="4" ry="4.6" fill="#FFF9FF"></ellipse>
+          <ellipse cx="32" cy="25" rx="4" ry="4.6" fill="#FFF9FF"></ellipse>
+          <circle cx="21" cy="26" r="2" fill="#24165A"></circle>
+          <circle cx="31" cy="26" r="2" fill="#24165A"></circle>
+          <path d="M23 33c2 2 4 2 6 0" stroke="#24165A" stroke-width="2" stroke-linecap="round"></path>
+          <path d="m26 35 1 3 1-3" fill="#FFF6DB" stroke="#24165A" stroke-width="1"></path>
+        </svg>
+      </span>
+      <span class="brand-copy">
+        <strong>爱古典吉他</strong>
+        <small>Love Classic Guitar</small>
+      </span>
+    </a>
+
+    <nav class="site-nav" id="site-nav" aria-label="主导航" data-nav>
+      <ul>
+        {
+          NAV.map((item) => (
+            <li>
+              <a href={url(item.href)} aria-current={isActive(item.href) ? "page" : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <a class="header-stars" href={url("/roadmap/")}>
+        <Icon name="star" size={16} />
+        <span class="header-stars-text">我的星星</span>
+        <strong data-star-count>0</strong>
+      </a>
+      <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换到夜晚模式" title="切换日间 / 夜晚">
+        <span class="theme-icon theme-icon-day"><Icon name="sun" size={19} /></span>
+        <span class="theme-icon theme-icon-night"><Icon name="moon" size={19} /></span>
+      </button>
+      <button
+        class="icon-button nav-toggle"
+        type="button"
+        data-nav-toggle
+        aria-expanded="false"
+        aria-controls="site-nav"
+        aria-label="打开菜单"
+      >
+        <span class="nav-toggle-open"><Icon name="menu" size={21} /></span>
+        <span class="nav-toggle-close"><Icon name="close" size={21} /></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    height: var(--header-h);
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(18px) saturate(1.3);
+    -webkit-backdrop-filter: blur(18px) saturate(1.3);
+    transition: box-shadow 200ms ease, background 200ms ease;
+  }
+
+  .site-header.is-scrolled {
+    box-shadow: 0 10px 30px rgba(48, 31, 117, 0.08);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    height: 100%;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    text-decoration: none;
+    min-height: 48px;
+  }
+
+  .brand:hover {
+    color: var(--ink);
+  }
+
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 15px;
+    background: linear-gradient(145deg, #f7f1ff, #e1d5ff);
+    border: 1.5px solid #6b4dd4;
+    box-shadow: 0 3px 0 rgba(76, 49, 169, 0.18);
+    transform: rotate(-3deg);
+  }
+
+  .brand-mark svg {
+    width: 38px;
+    height: 38px;
+  }
+
+  .brand-copy {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.12;
+  }
+
+  .brand-copy strong {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+  }
+
+  .brand-copy small {
+    margin-top: 3px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .site-nav {
+    margin-left: auto;
+  }
+
+  .site-nav ul {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .site-nav a {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 999px;
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    font-weight: 750;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 160ms ease, color 160ms ease;
+  }
+
+  .site-nav a:hover {
+    background: var(--violet-wash);
+    color: var(--violet-700);
+  }
+
+  .site-nav a[aria-current="page"] {
+    color: var(--violet-700);
+    background: var(--violet-wash);
+    box-shadow: inset 0 0 0 1px rgba(116, 87, 242, 0.16);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-shrink: 0;
+  }
+
+  .header-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 38px;
+    padding: 0 10px;
+    border: 1.5px solid rgba(231, 176, 58, 0.3);
+    border-radius: 999px;
+    background: rgba(255, 216, 111, 0.14);
+    color: #a76e13;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .header-stars:hover {
+    background: rgba(255, 216, 111, 0.24);
+    color: #8b5a08;
+  }
+
+  .header-stars strong {
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .icon-button {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1.5px solid var(--line);
+    border-radius: 50%;
+    color: var(--ink-soft);
+    background: var(--surface);
+    transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+  }
+
+  .icon-button:hover {
+    transform: translateY(-1px) rotate(-3deg);
+    color: var(--violet-700);
+    background: var(--surface-2);
+  }
+
+  .theme-icon-night {
+    display: none;
+  }
+
+  :global(html[data-theme="night"]) .theme-icon-day {
+    display: none;
+  }
+
+  :global(html[data-theme="night"]) .theme-icon-night {
+    display: inline-grid;
+  }
+
+  .nav-toggle {
+    display: none;
+  }
+
+  .nav-toggle-close {
+    display: none;
+  }
+
+  .nav-toggle[aria-expanded="true"] .nav-toggle-open {
+    display: none;
+  }
+
+  .nav-toggle[aria-expanded="true"] .nav-toggle-close {
+    display: inline-grid;
+  }
+
+  @media (max-width: 1120px) {
+    .header-stars-text {
+      display: none;
+    }
+  }
+
+  @media (max-width: 1040px) {
+    .nav-toggle {
+      display: inline-grid;
+    }
+
+    :global(html.js) .site-nav {
+      position: absolute;
+      top: calc(var(--header-h) - 4px);
+      left: 16px;
+      right: 16px;
+      display: none;
+      padding: 10px;
+      border: 1.5px solid var(--line-strong);
+      border-radius: 22px;
+      background: var(--surface);
+      box-shadow: var(--shadow-lg);
+    }
+
+    :global(html.js) .site-nav.is-open {
+      display: block;
+      animation: menu-in 180ms var(--ease) both;
+    }
+
+    :global(html.js) .site-nav ul {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    :global(html.js) .site-nav a {
+      padding: 12px 14px;
+      font-size: 15px;
+      border-radius: 13px;
+      background: var(--surface-2);
+    }
+
+    :global(html.no-js) .header-inner {
+      flex-wrap: wrap;
+      height: auto;
+      padding-block: 10px;
+    }
+
+    :global(html.no-js) .site-nav {
+      order: 3;
+      margin-left: 0;
+      width: 100%;
+    }
+
+    :global(html.no-js) .site-nav ul {
+      flex-wrap: wrap;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .header-inner {
+      gap: 8px;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+    }
+
+    .brand-mark svg {
+      width: 34px;
+      height: 34px;
+    }
+
+    .brand-copy strong {
+      font-size: 16px;
+    }
+
+    .brand-copy small {
+      font-size: 8px;
+      letter-spacing: 0.08em;
+    }
+
+    .header-stars {
+      display: none;
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+    }
+  }
+
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+</style>

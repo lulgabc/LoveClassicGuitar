@@ -1,0 +1,638 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<div class="note-game card" data-note-game id="note-game">
+  <div class="game-head">
+    <div>
+      <span class="tool-kicker">Note hunt · 音符捉迷藏</span>
+      <h3>这颗星星，住在哪个音上？</h3>
+      <p>看琴弦和品格的位置，选出正确的音名。答错也没关系，Momo 会给你提示。</p>
+    </div>
+    <div class="game-score">
+      <span>本轮</span>
+      <strong><span data-game-score>0</span>/<span data-game-total>5</span></strong>
+      <div class="score-stars" data-game-stars aria-hidden="true">☆ ☆ ☆ ☆ ☆</div>
+    </div>
+  </div>
+
+  <div class="game-body">
+    <div class="fretboard-wrap">
+      <div class="fretboard" data-fretboard role="img" aria-label="吉他指板位置示意图">
+        <div class="fret-header"><span></span><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+        {
+          [1, 2, 3, 4, 5, 6].map((stringNumber) => (
+            <div class="fret-row">
+              <span class="string-label"><b>{stringNumber}</b> 弦</span>
+              {[0, 1, 2, 3, 4, 5].map((fret) => (
+                <span class="fret-cell" data-string={stringNumber} data-fret={fret}></span>
+              ))}
+            </div>
+          ))
+        }
+      </div>
+      <span class="fretboard-note">指板小地图 · 数字是品格</span>
+    </div>
+
+    <div class="game-panel">
+      <div class="game-progress">
+        <span data-game-progress>第 1 / 5 题</span>
+        <div class="game-dots" data-game-dots></div>
+      </div>
+      <p class="game-question" data-game-question>第 2 弦第 1 品是什么音？</p>
+      <div class="game-options" data-game-options></div>
+      <div class="game-feedback" data-game-feedback hidden aria-live="polite"></div>
+      <div class="game-bottom">
+        <span class="game-hint"><Icon name="lightbulb" size={13} /> 提示：从空弦开始，每往高一个品，音就升高半音。</span>
+        <button class="btn btn-primary btn-sm" type="button" data-game-next hidden>下一题 <Icon name="arrow-right" size={13} /></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-result" data-game-result hidden>
+    <span class="result-sparkle">✦</span>
+    <h4 data-game-result-title>捉迷藏高手！</h4>
+    <p data-game-result-text></p>
+    <button class="btn btn-sun btn-sm" type="button" data-game-restart><Icon name="refresh" size={14} /> 再玩一轮</button>
+  </div>
+
+  <noscript><p class="game-noscript">音符游戏需要 JavaScript。你仍然可以用上面的指板图和音名表练习。</p></noscript>
+</div>
+
+<script>
+  import { NOTE_QUESTIONS } from "../data/practice";
+  import { playChime } from "../lib/audio";
+  import { celebrate } from "../lib/celebrate";
+  import { copyScope } from "../lib/scope";
+
+  const root = document.querySelector<HTMLElement>("[data-note-game]")!;
+  if (root) {
+    const questionEl = root.querySelector<HTMLElement>("[data-game-question]");
+    const optionsEl = root.querySelector<HTMLElement>("[data-game-options]");
+    const feedbackEl = root.querySelector<HTMLElement>("[data-game-feedback]");
+    const progressEl = root.querySelector<HTMLElement>("[data-game-progress]");
+    const dotsEl = root.querySelector<HTMLElement>("[data-game-dots]");
+    const scoreEl = root.querySelector<HTMLElement>("[data-game-score]");
+    const starsEl = root.querySelector<HTMLElement>("[data-game-stars]");
+    const totalEl = root.querySelector<HTMLElement>("[data-game-total]");
+    const nextBtn = root.querySelector<HTMLButtonElement>("[data-game-next]");
+    const resultEl = root.querySelector<HTMLElement>("[data-game-result]");
+    const resultTitle = root.querySelector<HTMLElement>("[data-game-result-title]");
+    const resultText = root.querySelector<HTMLElement>("[data-game-result-text]");
+    const restartBtn = root.querySelector<HTMLButtonElement>("[data-game-restart]");
+    const cells = Array.from(root.querySelectorAll<HTMLElement>("[data-string][data-fret]"));
+    const roundLength = 5;
+    let questions = [] as typeof NOTE_QUESTIONS;
+    let index = 0;
+    let score = 0;
+    let answered = false;
+
+    function shuffle<T>(input: T[]): T[] {
+      const list = input.slice();
+      for (let i = list.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [list[i], list[j]] = [list[j]!, list[i]!];
+      }
+      return list;
+    }
+
+    function markTarget(stringNumber: number, fret: number): void {
+      cells.forEach((cell) => {
+        const active = Number(cell.dataset.string) === stringNumber && Number(cell.dataset.fret) === fret;
+        cell.classList.toggle("is-target", active);
+      });
+    }
+
+    function renderDots(): void {
+      if (!dotsEl) return;
+      dotsEl.replaceChildren();
+      for (let i = 0; i < questions.length; i += 1) {
+        const dot = document.createElement("span");
+        if (i < index) dot.classList.add("is-done");
+        if (i === index) dot.classList.add("is-current");
+        dotsEl.appendChild(dot);
+      }
+    }
+
+    function renderQuestion(): void {
+      const question = questions[index];
+      if (!question || !optionsEl) return;
+      answered = false;
+      markTarget(question.stringNumber, question.fret);
+      if (questionEl) {
+        questionEl.textContent =
+          question.fret === 0
+            ? `第 ${question.stringNumber} 弦的空弦是什么音？`
+            : `第 ${question.stringNumber} 弦第 ${question.fret} 品是什么音？`;
+      }
+      if (progressEl) progressEl.textContent = `第 ${index + 1} / ${questions.length} 题`;
+      if (totalEl) totalEl.textContent = String(questions.length);
+      feedbackEl?.setAttribute("hidden", "");
+      nextBtn?.setAttribute("hidden", "");
+      renderDots();
+      optionsEl.replaceChildren();
+      optionsEl.classList.remove("is-locked");
+
+      question.options.forEach((option) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.innerHTML = `<strong>${option}</strong><small>${option === "E" ? "mi" : option === "F" ? "fa" : option === "G" ? "sol" : option === "A" ? "la" : option === "B" ? "si" : option === "C" ? "do" : "re"}</small>`;
+        copyScope(root, button);
+        button.addEventListener("click", () => {
+          if (answered) return;
+          answered = true;
+          optionsEl.classList.add("is-locked");
+          const correct = option === question.answer;
+          if (correct) score += 1;
+          Array.from(optionsEl.children).forEach((child) => {
+            const isAnswer = child.querySelector("strong")?.textContent === question.answer;
+            child.classList.toggle("is-correct", isAnswer);
+            child.classList.toggle("is-wrong", child === button && !correct);
+            (child as HTMLButtonElement).disabled = true;
+          });
+          if (scoreEl) scoreEl.textContent = String(score);
+          if (starsEl) starsEl.textContent = Array.from({ length: questions.length }, (_, i) => (i < score ? "★" : "☆")).join(" ");
+          if (feedbackEl) {
+            feedbackEl.hidden = false;
+            feedbackEl.className = `game-feedback ${correct ? "is-correct" : "is-wrong"}`;
+            feedbackEl.innerHTML = `<strong>${correct ? "找到啦！" : "再想想，答案在这里。"}</strong><span>${question.hint}</span>`;
+            copyScope(root, feedbackEl);
+          }
+          if (correct) playChime();
+          nextBtn?.removeAttribute("hidden");
+          nextBtn?.focus({ preventScroll: true });
+        });
+        optionsEl.appendChild(button);
+      });
+    }
+
+    function showResult(): void {
+      root.querySelector(".game-body")?.setAttribute("hidden", "");
+      root.querySelector(".game-head")?.setAttribute("hidden", "");
+      if (resultEl) {
+        resultEl.hidden = false;
+        const sparkle = resultEl.querySelector<HTMLElement>(".result-sparkle");
+        if (sparkle) sparkle.textContent = score >= 4 ? "✦ ✦ ✦" : "✦";
+      }
+      if (resultTitle) resultTitle.textContent = score >= 4 ? "捉迷藏高手！" : score >= 2 ? "已经找到大部分星星。" : "再来一次，你会更快找到。";
+      if (resultText) resultText.textContent = `这一轮你答对了 ${score} / ${questions.length} 题。可以再玩一轮，题目会重新洗牌。`;
+      playChime();
+      celebrate(score >= 4 ? 34 : 16);
+    }
+
+    function reset(): void {
+      questions = shuffle(NOTE_QUESTIONS).slice(0, roundLength);
+      index = 0;
+      score = 0;
+      if (scoreEl) scoreEl.textContent = "0";
+      if (starsEl) starsEl.textContent = "☆ ☆ ☆ ☆ ☆";
+      if (resultEl) resultEl.hidden = true;
+      root.querySelector(".game-body")?.removeAttribute("hidden");
+      root.querySelector(".game-head")?.removeAttribute("hidden");
+      renderQuestion();
+    }
+
+    nextBtn?.addEventListener("click", () => {
+      index += 1;
+      if (index >= questions.length) showResult();
+      else renderQuestion();
+    });
+
+    restartBtn?.addEventListener("click", reset);
+    reset();
+  }
+</script>
+
+<style>
+  .note-game {
+    padding: clamp(20px, 3.3vw, 30px);
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 96% 4%, rgba(255, 216, 111, 0.16), transparent 25%),
+      var(--surface);
+  }
+
+  .game-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .tool-kicker {
+    display: block;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .game-head h3 {
+    margin: 4px 0 4px;
+    color: var(--ink);
+    font-size: clamp(21px, 2.6vw, 27px);
+  }
+
+  .game-head p {
+    max-width: 500px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .game-score {
+    flex: 0 0 auto;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface-2);
+    text-align: center;
+  }
+
+  .game-score > span {
+    color: var(--faint);
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .game-score strong {
+    display: block;
+    margin-top: 1px;
+    color: var(--violet-700);
+    font-family: var(--font-display);
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .score-stars {
+    margin-top: 3px;
+    color: var(--sun-700);
+    font-size: 7px;
+    letter-spacing: 0.05em;
+  }
+
+  .game-body {
+    display: grid;
+    grid-template-columns: minmax(270px, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(20px, 3.4vw, 36px);
+    align-items: center;
+    padding-top: 18px;
+  }
+
+  .fretboard-wrap {
+    padding: 14px;
+    border-radius: 15px;
+    background: var(--surface-2);
+  }
+
+  .fretboard {
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.3), transparent),
+      #3b2c29;
+  }
+
+  .fret-header {
+    display: grid;
+    grid-template-columns: 54px repeat(6, minmax(0, 1fr));
+    background: #2b201f;
+    color: #cfbba8;
+    font-family: var(--font-mono);
+    font-size: 7px;
+    text-align: center;
+  }
+
+  .fret-header span {
+    padding: 4px 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .fret-row {
+    display: grid;
+    grid-template-columns: 54px repeat(6, minmax(0, 1fr));
+  }
+
+  .string-label {
+    display: flex;
+    align-items: center;
+    padding-left: 6px;
+    color: #e0cdbb;
+    border-right: 1px solid rgba(255, 255, 255, 0.14);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.11);
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    font-weight: 650;
+    gap: 2px;
+  }
+
+  .string-label b {
+    color: #fff2d7;
+    font-size: 10px;
+    font-weight: 800;
+  }
+
+  .fret-row:last-child .string-label,
+  .fret-row:last-child .fret-cell {
+    border-bottom: 0;
+  }
+
+  .fret-cell {
+    position: relative;
+    min-height: 34px;
+    border-right: 1px solid rgba(212, 189, 164, 0.28);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  .fret-cell::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: rgba(247, 229, 199, 0.6);
+  }
+
+  .fret-cell:nth-child(2) {
+    border-right-width: 3px;
+    border-right-color: #f1dfc2;
+  }
+
+  .fret-cell.is-target::after {
+    content: "?";
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    color: #4b330b;
+    border-radius: 50%;
+    background: var(--sun-500);
+    box-shadow: 0 0 0 4px rgba(255, 216, 111, 0.2);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 800;
+    transform: translate(-50%, -50%);
+    animation: target-pulse 1.8s ease-in-out infinite;
+  }
+
+  .fretboard-note {
+    display: block;
+    margin-top: 8px;
+    color: var(--faint);
+    font-size: 7.5px;
+    text-align: center;
+  }
+
+  .game-panel {
+    min-width: 0;
+  }
+
+  .game-progress {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 8px;
+  }
+
+  .game-dots {
+    display: flex;
+    gap: 3px;
+  }
+
+  .game-dots span {
+    width: 14px;
+    height: 4px;
+    border-radius: 99px;
+    background: var(--surface-3);
+  }
+
+  .game-dots span.is-current {
+    background: var(--violet-500);
+  }
+
+  .game-dots span.is-done {
+    background: var(--mint-500);
+  }
+
+  .game-question {
+    margin: 9px 0 10px;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: clamp(18px, 2.3vw, 24px);
+    font-weight: 900;
+    line-height: 1.45;
+  }
+
+  .game-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .game-options button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    min-height: 56px;
+    padding: 8px;
+    color: var(--violet-700);
+    border: 1.5px solid var(--line);
+    border-radius: 11px;
+    background: var(--surface-2);
+    transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+  }
+
+  .game-options button:hover:not(:disabled) {
+    border-color: var(--violet-300);
+    background: var(--violet-wash);
+    transform: translateY(-2px);
+  }
+
+  .game-options button strong {
+    font-family: var(--font-display);
+    font-size: 20px;
+    line-height: 1.15;
+  }
+
+  .game-options button small {
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    text-transform: uppercase;
+  }
+
+  .game-options button.is-correct {
+    color: #09654d;
+    border-color: var(--mint-500);
+    background: var(--mint-wash);
+  }
+
+  .game-options button.is-wrong {
+    color: #9d3d33;
+    border-color: var(--coral-500);
+    background: var(--coral-wash);
+  }
+
+  html[data-theme="night"] .game-options button.is-correct { color: var(--mint-500); }
+  html[data-theme="night"] .game-options button.is-wrong { color: var(--coral-500); }
+
+  .game-feedback {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 11px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    color: var(--ink-soft);
+    background: var(--surface-2);
+    font-size: 11.5px;
+    line-height: 1.55;
+  }
+
+  .game-feedback strong {
+    color: var(--ink);
+    font-size: 12.5px;
+  }
+
+  .game-feedback.is-correct { background: var(--mint-wash); }
+  .game-feedback.is-wrong { background: var(--coral-wash); }
+
+  .game-bottom {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .game-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    max-width: 72%;
+    color: var(--faint);
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .game-hint .icon {
+    margin-top: 1px;
+    color: var(--sun-700);
+  }
+
+  .game-result {
+    padding: 20px 10px 8px;
+    text-align: center;
+  }
+
+  .result-sparkle {
+    display: block;
+    color: var(--sun-700);
+    font-size: 27px;
+    letter-spacing: 0.16em;
+  }
+
+  .game-result h4 {
+    margin: 5px 0 4px;
+    color: var(--ink);
+    font-size: 23px;
+  }
+
+  .game-result p {
+    max-width: 500px;
+    margin: 0 auto 15px;
+    color: var(--ink-soft);
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+
+  .game-noscript {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 10px;
+  }
+
+  @keyframes target-pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(0.92); box-shadow: 0 0 0 3px rgba(255, 216, 111, 0.18); }
+    50% { transform: translate(-50%, -50%) scale(1.08); box-shadow: 0 0 0 6px rgba(255, 216, 111, 0.08); }
+  }
+
+  @media (max-width: 850px) {
+    .game-body {
+      grid-template-columns: 1fr;
+    }
+
+    .fretboard-wrap {
+      width: min(100%, 480px);
+      margin-inline: auto;
+    }
+  }
+
+  @media (max-width: 540px) {
+    .game-head {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .game-score {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      text-align: left;
+    }
+
+    .game-score strong {
+      font-size: 17px;
+    }
+
+    .score-stars {
+      margin: 0 0 0 auto;
+    }
+
+    .fret-cell {
+      min-height: 29px;
+    }
+
+    .game-options button {
+      min-height: 49px;
+    }
+
+    .game-options button strong {
+      font-size: 17px;
+    }
+
+    .game-bottom {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .game-hint {
+      max-width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fret-cell.is-target::after {
+      animation: none;
+    }
+  }
+</style>

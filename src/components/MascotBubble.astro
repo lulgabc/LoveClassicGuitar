@@ -1,0 +1,108 @@
+---
+import Bat from "./Bat.astro";
+import Capybara from "./Capybara.astro";
+import Icon from "./Icon.astro";
+
+interface Props {
+  who?: "momo" | "capi";
+  title?: string;
+  text: string;
+  tone?: "violet" | "sky" | "sun" | "pink";
+}
+
+const { who = "momo", title, text, tone = "violet" } = Astro.props;
+const name = who === "momo" ? "Momo" : "Capi";
+---
+
+<aside class:list={["mascot-bubble", `tone-${tone}`]}>
+  <div class="mascot-figure" aria-hidden="true">
+    {who === "momo" ? <Bat /> : <Capybara />}
+  </div>
+  <div class="mascot-copy">
+    <div class="mascot-label">
+      <Icon name="sparkle" size={13} />
+      {title ?? `${name} 的小提示`}
+    </div>
+    <p>{text}</p>
+  </div>
+</aside>
+
+<style>
+  .mascot-bubble {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px 14px 12px;
+    border: 1.5px dashed var(--line-strong);
+    border-radius: 22px;
+    background: var(--surface-2);
+    color: var(--ink-soft);
+  }
+
+  .mascot-figure {
+    flex: 0 0 68px;
+    width: 68px;
+  }
+
+  .mascot-copy {
+    min-width: 0;
+  }
+
+  .mascot-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 3px;
+    color: var(--violet-700);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .mascot-copy p {
+    margin: 0;
+    color: var(--ink);
+    font-size: 13.5px;
+    font-weight: 650;
+    line-height: 1.65;
+  }
+
+  .tone-sky {
+    background: var(--sky-wash);
+    border-color: rgba(70, 178, 224, 0.25);
+  }
+
+  .tone-sky .mascot-label {
+    color: var(--sky-700);
+  }
+
+  .tone-sun {
+    background: var(--sun-wash);
+    border-color: rgba(214, 164, 55, 0.28);
+  }
+
+  .tone-sun .mascot-label {
+    color: var(--sun-700);
+  }
+
+  .tone-pink {
+    background: var(--pink-wash);
+    border-color: rgba(223, 98, 167, 0.25);
+  }
+
+  .tone-pink .mascot-label {
+    color: var(--pink-500);
+  }
+
+  @media (max-width: 520px) {
+    .mascot-figure {
+      flex-basis: 54px;
+      width: 54px;
+    }
+
+    .mascot-copy p {
+      font-size: 12.5px;
+    }
+  }
+</style>

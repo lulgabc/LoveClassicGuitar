@@ -1,0 +1,140 @@
+---
+import type { Channel } from "../data/videos";
+import Icon from "./Icon.astro";
+
+interface Props {
+  channel: Channel;
+}
+
+const { channel } = Astro.props;
+---
+
+<a class="channel-card card card-hover" href={channel.url} target="_blank" rel="noopener noreferrer">
+  <div class="channel-top">
+    <span class="channel-icon"><Icon name="youtube" size={20} /></span>
+    <span class:list={["pill", channel.price.includes("免费") ? "pill-free" : "pill-paid"]}>{channel.price}</span>
+    {channel.featured && <span class="channel-star"><span class="sr-only">精选</span><Icon name="star" size={13} /></span>}
+  </div>
+  <span class="channel-focus">{channel.focus}</span>
+  <h3>{channel.name}</h3>
+  <p class="channel-handle">{channel.handle} · {channel.lang}</p>
+  <p class="channel-desc">{channel.description}</p>
+  <p class="channel-best"><strong>适合：</strong>{channel.bestFor}</p>
+  {channel.note && <p class="channel-note"><Icon name="info" size={12} /> {channel.note}</p>}
+  <span class="channel-link">去频道看看 <Icon name="external" size={12} /></span>
+</a>
+
+<style>
+  .channel-card {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    color: var(--ink);
+    text-decoration: none;
+    height: 100%;
+    background:
+      radial-gradient(circle at 95% 0%, rgba(255, 139, 123, 0.1), transparent 26%),
+      var(--surface);
+  }
+
+  .channel-card:hover {
+    color: var(--ink);
+  }
+
+  .channel-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .channel-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 37px;
+    width: 37px;
+    height: 37px;
+    color: #a53d34;
+    border-radius: 12px;
+    background: var(--coral-wash);
+    transform: rotate(-3deg);
+  }
+
+  .channel-star {
+    margin-left: auto;
+    color: var(--sun-700);
+  }
+
+  .channel-focus {
+    display: block;
+    margin-top: 12px;
+    color: var(--coral-500);
+    font-family: var(--font-mono);
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .channel-card h3 {
+    margin: 3px 0 1px;
+    color: var(--ink);
+    font-size: 16.5px;
+    line-height: 1.4;
+  }
+
+  .channel-handle {
+    margin: 0;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    line-height: 1.5;
+  }
+
+  .channel-desc {
+    margin: 8px 0 0;
+    color: var(--ink-soft);
+    font-size: 11.5px;
+    line-height: 1.65;
+  }
+
+  .channel-best {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.55;
+  }
+
+  .channel-best strong {
+    color: var(--ink-soft);
+  }
+
+  .channel-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    margin: 8px 0 0;
+    color: var(--faint);
+    font-size: 9px;
+    line-height: 1.55;
+  }
+
+  .channel-note .icon {
+    margin-top: 1px;
+  }
+
+  .channel-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: auto;
+    padding-top: 11px;
+    color: #a53d34;
+    font-size: 10px;
+    font-weight: 850;
+  }
+
+  html[data-theme="night"] .channel-link,
+  html[data-theme="night"] .channel-icon {
+    color: var(--coral-500);
+  }
+</style>

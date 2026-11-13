@@ -1,0 +1,281 @@
+---
+import { SITE } from "../data/site";
+import { url } from "../lib/url";
+import Bat from "./Bat.astro";
+import Capybara from "./Capybara.astro";
+import Icon from "./Icon.astro";
+---
+
+<footer class="site-footer">
+  <div class="footer-stars" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="container footer-main">
+    <div class="footer-brand">
+      <div class="footer-mascots" aria-hidden="true">
+        <div class="footer-bat"><Bat /></div>
+        <div class="footer-capy"><Capybara /></div>
+      </div>
+      <p class="footer-quote">“音乐不是比赛，是一颗每天都能点亮的小星星。”</p>
+      <div class="footer-badges">
+        <span><Icon name="heart" size={13} /> 免费 · 无广告</span>
+        <span><Icon name="shield" size={13} /> 不收集个人信息</span>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h2>一起探险</h2>
+      <a href={url("/basics/")}>吉他小百科</a>
+      <a href={url("/roadmap/")}>6 站学习地图</a>
+      <a href={url("/practice/")}>互动练习室</a>
+      <a href={url("/concert/")}>星空音乐厅</a>
+      <a href={url("/library/")}>免费资源宝库</a>
+    </div>
+
+    <div class="footer-col">
+      <h2>给大人</h2>
+      <a href={url("/parents/")}>陪伴指南</a>
+      <a href={url("/parents/#teacher")}>怎样找老师</a>
+      <a href={url("/parents/#privacy")}>隐私与屏幕时间</a>
+      <a href={url("/about/")}>关于本站与版权</a>
+      <a href={SITE.repo} target="_blank" rel="noopener noreferrer">GitHub 仓库 <Icon name="external" size={12} /></a>
+    </div>
+
+    <div class="footer-col footer-note">
+      <h2>写在最后</h2>
+      <p>
+        这是为一位 7 岁小音乐家做的古典吉他学习小世界。没有排名、没有广告，也不催你快一点。
+        如果今天的你只想听一首歌，那也很好。
+      </p>
+      <p class="footer-updated">内容更新：{SITE.updated}</p>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© {new Date().getFullYear()} {SITE.nameZh} · Love Classic Guitar</p>
+    <p>
+      外部视频与资源版权归原作者；本站仅提供链接与学习笔记。YouTube 是 Google LLC 的商标。
+    </p>
+    <a class="back-top" href="#top">回到星空 <Icon name="arrow-up" size={14} /></a>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    overflow: hidden;
+    margin-top: 60px;
+    color: #f4edff;
+    background:
+      radial-gradient(circle at 12% 0%, rgba(120, 88, 246, 0.4), transparent 32%),
+      radial-gradient(circle at 85% 18%, rgba(104, 211, 255, 0.14), transparent 26%),
+      linear-gradient(180deg, #221750, #140d35 78%);
+    border-top: 1px solid rgba(255, 255, 255, 0.11);
+  }
+
+  .footer-stars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.65;
+  }
+
+  .footer-stars span {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #ffe9a3;
+    box-shadow: 0 0 9px 3px rgba(255, 225, 139, 0.25);
+    animation: footer-twinkle 5s ease-in-out infinite;
+  }
+
+  .footer-stars span:nth-child(1) { left: 7%; top: 22%; }
+  .footer-stars span:nth-child(2) { left: 23%; top: 12%; animation-delay: -1.2s; }
+  .footer-stars span:nth-child(3) { left: 48%; top: 8%; animation-delay: -2.4s; }
+  .footer-stars span:nth-child(4) { left: 67%; top: 20%; animation-delay: -0.8s; }
+  .footer-stars span:nth-child(5) { left: 87%; top: 13%; animation-delay: -3.2s; }
+  .footer-stars span:nth-child(6) { left: 93%; top: 41%; animation-delay: -1.8s; }
+  .footer-stars span:nth-child(7) { left: 39%; top: 29%; animation-delay: -4s; }
+
+  .footer-main {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.45fr 0.7fr 0.7fr 1fr;
+    gap: clamp(28px, 4vw, 62px);
+    padding-top: 58px;
+    padding-bottom: 40px;
+  }
+
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .footer-mascots {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    height: 96px;
+    margin-bottom: 10px;
+  }
+
+  .footer-bat {
+    width: 92px;
+    margin-right: -20px;
+    margin-bottom: 16px;
+    transform: rotate(-8deg);
+  }
+
+  .footer-capy {
+    width: 145px;
+    filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.18));
+  }
+
+  .footer-quote {
+    max-width: 320px;
+    margin: 0;
+    color: #fff8ee;
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.7;
+  }
+
+  .footer-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .footer-badges span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+    color: #cfc2f6;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .footer-col h2 {
+    margin: 0 0 15px;
+    color: #fff6e6;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .footer-col a {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: fit-content;
+    margin: 0 0 9px;
+    color: #c9bdea;
+    font-size: 13.5px;
+    text-decoration: none;
+    transition: color 150ms ease, transform 150ms ease;
+  }
+
+  .footer-col a:hover {
+    color: #ffe08a;
+    transform: translateX(3px);
+  }
+
+  .footer-note p {
+    margin: 0 0 12px;
+    color: #c9bdea;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+
+  .footer-updated {
+    color: #9183bf !important;
+    font-size: 11px !important;
+  }
+
+  .footer-bottom {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    padding-top: 20px;
+    padding-bottom: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .footer-bottom p {
+    margin: 0;
+    color: #8f80b9;
+    font-size: 10.5px;
+    line-height: 1.6;
+  }
+
+  .footer-bottom p:nth-child(2) {
+    max-width: 620px;
+  }
+
+  .back-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #d3c8ef;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .back-top:hover {
+    color: #ffe08a;
+  }
+
+  @media (max-width: 980px) {
+    .footer-main {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .footer-brand {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 580px) {
+    .footer-main {
+      grid-template-columns: 1fr;
+      gap: 30px;
+      padding-top: 42px;
+    }
+
+    .footer-brand {
+      grid-column: auto;
+    }
+
+    .footer-bottom {
+      display: block;
+    }
+
+    .footer-bottom p {
+      margin-bottom: 8px;
+    }
+  }
+
+  @keyframes footer-twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .footer-stars span {
+      animation: none;
+    }
+  }
+</style>

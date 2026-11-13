@@ -1,0 +1,118 @@
+---
+type IconName =
+  | "arrow-right"
+  | "arrow-up"
+  | "book"
+  | "calendar"
+  | "check"
+  | "chevron-down"
+  | "chevron-right"
+  | "clock"
+  | "close"
+  | "compass"
+  | "ear"
+  | "external"
+  | "game"
+  | "guitar"
+  | "headphones"
+  | "heart"
+  | "info"
+  | "lightbulb"
+  | "map"
+  | "menu"
+  | "metronome"
+  | "moon"
+  | "music"
+  | "pause"
+  | "play"
+  | "printer"
+  | "refresh"
+  | "search"
+  | "shield"
+  | "sparkle"
+  | "star"
+  | "sun"
+  | "timer"
+  | "trophy"
+  | "tuning"
+  | "users"
+  | "volume"
+  | "wand"
+  | "youtube";
+
+interface Props {
+  name: IconName;
+  size?: number;
+  class?: string;
+  filled?: boolean;
+}
+
+const { name, size = 20, class: className = "", filled = false } = Astro.props;
+
+const strokeIcons: Record<string, string> = {
+  "arrow-right": '<path d="M4 12h15"/><path d="m13 6 6 6-6 6"/>',
+  "arrow-up": '<path d="M12 20V5"/><path d="m6 11 6-6 6 6"/>',
+  book: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5V5.5Z"/><path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20"/><path d="M8 7h8M8 11h5"/>',
+  calendar: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>',
+  check: '<path d="m5 12.5 4.2 4.2L19 6.8"/>',
+  "chevron-down": '<path d="m6 9 6 6 6-6"/>',
+  "chevron-right": '<path d="m9 6 6 6-6 6"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  close: '<path d="M6 6l12 12M18 6 6 18"/>',
+  compass: '<circle cx="12" cy="12" r="9"/><path d="m16 8-2.4 5.6L8 16l2.4-5.6L16 8Z"/>',
+  ear: '<path d="M6 8.5a5.5 5.5 0 0 1 10.8-1.4c.5 2.4-1.2 3.7-2.5 4.8-1.1.9-1.8 1.7-1.8 3.6a3 3 0 0 1-5.8 1"/><path d="M9.5 9a2.5 2.5 0 0 1 4.7-1.2c.3 1.4-.8 2-1.5 2.6"/>',
+  external: '<path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M18 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/>',
+  game: '<path d="M7.5 8h9a4.5 4.5 0 0 1 4.4 5.5l-.6 2.8a2.4 2.4 0 0 1-4.1 1.1L14.5 15h-5l-1.7 2.4a2.4 2.4 0 0 1-4.1-1.1l-.6-2.8A4.5 4.5 0 0 1 7.5 8Z"/><path d="M8 11v4M6 13h4M16 12h.01M18 14h.01"/>',
+  guitar: '<path d="M14.5 5.5 19 10"/><path d="m20 3-6.5 6.5"/><path d="M13.5 8.5c1.8-.4 3.2.2 4.4 1.4 1.2 1.2 1.8 2.6 1.4 4.4"/><path d="M12.2 11.8c-1.1-1.1-2.8-1.2-4.2.2l-3.5 3.5a3.5 3.5 0 1 0 5 5l3.5-3.5c1.4-1.4 1.3-3.1.2-4.2Z"/><circle cx="10.5" cy="16.5" r="1.4"/>',
+  headphones: '<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="4" height="7" rx="2"/><rect x="17" y="13" width="4" height="7" rx="2"/>',
+  heart: '<path d="M20.8 5.8a5.2 5.2 0 0 0-7.4 0L12 7.2l-1.4-1.4a5.2 5.2 0 0 0-7.4 7.4L12 22l8.8-8.8a5.2 5.2 0 0 0 0-7.4Z"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+  lightbulb: '<path d="M9 18h6M10 21h4"/><path d="M8.5 14.5A6.5 6.5 0 1 1 15.5 14.5c-.8.6-1.2 1.4-1.2 2.5h-4.6c0-1.1-.4-1.9-1.2-2.5Z"/>',
+  map: '<path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Z"/><path d="M9 3v15M15 6v15"/>',
+  menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+  metronome: '<path d="M8 21h8L18 5H6L8 21Z"/><path d="m12 18 4-13"/><circle cx="14.5" cy="10.5" r="1"/>',
+  moon: '<path d="M20.2 14.1A8.5 8.5 0 0 1 9.9 3.8 8.5 8.5 0 1 0 20.2 14Z"/>',
+  music: '<path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/>',
+  pause: '<path d="M9 5v14M15 5v14"/>',
+  play: '<path d="M7 4.5 19 12 7 19.5v-15Z"/>',
+  printer: '<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6v-7Z"/><path d="M17 12h.01"/>',
+  refresh: '<path d="M20 11a8 8 0 1 0-2 6"/><path d="M20 4v7h-7"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+  shield: '<path d="M12 3 4.5 6v5.5c0 4.5 3 7.8 7.5 9.5 4.5-1.7 7.5-5 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/>',
+  sparkle: '<path d="M12 3l1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3Z"/><path d="M19 16l.7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/>',
+  star: '<path d="m12 2.8 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.6l6.5-.9L12 2.8Z"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  timer: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5M9 2h6"/>',
+  trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4M12 13v4M8 21h8M9 17h6v4H9z"/>',
+  tuning: '<path d="M12 3v9"/><path d="M9 6h6"/><path d="M12 12a5 5 0 1 1 0 10 5 5 0 0 1 0-10Z"/><path d="M10 19h4"/>',
+  users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>',
+  volume: '<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12"/>',
+  wand: '<path d="m15 4 5 5L8 21H3v-5L15 4Z"/><path d="m13 6 5 5M6 18l.01.01"/>',
+  youtube: '<path d="M21 8.5a3 3 0 0 0-2.1-2.1C17.2 6 12 6 12 6s-5.2 0-6.9.4A3 3 0 0 0 3 8.5 31 31 0 0 0 2.7 12 31 31 0 0 0 3 15.5a3 3 0 0 0 2.1 2.1C6.8 18 12 18 12 18s5.2 0 6.9-.4a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .3-3.5 31 31 0 0 0-.3-3.5Z"/><path d="m10 9 5 3-5 3V9Z"/>',
+};
+
+const fillIcons: Record<string, string> = {
+  star: '<path d="m12 2.8 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.6l6.5-.9L12 2.8Z"/>',
+  play: '<path d="M8 5.2v13.6L19 12 8 5.2Z"/>',
+  sparkle: '<path d="M12 2.5l2 6.1 6.1 2-6.1 2-2 6.1-2-6.1-6.1-2 6.1-2 2-6.1Z"/><path d="M19 15.5l.8 2.4 2.4.8-2.4.8-.8 2.4-.8-2.4-2.4-.8 2.4-.8.8-2.4Z"/>',
+  heart: '<path d="M12 21 4.2 13.2a5.8 5.8 0 1 1 8.2-8.2l.6.6.6-.6a5.8 5.8 0 1 1 8.2 8.2L12 21Z"/>',
+};
+
+const isFilled = filled || name in fillIcons;
+const body = isFilled ? fillIcons[name] ?? strokeIcons[name] : strokeIcons[name];
+---
+
+<svg
+  class={`icon ${className}`}
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill={isFilled ? "currentColor" : "none"}
+  stroke={isFilled ? "none" : "currentColor"}
+  stroke-width="1.9"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+  set:html={body}
+/>

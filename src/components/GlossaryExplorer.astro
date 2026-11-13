@@ -1,0 +1,260 @@
+---
+import { GLOSSARY } from "../data/basics";
+import Icon from "./Icon.astro";
+
+const categories = ["全部", "琴与手", "读谱", "声音", "练习"] as const;
+---
+
+<div class="glossary" data-glossary>
+  <div class="glossary-toolbar">
+    <label class="glossary-search">
+      <Icon name="search" size={17} />
+      <span class="sr-only">搜索音乐术语</span>
+      <input type="search" placeholder="搜一个词，比如“空弦”…" data-glossary-search />
+    </label>
+    <div class="glossary-filters" role="group" aria-label="按类别筛选">
+      {
+        categories.map((category, index) => (
+          <button
+            type="button"
+            class:list={["filter-chip", { "is-active": index === 0 }]}
+            data-glossary-filter={category}
+            aria-pressed={index === 0 ? "true" : "false"}
+          >
+            {category}
+          </button>
+        ))
+      }
+    </div>
+    <span class="glossary-count"><strong data-glossary-count>{GLOSSARY.length}</strong> 个词</span>
+  </div>
+
+  <div class="glossary-grid" data-glossary-grid>
+    {
+      GLOSSARY.map((entry) => (
+        <article class="glossary-card" data-glossary-item data-category={entry.category} data-search={`${entry.term} ${entry.en} ${entry.definition}`.toLowerCase()}>
+          <div class="glossary-card-top">
+            <h3>{entry.term}</h3>
+            <span>{entry.category}</span>
+          </div>
+          <p class="glossary-en">{entry.en}</p>
+          <p>{entry.definition}</p>
+        </article>
+      ))
+    }
+  </div>
+
+  <p class="glossary-empty" data-glossary-empty hidden>还没有找到这个词。换个短一点的词试试？</p>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-glossary]")!;
+  if (root) {
+    const search = root.querySelector<HTMLInputElement>("[data-glossary-search]");
+    const filters = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-glossary-filter]"));
+    const items = Array.from(root.querySelectorAll<HTMLElement>("[data-glossary-item]"));
+    const count = root.querySelector<HTMLElement>("[data-glossary-count]");
+    const empty = root.querySelector<HTMLElement>("[data-glossary-empty]");
+    let activeCategory = "全部";
+
+    function apply(): void {
+      const query = (search?.value ?? "").trim().toLowerCase();
+      let visible = 0;
+      items.forEach((item) => {
+        const categoryOk = activeCategory === "全部" || item.dataset.category === activeCategory;
+        const searchOk = !query || (item.dataset.search ?? "").includes(query);
+        const show = categoryOk && searchOk;
+        item.hidden = !show;
+        if (show) visible += 1;
+      });
+      if (count) count.textContent = String(visible);
+      if (empty) empty.hidden = visible !== 0;
+    }
+
+    filters.forEach((button) => {
+      button.addEventListener("click", () => {
+        activeCategory = button.dataset.glossaryFilter ?? "全部";
+        filters.forEach((item) => {
+          const active = item === button;
+          item.classList.toggle("is-active", active);
+          item.setAttribute("aria-pressed", String(active));
+        });
+        apply();
+      });
+    });
+
+    search?.addEventListener("input", apply);
+    apply();
+  }
+</script>
+
+<style>
+  .glossary {
+    width: 100%;
+  }
+
+  .glossary-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .glossary-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 245px;
+    min-width: 0;
+    min-height: 42px;
+    padding: 0 13px;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--muted);
+  }
+
+  .glossary-search:focus-within {
+    border-color: var(--violet-500);
+    box-shadow: 0 0 0 3px var(--violet-wash);
+  }
+
+  .glossary-search input {
+    flex: 1;
+    min-width: 0;
+    min-height: 38px;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--ink);
+    font-size: 13px;
+  }
+
+  .glossary-search input::placeholder {
+    color: var(--faint);
+  }
+
+  .glossary-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .filter-chip {
+    min-height: 34px;
+    padding: 5px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--ink-soft);
+    background: var(--surface);
+    font-size: 10px;
+    font-weight: 750;
+    transition: background 150ms ease, color 150ms ease;
+  }
+
+  .filter-chip:hover {
+    background: var(--surface-2);
+  }
+
+  .filter-chip.is-active {
+    color: #fff;
+    border-color: #5b3fd4;
+    background: #5b3fd4;
+  }
+
+  .glossary-count {
+    margin-left: auto;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    white-space: nowrap;
+  }
+
+  .glossary-count strong {
+    color: var(--violet-700);
+  }
+
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .glossary-card {
+    padding: 14px 15px;
+    border: 1px solid var(--line);
+    border-radius: 15px;
+    background: var(--surface);
+    transition: border-color 150ms ease, transform 150ms ease;
+  }
+
+  .glossary-card:hover {
+    border-color: var(--violet-300);
+    transform: translateY(-2px);
+  }
+
+  .glossary-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .glossary-card h3 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 850;
+    line-height: 1.4;
+  }
+
+  .glossary-card-top span {
+    padding: 2px 6px;
+    border-radius: 999px;
+    color: var(--violet-700);
+    background: var(--violet-wash);
+    font-size: 7.5px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .glossary-en {
+    margin: 2px 0 6px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    line-height: 1.4;
+  }
+
+  .glossary-card > p:last-child {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .glossary-empty {
+    padding: 28px 0;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .glossary-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .glossary-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .glossary-count {
+      margin-left: 0;
+    }
+  }
+</style>

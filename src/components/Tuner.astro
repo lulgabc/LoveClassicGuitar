@@ -1,0 +1,267 @@
+---
+import { GUITAR_STRINGS } from "../data/basics";
+import Icon from "./Icon.astro";
+---
+
+<div class="tuner card" data-tuner>
+  <div class="tuner-head">
+    <div>
+      <span class="tool-kicker">Tuning reference · 听音调弦</span>
+      <h3>六根弦的标准声音</h3>
+      <p>点一根弦，听它的标准音。请大人用调音器 App 对照，慢慢转动弦轴。</p>
+    </div>
+    <button class="play-all" type="button" data-play-all><Icon name="volume" size={15} /> 从低到高听一遍</button>
+  </div>
+
+  <div class="tuner-strings">
+    {
+      GUITAR_STRINGS.map((string) => (
+        <button class="tuner-string" type="button" data-tone-frequency={string.frequency} data-tuner-string={string.number}>
+          <span class="tuner-num">{string.number}</span>
+          <span class="tuner-line" style={`--line-color:${string.color};--line-width:${2.3 - (string.number - 1) * 0.22}px`}></span>
+          <strong>{string.note}</strong>
+          <small>{string.solfege} · {string.frequency.toFixed(2)} Hz</small>
+          <span class="tuner-play" aria-hidden="true"><Icon name="play" size={11} /></span>
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="tuner-note">
+    <span class="tuner-note-icon"><Icon name="info" size={15} /></span>
+    <p><strong>这是参考音，不是自动调音器。</strong> 如果你听到的声音和它不一样，不要猛拧弦轴。请大人确认方向，一次只转一点点。</p>
+  </div>
+</div>
+
+<script>
+  import { playPluck } from "../lib/audio";
+
+  const tuner = document.querySelector<HTMLElement>("[data-tuner]");
+  if (tuner) {
+    const buttons = Array.from(tuner.querySelectorAll<HTMLButtonElement>("[data-tone-frequency]"));
+    const playAll = tuner.querySelector<HTMLButtonElement>("[data-play-all]");
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        button.classList.add("is-ringing");
+        window.setTimeout(() => button.classList.remove("is-ringing"), 720);
+      });
+    });
+
+    playAll?.addEventListener("click", () => {
+      playAll.disabled = true;
+      buttons
+        .slice()
+        .sort((a, b) => Number(a.dataset.toneFrequency) - Number(b.dataset.toneFrequency))
+        .forEach((button, index) => {
+          window.setTimeout(() => {
+            const frequency = Number(button.dataset.toneFrequency);
+            if (Number.isFinite(frequency)) {
+              playPluck(frequency, 0.09);
+              button.classList.add("is-ringing");
+              window.setTimeout(() => button.classList.remove("is-ringing"), 720);
+            }
+          }, index * 920);
+        });
+      window.setTimeout(() => {
+        playAll.disabled = false;
+      }, buttons.length * 920 + 700);
+    });
+  }
+</script>
+
+<style>
+  .tuner {
+    padding: clamp(20px, 3vw, 29px);
+    background:
+      radial-gradient(circle at 95% 5%, rgba(93, 202, 250, 0.16), transparent 25%),
+      var(--surface);
+  }
+
+  .tuner-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .tool-kicker {
+    display: block;
+    color: var(--sky-700);
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .tuner-head h3 {
+    margin: 4px 0 4px;
+    color: var(--ink);
+    font-size: clamp(21px, 2.6vw, 27px);
+  }
+
+  .tuner-head p {
+    max-width: 460px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .play-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex: 0 0 auto;
+    min-height: 34px;
+    padding: 6px 10px;
+    color: var(--sky-700);
+    border: 1px solid rgba(74, 178, 220, 0.26);
+    border-radius: 999px;
+    background: var(--sky-wash);
+    font-size: 9px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .play-all:hover {
+    background: var(--sky-200);
+  }
+
+  .play-all:disabled {
+    opacity: 0.55;
+    cursor: wait;
+  }
+
+  .tuner-strings {
+    display: grid;
+    gap: 3px;
+    margin: 14px 0 10px;
+  }
+
+  .tuner-string {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    min-height: 39px;
+    padding: 5px 8px;
+    color: var(--ink);
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: transparent;
+    text-align: left;
+    transition: background 150ms ease, border-color 150ms ease;
+  }
+
+  .tuner-string:hover {
+    border-color: var(--line);
+    background: var(--surface-2);
+  }
+
+  .tuner-num {
+    display: grid;
+    place-items: center;
+    flex: 0 0 21px;
+    width: 21px;
+    height: 21px;
+    color: var(--faint);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+  }
+
+  .tuner-line {
+    flex: 1;
+    height: var(--line-width);
+    border-radius: 99px;
+    background: var(--line-color);
+    transition: transform 140ms ease;
+  }
+
+  .tuner-string:hover .tuner-line {
+    transform: scaleY(1.7);
+  }
+
+  .tuner-string.is-ringing .tuner-line {
+    animation: tuner-ring 700ms ease;
+  }
+
+  .tuner-string strong {
+    flex: 0 0 19px;
+    color: var(--sky-700);
+    font-family: var(--font-display);
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  .tuner-string small {
+    flex: 0 0 96px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-align: right;
+  }
+
+  .tuner-play {
+    display: grid;
+    place-items: center;
+    flex: 0 0 21px;
+    width: 21px;
+    height: 21px;
+    color: var(--sky-700);
+    border-radius: 50%;
+    background: var(--sky-wash);
+  }
+
+  .tuner-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 11px;
+    background: var(--sun-wash);
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  .tuner-note-icon {
+    color: var(--sun-700);
+  }
+
+  .tuner-note p {
+    margin: 0;
+  }
+
+  .tuner-note strong {
+    color: var(--ink);
+  }
+
+  @keyframes tuner-ring {
+    0%, 100% { transform: scaleY(1); }
+    25% { transform: scaleY(3.2); }
+    55% { transform: scaleY(0.7); }
+    75% { transform: scaleY(2); }
+  }
+
+  @media (max-width: 600px) {
+    .tuner-head {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tuner-string small {
+      display: none;
+    }
+
+    .tuner-play {
+      margin-left: auto;
+    }
+  }
+</style>

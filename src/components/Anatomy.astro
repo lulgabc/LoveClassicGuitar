@@ -1,0 +1,549 @@
+---
+import { GUITAR_PARTS } from "../data/basics";
+import Icon from "./Icon.astro";
+
+const first = GUITAR_PARTS[0];
+---
+
+<div class="anatomy" data-anatomy>
+  <div class="guitar-stage">
+    <div class="stage-halo" aria-hidden="true"></div>
+    <div class="guitar-wrap">
+      <svg class="guitar-svg" viewBox="0 0 360 820" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="top-wood" x1="74" y1="340" x2="286" y2="760" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#F8D49B"></stop>
+            <stop offset="0.48" stop-color="#EFB66F"></stop>
+            <stop offset="1" stop-color="#D58C4D"></stop>
+          </linearGradient>
+          <linearGradient id="neck-wood" x1="158" y1="108" x2="203" y2="330" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#62422B"></stop>
+            <stop offset="1" stop-color="#38251B"></stop>
+          </linearGradient>
+          <linearGradient id="guitar-head" x1="146" y1="20" x2="216" y2="105" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#7F573A"></stop>
+            <stop offset="1" stop-color="#4A2E20"></stop>
+          </linearGradient>
+          <radialGradient id="sound-glow" cx="0" cy="0" r="1" gradientTransform="translate(180 512) rotate(90) scale(50)" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#2A1410"></stop>
+            <stop offset="1" stop-color="#46251C"></stop>
+          </radialGradient>
+          <filter id="guitar-shadow" x="40" y="0" width="280" height="820" filterUnits="userSpaceOnUse">
+            <feDropShadow dx="0" dy="17" stdDeviation="14" flood-color="#3A1F55" flood-opacity="0.24"></feDropShadow>
+          </filter>
+        </defs>
+
+        <ellipse cx="180" cy="792" rx="101" ry="15" fill="#3A205B" opacity="0.16"></ellipse>
+
+        <g filter="url(#guitar-shadow)">
+          <g data-graphic="body">
+            <path
+              d="M180 312c-43 0-84 24-95 70-8 40 6 74 29 96-33 24-62 61-69 109-10 74 46 154 135 188 89-34 145-114 135-188-7-48-36-85-69-109 23-22 37-56 29-96-11-46-52-70-95-70Z"
+              fill="url(#top-wood)"
+              stroke="#9B5F35"
+              stroke-width="4"
+            ></path>
+            <path
+              d="M180 326c-36 0-71 21-81 60-6 33 6 62 25 81-29 22-53 55-59 99-9 65 40 135 115 164 75-29 124-99 115-164-6-44-30-77-59-99 19-19 31-48 25-81-10-39-45-60-81-60Z"
+              stroke="#F5D7A2"
+              stroke-width="1.6"
+              stroke-dasharray="3 7"
+              opacity="0.72"
+            ></path>
+            <path d="M130 455c-18 45-21 145 16 223" stroke="#FFF1D2" stroke-width="1.2" opacity="0.28"></path>
+            <path d="M232 455c18 45 21 145-16 223" stroke="#FFF1D2" stroke-width="1.2" opacity="0.28"></path>
+          </g>
+
+          <g data-graphic="neck">
+            <path d="M158 104h44v236c0 8-7 15-14 18h-16c-7-3-14-10-14-18V104Z" fill="url(#neck-wood)" stroke="#2F1D14" stroke-width="3"></path>
+            <path d="M158 326h44v14c0 13-10 22-22 22s-22-9-22-22v-14Z" fill="#5A3A27" stroke="#2F1D14" stroke-width="3"></path>
+          </g>
+
+          <g data-graphic="fretboard">
+            <rect x="159" y="112" width="42" height="225" rx="1.5" fill="#3C281D"></rect>
+            {[130, 148, 165, 181, 196, 210, 223, 235, 246, 256, 265, 273, 280, 287, 293, 299, 305, 311, 317, 323].map((y) => <path d={`M159 ${y}h42`} stroke="#D4C4AC" stroke-width="1.35" opacity="0.7"></path>)}
+            <circle cx="180" cy="158" r="2" fill="#F5E8D0" opacity="0.62"></circle>
+            <circle cx="180" cy="205" r="2" fill="#F5E8D0" opacity="0.62"></circle>
+            <circle cx="180" cy="244" r="2" fill="#F5E8D0" opacity="0.62"></circle>
+            <circle cx="180" cy="277" r="2" fill="#F5E8D0" opacity="0.62"></circle>
+          </g>
+
+          <g data-graphic="headstock">
+            <rect x="146" y="16" width="68" height="90" rx="17" fill="url(#guitar-head)" stroke="#2F1D14" stroke-width="3.5"></rect>
+            <rect x="158" y="31" width="15" height="57" rx="7.5" fill="#2B1A13"></rect>
+            <rect x="187" y="31" width="15" height="57" rx="7.5" fill="#2B1A13"></rect>
+            <circle cx="166" cy="52" r="4" fill="#E8D6B5"></circle>
+            <circle cx="166" cy="71" r="4" fill="#E8D6B5"></circle>
+            <circle cx="194" cy="52" r="4" fill="#E8D6B5"></circle>
+            <circle cx="194" cy="71" r="4" fill="#E8D6B5"></circle>
+            <path d="M180 18v78" stroke="#B8925E" stroke-width="1" opacity="0.28"></path>
+          </g>
+
+          <g data-graphic="pegs">
+            <g stroke="#3E281C" stroke-width="4" stroke-linecap="round">
+              <path d="M146 35h-16M146 56h-16M146 77h-16M214 35h16M214 56h16M214 77h16"></path>
+            </g>
+            <g fill="#F4E0BA" stroke="#775333" stroke-width="2">
+              <ellipse cx="127" cy="35" rx="9" ry="6"></ellipse>
+              <ellipse cx="127" cy="56" rx="9" ry="6"></ellipse>
+              <ellipse cx="127" cy="77" rx="9" ry="6"></ellipse>
+              <ellipse cx="233" cy="35" rx="9" ry="6"></ellipse>
+              <ellipse cx="233" cy="56" rx="9" ry="6"></ellipse>
+              <ellipse cx="233" cy="77" rx="9" ry="6"></ellipse>
+            </g>
+          </g>
+
+          <g data-graphic="nut">
+            <rect x="153" y="103" width="54" height="9" rx="3.5" fill="#FFF2D5" stroke="#A78354" stroke-width="1.5"></rect>
+          </g>
+
+          <g data-graphic="strings">
+            {[164, 170.4, 176.8, 183.2, 189.6, 196].map((x, index) => (
+              <path d={`M${x} 109L${140 + index * 16} 654`} stroke="#FFF5E0" stroke-width={1.5 - index * 0.15} opacity="0.92" />
+            ))}
+          </g>
+
+          <g data-graphic="soundhole">
+            <circle cx="180" cy="512" r="59" stroke="#A66339" stroke-width="1.5" opacity="0.55"></circle>
+            <circle cx="180" cy="512" r="52" stroke="#F8DFAE" stroke-width="1.4" stroke-dasharray="2 5" opacity="0.82"></circle>
+            <circle cx="180" cy="512" r="45" fill="url(#sound-glow)" stroke="#5F3824" stroke-width="4"></circle>
+            <circle cx="180" cy="512" r="35" stroke="#A96E42" stroke-width="1" stroke-dasharray="3 4" opacity="0.5"></circle>
+            <circle cx="180" cy="512" r="66" stroke="#8D4F2D" stroke-width="1" opacity="0.4"></circle>
+          </g>
+
+          <g data-graphic="bridge">
+            <rect x="122" y="646" width="116" height="23" rx="8" fill="#5A3928" stroke="#3A2418" stroke-width="2.5"></rect>
+            <rect x="132" y="653" width="96" height="5" rx="2.5" fill="#FFF0CE" opacity="0.9"></rect>
+            {[140, 156, 172, 188, 204, 220].map((x) => <circle cx={x} cy="663" r="1.7" fill="#F6E3C3" opacity="0.82"></circle>)}
+          </g>
+
+          <g data-graphic="soundboard">
+            <path d="M127 580c9 45 25 84 53 108" stroke="#FFF2D7" stroke-width="1" opacity="0.28" stroke-linecap="round"></path>
+            <path d="M233 580c-9 45-25 84-53 108" stroke="#FFF2D7" stroke-width="1" opacity="0.28" stroke-linecap="round"></path>
+          </g>
+
+          <g opacity="0.88">
+            <path d="m245 432 3.7 7.6 8.3 1.2-6 5.9 1.4 8.3-7.4-3.9-7.4 3.9 1.4-8.3-6-5.9 8.3-1.2 3.7-7.6Z" fill="#FFF2C4" opacity="0.65"></path>
+            <circle cx="117" cy="393" r="2.5" fill="#FFF2C4" opacity="0.55"></circle>
+            <path d="M246 596c8 0 14 6 14 14s-6 14-14 14-14-6-14-14 6-14 14-14Z" stroke="#FFF2C4" stroke-width="1" opacity="0.35"></path>
+          </g>
+        </g>
+      </svg>
+
+      {GUITAR_PARTS.map((part) => (
+        <button
+          class="hotspot"
+          type="button"
+          style={`left:${part.x}%;top:${part.y}%`}
+          data-anatomy-part={part.id}
+          data-name={part.name}
+          data-en={part.en}
+          data-short={part.short}
+          data-detail={part.detail}
+          data-n={part.n}
+          aria-label={`${part.n}. ${part.name}（${part.en}）`}
+          aria-pressed={part.id === first?.id ? "true" : "false"}
+        >
+          <span>{part.n}</span>
+        </button>
+      ))}
+    </div>
+    <span class="stage-hint"><Icon name="wand" size={13} /> 点一点琴上的数字</span>
+  </div>
+
+  <div class="part-panel card" data-part-panel aria-live="polite">
+    <div class="panel-top">
+      <span class="panel-number" data-panel-n>01</span>
+      <span class="panel-category"><Icon name="guitar" size={13} /> 吉他部位</span>
+    </div>
+    <h3 data-panel-name>{first?.name}</h3>
+    <p class="panel-en" data-panel-en>{first?.en}</p>
+    <p class="panel-short" data-panel-short>{first?.short}</p>
+    <p class="panel-detail" data-panel-detail>{first?.detail}</p>
+    <div class="panel-controls">
+      <button type="button" data-part-prev aria-label="上一个部位"><Icon name="arrow-right" size={15} class="flip" /></button>
+      <span class="panel-count"><span data-panel-index>1</span> / {GUITAR_PARTS.length}</span>
+      <button type="button" data-part-next aria-label="下一个部位"><Icon name="arrow-right" size={15} /></button>
+    </div>
+    <div class="panel-tip"><Icon name="lightbulb" size={14} /> 找到它以后，用手指轻轻指一指，再让家长说一遍名字。</div>
+  </div>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-anatomy]")!;
+  if (root) {
+    const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-anatomy-part]"));
+    const panelN = root.querySelector<HTMLElement>("[data-panel-n]");
+    const panelName = root.querySelector<HTMLElement>("[data-panel-name]");
+    const panelEn = root.querySelector<HTMLElement>("[data-panel-en]");
+    const panelShort = root.querySelector<HTMLElement>("[data-panel-short]");
+    const panelDetail = root.querySelector<HTMLElement>("[data-panel-detail]");
+    const panelIndex = root.querySelector<HTMLElement>("[data-panel-index]");
+    const panel = root.querySelector<HTMLElement>("[data-part-panel]");
+    let selected = 0;
+
+    function render(index: number): void {
+      const button = buttons[index];
+      if (!button) return;
+      selected = index;
+      buttons.forEach((item, itemIndex) => item.setAttribute("aria-pressed", String(itemIndex === index)));
+      const partId = button.dataset.anatomyPart;
+      root.querySelectorAll<SVGGElement>("[data-graphic]").forEach((graphic) => {
+        graphic.classList.toggle("is-active", graphic.dataset.graphic === partId);
+      });
+      if (panelN) panelN.textContent = String(index + 1).padStart(2, "0");
+      if (panelName) panelName.textContent = button.dataset.name ?? "";
+      if (panelEn) panelEn.textContent = button.dataset.en ?? "";
+      if (panelShort) panelShort.textContent = button.dataset.short ?? "";
+      if (panelDetail) panelDetail.textContent = button.dataset.detail ?? "";
+      if (panelIndex) panelIndex.textContent = String(index + 1);
+      if (panel) {
+        panel.animate(
+          [
+            { opacity: 0.55, transform: "translateY(5px)" },
+            { opacity: 1, transform: "translateY(0)" },
+          ],
+          { duration: 260, easing: "ease-out" },
+        );
+      }
+    }
+
+    buttons.forEach((button, index) => button.addEventListener("click", () => render(index)));
+    root.querySelector("[data-part-prev]")?.addEventListener("click", () => {
+      render((selected - 1 + buttons.length) % buttons.length);
+    });
+    root.querySelector("[data-part-next]")?.addEventListener("click", () => {
+      render((selected + 1) % buttons.length);
+    });
+    render(0);
+  }
+</script>
+
+<style>
+  .anatomy {
+    display: grid;
+    grid-template-columns: minmax(300px, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: clamp(26px, 5vw, 70px);
+  }
+
+  .guitar-stage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 660px;
+    padding: 22px 24px 43px;
+    border: 1.5px solid var(--line);
+    border-radius: 34px;
+    background:
+      radial-gradient(circle at 50% 34%, rgba(255, 216, 111, 0.16), transparent 30%),
+      radial-gradient(circle at 24% 78%, rgba(139, 114, 255, 0.13), transparent 32%),
+      var(--surface-2);
+    overflow: hidden;
+  }
+
+  .stage-halo {
+    position: absolute;
+    width: 76%;
+    aspect-ratio: 1;
+    border: 1px dashed var(--line-strong);
+    border-radius: 50%;
+    animation: halo-spin 42s linear infinite;
+  }
+
+  .stage-halo::before,
+  .stage-halo::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+  }
+
+  .stage-halo::before {
+    inset: 12%;
+  }
+
+  .stage-halo::after {
+    inset: 27%;
+  }
+
+  .guitar-wrap {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 310px);
+    aspect-ratio: 360 / 820;
+  }
+
+  .guitar-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .guitar-svg [data-graphic] {
+    transition: filter 260ms ease, opacity 260ms ease;
+  }
+
+  .guitar-svg [data-graphic].is-active {
+    filter: drop-shadow(0 0 7px rgba(255, 205, 87, 0.95));
+  }
+
+  .hotspot {
+    position: absolute;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    color: #38245f;
+    background: #fffaf0;
+    border: 2px solid var(--violet-600);
+    border-radius: 50%;
+    box-shadow: 0 3px 0 rgba(86, 58, 177, 0.2), 0 0 0 4px rgba(255, 250, 240, 0.75);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 800;
+    transform: translate(-50%, -50%);
+    transition: transform 160ms var(--ease), background 160ms ease, color 160ms ease;
+  }
+
+  .hotspot::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border: 1px solid rgba(116, 87, 242, 0.22);
+    border-radius: 50%;
+    animation: hotspot-pulse 3.8s ease-in-out infinite;
+  }
+
+  .hotspot:hover,
+  .hotspot[aria-pressed="true"] {
+    color: #3e2a0d;
+    background: #ffe08a;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+
+  .hotspot[aria-pressed="true"]::before {
+    border-color: rgba(224, 165, 37, 0.55);
+    animation-duration: 2s;
+  }
+
+  .hotspot:nth-of-type(2n)::before {
+    animation-delay: -1.2s;
+  }
+
+  .hotspot:nth-of-type(3n)::before {
+    animation-delay: -2.1s;
+  }
+
+  .stage-hint {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    background: var(--surface);
+    font-size: 9.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    transform: translateX(-50%);
+  }
+
+  .stage-hint .icon {
+    color: var(--sun-700);
+  }
+
+  .part-panel {
+    padding: clamp(24px, 3.4vw, 38px);
+    background:
+      radial-gradient(circle at 90% 4%, rgba(255, 216, 111, 0.16), transparent 25%),
+      var(--surface);
+  }
+
+  .panel-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .panel-number {
+    color: var(--violet-300);
+    font-family: var(--font-display);
+    font-size: 38px;
+    font-weight: 900;
+    line-height: 0.85;
+  }
+
+  .panel-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    color: var(--violet-700);
+    background: var(--violet-wash);
+    font-size: 9px;
+    font-weight: 850;
+  }
+
+  .part-panel h3 {
+    margin: 23px 0 1px;
+    color: var(--ink);
+    font-size: clamp(28px, 3.5vw, 39px);
+  }
+
+  .panel-en {
+    margin: 0;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .panel-short {
+    margin: 15px 0 8px;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 850;
+    line-height: 1.5;
+  }
+
+  .panel-detail {
+    min-height: 110px;
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    line-height: 1.8;
+  }
+
+  .panel-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 150px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .panel-controls button {
+    display: grid;
+    place-items: center;
+    width: 33px;
+    height: 33px;
+    padding: 0;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--surface-2);
+  }
+
+  .panel-controls button:hover {
+    color: var(--violet-700);
+    background: var(--violet-wash);
+  }
+
+  .panel-controls :global(.flip) {
+    transform: rotate(180deg);
+  }
+
+  .panel-count {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+  }
+
+  .panel-count span {
+    color: var(--violet-700);
+    font-weight: 800;
+  }
+
+  .panel-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-top: 18px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    color: var(--muted);
+    background: var(--sun-wash);
+    font-size: 10.5px;
+    line-height: 1.6;
+  }
+
+  .panel-tip .icon {
+    margin-top: 1px;
+    color: var(--sun-700);
+  }
+
+  @keyframes hotspot-pulse {
+    0%, 100% { transform: scale(0.88); opacity: 0.3; }
+    50% { transform: scale(1.08); opacity: 0.72; }
+  }
+
+  @keyframes halo-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @media (max-width: 900px) {
+    .anatomy {
+      grid-template-columns: 1fr;
+    }
+
+    .guitar-stage {
+      width: min(100%, 520px);
+      margin-inline: auto;
+      min-height: 640px;
+    }
+
+    .part-panel {
+      width: min(100%, 620px);
+      margin-inline: auto;
+    }
+  }
+
+  @media (max-width: 540px) {
+    .guitar-stage {
+      min-height: 560px;
+      padding: 20px 16px 40px;
+    }
+
+    .guitar-wrap {
+      width: min(100%, 245px);
+    }
+
+    .hotspot {
+      width: 27px;
+      height: 27px;
+      font-size: 9px;
+    }
+
+    .part-panel {
+      padding: 21px 19px;
+    }
+
+    .panel-detail {
+      min-height: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stage-halo,
+    .hotspot::before {
+      animation: none;
+    }
+  }
+</style>

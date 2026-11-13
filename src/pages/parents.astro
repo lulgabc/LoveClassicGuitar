@@ -1,0 +1,1620 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import SectionHead from "../components/SectionHead.astro";
+import MascotBubble from "../components/MascotBubble.astro";
+import Icon from "../components/Icon.astro";
+import { MILESTONES } from "../data/roadmap";
+import { url } from "../lib/url";
+
+const vitals = [
+  { value: "10–15", unit: "分钟", label: "每次练习的舒服长度", icon: "clock" as const },
+  { value: "3–5", unit: "次 / 周", label: "稳定比“每天”更现实", icon: "calendar" as const },
+  { value: "1", unit: "个重点", label: "一次只纠正一件事", icon: "check" as const },
+  { value: "0", unit: "次比较", label: "只和昨天的自己比", icon: "heart" as const },
+];
+
+const startCards = [
+  {
+    icon: "guitar" as const,
+    title: "琴：合身比“能用到长大”重要",
+    body: "7 岁常见 1/2 或 3/4 尺寸，但年龄只是参考。坐好后琴头大约到眼睛或肩膀高度，左臂能轻松够到第 1 品，琴身不挡脸。尼龙弦、合适的弦距，比品牌和价格更影响第一年的体验。",
+    note: "不要为了“多用几年”买全尺寸。过大的琴会逼出坏姿势，也可能让孩子以为“我不适合弹琴”。",
+  },
+  {
+    icon: "users" as const,
+    title: "老师：一双能看见细节的眼睛",
+    body: "视频可以教知识，但很难看见孩子的手腕是不是紧、琴是不是滑、按弦有没有碰到旁边的弦。一个好的启蒙老师会先看姿势、放松和声音，而不是急着让你买教材、考级或弹很难的曲子。",
+    note: "不需要每天上课。稳定的一周一次或两周一次，配合清晰的家庭练习，通常比“想起来才上一次”更有效。",
+  },
+  {
+    icon: "heart" as const,
+    title: "期待：第一年，先喜欢上这件乐器",
+    body: "音乐学习不是直线。孩子可能这周很爱弹，下周只想听。7 岁的手还在发育，注意力也短。能完整弹一首短曲、能听出自己有没有弹错、愿意在家里表演，都是很真实的进步。",
+    note: "不要用“别人家孩子几岁考几级”当坐标。每个孩子的身体、兴趣和家庭节奏都不同。",
+  },
+];
+
+const practiceSteps = [
+  { time: "2 分钟", title: "坐好，听空弦", body: "不急着按弦。每根弦拨 4 次，听声音从响到消失。" },
+  { time: "4 分钟", title: "一个技术小任务", body: "i–m 交替、左手落指或靠弦。只做一个小目标。" },
+  { time: "6 分钟", title: "曲子慢练", body: "只练最难的 2–4 小节。连续弹对 3 次，再往前接。" },
+  { time: "3 分钟", title: "完整弹一遍 / 听一首", body: "让音乐完整地发生一次。结束在好听的地方，而不是错误上。" },
+];
+
+const sayInstead = [
+  { avoid: "“你怎么又弹错了？”", instead: "“我们看看是哪一小节卡住了。”" },
+  { avoid: "“别人都学到第几级了。”", instead: "“今天的低音比上周稳了。”" },
+  { avoid: "“再弹十遍！”", instead: "“这一小段连续对三次，我们就休息。”" },
+  { avoid: "“你怎么一点都不想练？”", instead: "“今天想先听一首，还是先弹一根空弦？”" },
+  { avoid: "“手型又塌了！”", instead: "把老师说的一个要点变成一个游戏，例如“指尖站小山”。" },
+];
+
+const motivation = [
+  { title: "两分钟规则", body: "不想练时，只约定“坐下来两分钟”。通常开始后，孩子会愿意多弹一会儿；两分钟到了也可以真的停。" },
+  { title: "给她选择", body: "“先练空弦还是先练曲子？”“今天弹给水豚听还是给爸爸听？”选择感会减少对抗。" },
+  { title: "换成听、唱、画", body: "不碰琴也算音乐时间。听一首曲子、画出旋律、跟着打拍子，都能保持连接。" },
+  { title: "邀请一位观众", body: "毛绒玩具、家里的猫、视频通话里的爷爷奶奶都可以是观众。演出感会让练习有目的。" },
+  { title: "别用奖励绑架", body: "“弹完就有糖”会把音乐变成交换。可以庆祝努力，但不要让孩子觉得只有换到礼物才值得弹。" },
+  { title: "检查身体和环境", body: "累、饿、琴太大、弦太高、房间太吵，都会让练习变难。先排除这些，再谈“毅力”。" },
+  { title: "允许停一天", body: "休息不会让音乐跑掉。真正需要警惕的是长期焦虑、疼痛和恐惧，而不是某一天不想弹。" },
+  { title: "把错误变成寻宝", body: "让孩子当“声音侦探”，找出哪里不一样。错误不再是“被批评”，而是下一个线索。" },
+];
+
+const teacherQuestions = [
+  "您主要教古典吉他吗？会教 6–8 岁的孩子吗？",
+  "第一节课会检查琴的尺寸、弦距和坐姿吗？",
+  "如果孩子手疼或姿势不舒服，通常怎么处理？",
+  "您希望我们每周练几次、每次多久？会不会给家长清晰的练习说明？",
+  "可以使用什么教材？为什么选它？有免费或图书馆能借的替代吗？",
+  "家长可以旁听或录音吗？如果不能，怎样知道孩子在家练得对不对？",
+  "您怎样看待考级、比赛和表演？如果孩子只想慢慢学，可以吗？",
+  "孩子弹错或不想练时，您通常怎么反馈？",
+  "是否有机会参加小型合奏、学生音乐会或家庭演出？",
+  "如果孩子和老师不合适，怎样沟通换老师或暂停？",
+];
+
+const redFlags = [
+  "让孩子忍着明显的疼痛继续弹，或把“疼”当成不努力。",
+  "只用考级、比赛和排名评价孩子，忽略声音、姿势和兴趣。",
+  "不允许家长提问，也不解释为什么这样练。",
+  "第一节课就要求买昂贵设备、参加很多付费项目。",
+  "课堂缺少安全检查和放松提醒，只强调“多练、再用力”。",
+  "孩子长期害怕上课、出现明显焦虑或身体不适，却被要求坚持。",
+];
+
+const privacyPoints = [
+  "本站没有账号、登录、评论、广告或访问统计，不主动收集姓名、邮箱和设备信息。",
+  "名字、任务勾选和练习记录只保存在浏览器的 localStorage 中，换设备或清理浏览器数据后会消失。",
+  "YouTube 视频默认不加载；点击播放后会连接 YouTube 的隐私增强播放器。外部链接会离开本站。",
+  "请不要在公开网络上传孩子的正脸、学校、住址、课表或练琴视频，除非你已认真考虑隐私并取得孩子同意。",
+  "视频平台可能有广告、评论和自动推荐。建议家长先预览，开启儿童模式，并避免把自动播放当作“陪练”。",
+  "本站内容是学习与陪伴参考，不替代专业老师、医生或心理支持。出现持续疼痛、麻木或焦虑时，请寻求专业帮助。",
+];
+
+const faqs = [
+  {
+    q: "7 岁开始学古典吉他，会不会太晚或太早？",
+    a: "7 岁是常见的启蒙年龄之一，但关键是注意力、手指条件和兴趣，不是生日。能安静坐 10 分钟、愿意听指令、手能抱住合适的琴，就可以开始。更小也可以用游戏和听音乐启蒙，不必急着按弦。",
+  },
+  {
+    q: "每天都必须练吗？",
+    a: "不必。每周 3–5 次、每次 10–15 分钟，通常足以建立习惯。练习频率比单次时长更重要，但休息、生病和家庭安排都应该被允许。",
+  },
+  {
+    q: "一定要找老师吗？可以看视频自学吗？",
+    a: "视频适合补充和激发兴趣，但初学者非常需要有人检查琴的尺寸、姿势、手型和声音。至少找老师做几次入门检查，或定期上一次课，会更安全。",
+  },
+  {
+    q: "手指疼是正常的吗？",
+    a: "初期指尖可能有轻微压痛，但不应该出现刺痛、麻木、关节痛或持续疼痛。检查琴弦高度、按弦位置和练习时长；如果疼痛持续，请暂停并让老师或有经验的琴行检查，必要时咨询专业人士。",
+  },
+  {
+    q: "家长不懂音乐，能陪练吗？",
+    a: "能。你不需要纠正手型，只要帮孩子调好音、留出时间、听她弹完、夸具体细节。老师负责技术，家长负责环境和情绪，这已经是很大的支持。",
+  },
+  {
+    q: "什么时候可以买更大的琴？",
+    a: "不要按年龄盲目升级。看孩子坐好后左臂是否仍能轻松够到第 1 品、琴身是否挡住视线、手指是否能舒服地按弦。每次换琴都请老师或有经验的琴行检查。",
+  },
+  {
+    q: "要不要考级？",
+    a: "考级可以提供目标和曲目库，但不是必需品。如果它会带来持续焦虑、跳过基础或牺牲兴趣，就不值得。先和老师讨论孩子为什么学琴，再决定。",
+  },
+  {
+    q: "孩子想放弃，应该坚持吗？",
+    a: "先区分“今天不想练”和“持续不快乐”。前者可以用两分钟规则、换材料、休息来处理；后者要认真听孩子的感受，检查老师、琴、身体和压力来源。放弃一项活动不等于失败，强迫也可能伤害亲子关系。",
+  },
+];
+---
+
+<BaseLayout
+  title="给爸爸妈妈"
+  description="给琴童家长的古典吉他陪伴指南：怎样选琴、找老师、安排 15 分钟练习、面对不想练、保护隐私与听力安全。"
+>
+  <PageHero
+    kicker="For grown-ups · 给爸爸妈妈"
+    title="你不需要懂吉他，<br />也能陪她<em>走很远</em>。"
+    lead="7 岁学琴，最珍贵的不是进度，是她还愿意坐下来，和琴待一会儿。这里有一份不焦虑的陪伴指南，也有需要认真对待的安全边界。"
+  >
+    <div class="slug">
+      <a href="#start">开始之前</a>
+      <a href="#daily">每天怎么陪</a>
+      <a href="#teacher">找老师</a>
+      <a href="#milestones">里程碑</a>
+      <a href="#privacy">隐私与安全</a>
+    </div>
+  </PageHero>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="vitals-grid">
+        {
+          vitals.map((vital) => (
+            <div class="vital-card card">
+              <span class="vital-icon"><Icon name={vital.icon} size={19} /></span>
+              <div><strong>{vital.value}<small>{vital.unit}</small></strong><p>{vital.label}</p></div>
+            </div>
+          ))
+        }
+      </div>
+      <div class="parent-manifesto">
+        <span class="manifesto-mark">“</span>
+        <p>陪练不是监工。你是帮她调好音的人、在她弹完时还在听的人、告诉她“慢慢来也没关系”的人。</p>
+        <span class="manifesto-heart"><Icon name="heart" size={18} /></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="start">
+    <div class="container">
+      <SectionHead
+        kicker="01 · Before you start"
+        title="开始之前，先把<em>三件事</em>放好"
+        lead="合适的琴、合适的人、合适的期待。它们比“买最贵的教材”更能决定孩子能不能长期喜欢音乐。"
+      />
+      <div class="start-grid">
+        {
+          startCards.map((card, index) => (
+            <article class="start-card card">
+              <span class="start-number">{String(index + 1).padStart(2, "0")}</span>
+              <span class="start-icon"><Icon name={card.icon} size={22} /></span>
+              <h3>{card.title}</h3>
+              <p>{card.body}</p>
+              <div class="start-note"><Icon name="lightbulb" size={13} /> {card.note}</div>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="size-guide">
+        <div class="size-copy">
+          <span class="mini-kicker">Instrument fit</span>
+          <h3>一个非常粗略的尺寸参考</h3>
+          <p>下面只是常见范围，不能代替试琴。每个孩子的身高、臂长和坐姿不同，琴的桶型也不同。</p>
+        </div>
+        <div class="size-table">
+          <div><strong>1/2</strong><span>约 5–8 岁</span><small>常见入门尺寸，仍要试抱</small></div>
+          <div><strong>3/4</strong><span>约 8–11 岁</span><small>不是“越大越好”</small></div>
+          <div><strong>4/4</strong><span>约 11 岁+</span><small>以坐姿和臂长为准</small></div>
+        </div>
+        <p class="size-caveat"><Icon name="info" size={14} /> 如果坐好后必须伸长左臂、琴身挡住下巴，或右手肘耸得很高，这很可能不是合适尺寸。请老师或琴行帮忙看一次。</p>
+      </div>
+
+      <div class="first-lesson">
+        <div class="first-lesson-head"><span class="mini-kicker">The first lessons</span><h3>第一节到第四节课，通常会发生什么？</h3></div>
+        <div class="first-lesson-steps">
+          <div><span>01</span><p>认识琴、坐姿、脚凳和放松，不急着弹很难的东西。</p></div>
+          <div><span>02</span><p>空弦、右手拨弦、听声音，可能连谱子都还没有翻开。</p></div>
+          <div><span>03</span><p>第一个音、第一个节奏，老师开始示范“怎样听自己”。</p></div>
+          <div><span>04</span><p>一条短旋律或小练习，开始有可以带回家的目标。</p></div>
+        </div>
+        <p class="first-lesson-note">如果老师第一节课就让孩子长时间按弦、追求声音很大，或完全不看姿势，值得再观察一下。好的开头通常是慢的。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="daily">
+    <div class="container">
+      <SectionHead
+        kicker="02 · The daily 15"
+        title="每天 15 分钟，<em>怎么陪</em>？"
+        lead="不用坐在旁边盯着每个手指。把练习变成一个有开始、有结束的小仪式，孩子会更容易自己走进去。"
+      />
+      <div class="daily-layout">
+        <div class="daily-timeline">
+          {practiceSteps.map((step, index) => (
+            <article class="daily-step">
+              <span class="daily-time">{step.time}</span>
+              <span class="daily-dot">{index + 1}</span>
+              <div><h3>{step.title}</h3><p>{step.body}</p></div>
+            </article>
+          ))}
+        </div>
+        <aside class="daily-side card">
+          <span class="mini-kicker">Parent script</span>
+          <h3>陪练时，换一种说法</h3>
+          <div class="say-list">
+            {
+              sayInstead.map((item) => (
+                <div class="say-item">
+                  <span class="say-avoid">✕ {item.avoid}</span>
+                  <span class="say-instead">✓ {item.instead}</span>
+                </div>
+              ))
+            }
+          </div>
+          <div class="daily-side-note">
+            <Icon name="info" size={14} />
+            <p>除非老师特别交代，家长不需要自己纠正手型。你最了解孩子，但技术细节交给老师，避免家里出现两个互相矛盾的标准。</p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="ritual-box">
+        <div class="ritual-head"><Icon name="sparkle" size={19} /><h3>一个可复制的“练琴仪式”</h3></div>
+        <div class="ritual-steps">
+          <span>调好音</span><i>→</i><span>喝口水</span><i>→</i><span>说今天的一个小目标</span><i>→</i><span>15 分钟</span><i>→</i><span>完整弹一次</span><i>→</i><span>收琴、击掌</span>
+        </div>
+        <p>仪式越固定，孩子越不需要每天重新决定“要不要练”。但仪式不是铁律，偶尔打破也没关系。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="motivation">
+    <div class="container">
+      <SectionHead
+        kicker="03 · When practice gets hard"
+        title="当她说“<em>我不想练</em>”"
+        lead="先别把这句话当成挑战。它可能只是累了、难了、想被看见，或者今天真的需要休息。"
+      />
+      <div class="motivation-grid">
+        {
+          motivation.map((item, index) => (
+            <article class="motivation-card card">
+              <span class="motivation-index">{String(index + 1).padStart(2, "0")}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))
+        }
+      </div>
+      <div class="motivation-note">
+        <MascotBubble who="capi" text="如果孩子连续几周都害怕练琴，先停下来听她说。音乐应该让她更像自己，而不是更怕犯错。" tone="pink" />
+        <a class="btn btn-ghost" href="#privacy">看看屏幕与安全建议 <Icon name="arrow-right" size={13} /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="teacher">
+    <div class="container">
+      <SectionHead
+        kicker="04 · Finding a teacher"
+        title="怎样找到一个<em>合适的老师</em>"
+        lead="不是找“最厉害”的老师，而是找能看见你孩子、能把要求说清楚、愿意和家长合作的老师。"
+      />
+      <div class="teacher-layout">
+        <div class="teacher-questions card">
+          <div class="teacher-card-head"><span class="mini-kicker">Ask these</span><h3>试课时可以问的 10 个问题</h3></div>
+          <ol>{teacherQuestions.map((question) => <li>{question}</li>)}</ol>
+        </div>
+        <aside class="teacher-side">
+          <div class="red-flag-card">
+            <div class="red-flag-head"><span class="red-flag-icon"><Icon name="shield" size={19} /></span><div><span class="mini-kicker">Careful</span><h3>需要警惕的信号</h3></div></div>
+            <ul>{redFlags.map((flag) => <li><Icon name="close" size={12} /> {flag}</li>)}</ul>
+          </div>
+          <div class="teacher-tip">
+            <Icon name="lightbulb" size={15} />
+            <p><strong>试课不只看老师弹得多好。</strong>看老师有没有先问孩子的名字、有没有蹲下来听她说话、有没有在纠正前先示范和鼓励。</p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="where-teacher">
+        <h3>去哪里找线索？</h3>
+        <div class="where-grid">
+          <div><Icon name="users" size={17} /><strong>音乐学校 / 琴行</strong><p>优先问是否有古典吉他专门的老师，而不是所有吉他都用同一套教法。</p></div>
+          <div><Icon name="music" size={17} /><strong>音乐学院 / 大学生</strong><p>古典吉他专业的学生可能更愿意教初学者，费用也相对友好。试课前确认教学经验。</p></div>
+          <div><Icon name="heart" size={17} /><strong>家长口碑</strong><p>问其他琴童家长“老师是否让孩子害怕”“是否允许提问”，比只问考了几级更有用。</p></div>
+          <div><Icon name="headphones" size={17} /><strong>线上课</strong><p>可以作为补充，但对 7 岁孩子，设备和机位要求高。初次入门仍建议至少有一次线下姿势检查。</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="milestones">
+    <div class="container">
+      <SectionHead
+        kicker="05 · What progress looks like"
+        title="进步，不一定长成<em>一张证书</em>"
+        lead="下面是大致节奏，不是截止日期。更重要的，是那些看起来很小、但会留下来的变化。"
+      />
+      <div class="parent-milestones">
+        {
+          MILESTONES.map((milestone, index) => (
+            <article class="parent-milestone">
+              <span class="pm-dot">{index + 1}</span>
+              <span class="pm-when">{milestone.when}</span>
+              <p>{milestone.what}</p>
+            </article>
+          ))
+        }
+      </div>
+      <div class="progress-signs">
+        <div class="signs-copy">
+          <span class="mini-kicker">Real signs of growth</span>
+          <h3>比级别更值得高兴的 6 个信号</h3>
+          <p>如果看到这些，说明音乐正在真正进入孩子的生活。</p>
+        </div>
+        <ul>
+          <li><Icon name="check" size={14} /> 她能在弹错后继续，而不是立刻崩溃或从头再来。</li>
+          <li><Icon name="check" size={14} /> 她会主动说“你听这个”，或给毛绒玩具演奏。</li>
+          <li><Icon name="check" size={14} /> 她开始听出低音、旋律、快慢和强弱的不同。</li>
+          <li><Icon name="check" size={14} /> 她能自己坐好、调好脚凳，知道怎样让手放松。</li>
+          <li><Icon name="check" size={14} /> 她有一首自己真正喜欢的曲子，而不只是作业。</li>
+          <li><Icon name="check" size={14} /> 练完琴，她还有力气笑，愿意明天再来。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="privacy">
+    <div class="container">
+      <SectionHead
+        kicker="06 · Safety, privacy & screens"
+        title="屏幕、耳朵和<em>小小身体</em>"
+        lead="我们希望这个网站是一个安全的起点。下面这些事，比练到第几首曲子更重要。"
+      />
+      <div class="privacy-layout">
+        <div class="privacy-list">
+          {privacyPoints.map((point, index) => <div class="privacy-item"><span>{String(index + 1).padStart(2, "0")}</span><p>{point}</p></div>)}
+        </div>
+        <aside class="privacy-side">
+          <div class="parent-checklist card">
+            <div class="checklist-head"><span>WEEKLY PARENT CHECK</span><h3>本周只做 4 件小事</h3></div>
+            <label class="parent-check-item"><input type="checkbox" data-parent-check="listen" /><span class="parent-check-box"><Icon name="check" size={12} /></span><span>完整听孩子弹一首，不中途打断。</span></label>
+            <label class="parent-check-item"><input type="checkbox" data-parent-check="praise" /><span class="parent-check-box"><Icon name="check" size={12} /></span><span>夸一个具体的细节，而不是只说“真棒”。</span></label>
+            <label class="parent-check-item"><input type="checkbox" data-parent-check="posture" /><span class="parent-check-box"><Icon name="check" size={12} /></span><span>检查一次琴的高度、坐姿和手是否舒服。</span></label>
+            <label class="parent-check-item"><input type="checkbox" data-parent-check="rest" /><span class="parent-check-box"><Icon name="check" size={12} /></span><span>留一天只听音乐，不碰琴。</span></label>
+            <div class="parent-check-status"><Icon name="heart" size={13} /><span data-parent-check-status>0 / 4 件小事</span></div>
+          </div>
+          <div class="privacy-link-card">
+            <Icon name="printer" size={20} />
+            <h3>打印一张练习卡</h3>
+            <p>不用屏幕计时，也可以把练习变成看得见的一周。</p>
+            <a class="btn btn-secondary btn-sm" href={url("/print/weekly/")}>打开可打印页面</a>
+          </div>
+        </aside>
+      </div>
+      <div class="hearing-note">
+        <span class="hearing-icon"><Icon name="volume" size={21} /></span>
+        <div><h3>耳朵是一次性的礼物</h3><p>耳机音量不超过舒服的 60%，每 20–30 分钟休息。不要在很吵的环境里把音量越调越大。孩子说耳朵疼、耳鸣或听不清时，立刻停止并告诉大人。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq">
+    <div class="container">
+      <SectionHead
+        kicker="Parent FAQ"
+        title="那些不太好意思问的<em>问题</em>"
+        lead="没有“太基础”的问题。每个家庭都会遇到，只是大家不一定说出来。"
+      />
+      <div class="parent-faq">
+        {
+          faqs.map((faq, index) => (
+            <details open={index === 0}>
+              <summary><span>{String(index + 1).padStart(2, "0")}</span>{faq.q}<Icon name="chevron-down" size={17} /></summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+      <p class="medical-note"><Icon name="info" size={14} /> 本站内容为一般性学习建议，不构成医疗、心理或专业教学意见。若孩子有持续疼痛、听力不适、焦虑或发育相关疑问，请咨询相应专业人士。</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container parents-bottom">
+      <div><span class="eyebrow"><Icon name="heart" size={13} /> 你已经在做很重要的事</span><h2>陪她慢慢来，<br />就是最好的“天赋”。</h2></div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href={url("/roadmap/")}>看看学习地图 <Icon name="arrow-right" size={14} /></a>
+        <a class="btn btn-ghost" href={url("/print/weekly/")}><Icon name="printer" size={14} /> 打印练习卡</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const STORAGE_KEY = "lcg.parentCheck.v1";
+  const checks = Array.from(document.querySelectorAll<HTMLInputElement>("[data-parent-check]"));
+  const status = document.querySelector<HTMLElement>("[data-parent-check-status]");
+
+  function read(): string[] {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function update(): void {
+    const done = checks.filter((check) => check.checked).length;
+    if (status) status.textContent = done === checks.length ? "这周已经做得很好了，剩下的交给音乐。" : `${done} / ${checks.length} 件小事`;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(checks.filter((check) => check.checked).map((check) => check.dataset.parentCheck)));
+    } catch {
+      // Storage is optional; the checklist still works in this session.
+    }
+  }
+
+  const saved = read();
+  checks.forEach((check) => {
+    check.checked = saved.includes(check.dataset.parentCheck ?? "");
+    check.addEventListener("change", update);
+  });
+  update();
+</script>
+
+<style>
+  .slug {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .slug a {
+    display: inline-flex;
+    padding: 5px 9px;
+    color: #d7caf4;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 9.5px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .slug a:hover {
+    color: #fff1c9;
+    background: rgba(255, 216, 111, 0.1);
+  }
+
+  .vitals-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .vital-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px;
+    box-shadow: none;
+  }
+
+  .vital-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 35px;
+    width: 35px;
+    height: 35px;
+    color: var(--violet-700);
+    border-radius: 11px;
+    background: var(--violet-wash);
+  }
+
+  .vital-card strong {
+    color: var(--violet-700);
+    font-family: var(--font-display);
+    font-size: 21px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .vital-card strong small {
+    margin-left: 2px;
+    color: var(--faint);
+    font-family: var(--font-body);
+    font-size: 7px;
+    font-weight: 650;
+  }
+
+  .vital-card p {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 9.5px;
+    line-height: 1.45;
+  }
+
+  .parent-manifesto {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-top: 12px;
+    padding: 16px 20px;
+    border-radius: 15px;
+    background: var(--sun-wash);
+    overflow: hidden;
+  }
+
+  .manifesto-mark {
+    color: var(--sun-700);
+    font-family: Georgia, serif;
+    font-size: 40px;
+    line-height: 0.8;
+    opacity: 0.55;
+  }
+
+  .parent-manifesto p {
+    flex: 1;
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.65;
+  }
+
+  .manifesto-heart {
+    color: var(--sun-700);
+  }
+
+  .start-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 13px;
+  }
+
+  .start-card {
+    position: relative;
+    padding: 21px 19px;
+    background: var(--surface);
+  }
+
+  .start-number {
+    position: absolute;
+    right: 17px;
+    top: 15px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 8px;
+  }
+
+  .start-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    color: var(--violet-700);
+    border-radius: 14px;
+    background: var(--violet-wash);
+  }
+
+  .start-card h3 {
+    margin: 15px 0 7px;
+    color: var(--ink);
+    font-size: 16px;
+  }
+
+  .start-card > p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 11.5px;
+    line-height: 1.72;
+  }
+
+  .start-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    margin-top: 11px;
+    padding-top: 9px;
+    border-top: 1px dashed var(--line);
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.6;
+  }
+
+  .start-note .icon {
+    margin-top: 1px;
+    color: var(--sun-700);
+  }
+
+  .mini-kicker {
+    display: block;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .size-guide {
+    display: grid;
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+    gap: 19px;
+    margin-top: 15px;
+    padding: 20px;
+    border: 1.5px dashed var(--line-strong);
+    border-radius: var(--radius);
+    align-items: center;
+  }
+
+  .size-copy h3 {
+    margin: 3px 0 5px;
+    color: var(--ink);
+    font-size: 18px;
+  }
+
+  .size-copy p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .size-table {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .size-table > div {
+    padding: 10px;
+    border-radius: 10px;
+    background: var(--surface);
+    text-align: center;
+  }
+
+  .size-table strong {
+    display: block;
+    color: var(--violet-700);
+    font-family: var(--font-display);
+    font-size: 23px;
+    line-height: 1;
+  }
+
+  .size-table span {
+    display: block;
+    margin-top: 4px;
+    color: var(--ink);
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+
+  .size-table small {
+    display: block;
+    margin-top: 2px;
+    color: var(--faint);
+    font-size: 8.5px;
+    line-height: 1.35;
+  }
+
+  .size-caveat {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.6;
+  }
+
+  .size-caveat .icon {
+    margin-top: 1px;
+    color: var(--sun-700);
+  }
+
+  .first-lesson {
+    margin-top: 15px;
+    padding: 21px;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .first-lesson-head h3 {
+    margin: 3px 0 0;
+    color: var(--ink);
+    font-size: 19px;
+  }
+
+  .first-lesson-steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .first-lesson-steps > div {
+    padding: 12px;
+    border-radius: 11px;
+    background: var(--surface-2);
+  }
+
+  .first-lesson-steps span {
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+  }
+
+  .first-lesson-steps p {
+    margin: 5px 0 0;
+    color: var(--ink-soft);
+    font-size: 10.5px;
+    line-height: 1.65;
+  }
+
+  .first-lesson-note {
+    margin: 13px 0 0;
+    color: var(--faint);
+    font-size: 10px;
+    line-height: 1.6;
+  }
+
+  .daily-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(290px, 0.9fr);
+    gap: 23px;
+    align-items: start;
+  }
+
+  .daily-timeline {
+    position: relative;
+    display: grid;
+    gap: 0;
+  }
+
+  .daily-timeline::before {
+    content: "";
+    position: absolute;
+    left: 57px;
+    top: 17px;
+    bottom: 17px;
+    width: 2px;
+    background-image: linear-gradient(180deg, var(--violet-300) 50%, transparent 50%);
+    background-size: 2px 10px;
+  }
+
+  .daily-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 60px 22px minmax(0, 1fr);
+    align-items: start;
+    gap: 12px;
+    padding: 10px 0;
+  }
+
+  .daily-time {
+    padding-top: 3px;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+    text-align: right;
+  }
+
+  .daily-dot {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    color: #fff;
+    border: 3px solid var(--bg);
+    border-radius: 50%;
+    background: var(--violet-600);
+    font-family: var(--font-mono);
+    font-size: 7px;
+    font-weight: 800;
+    box-shadow: 0 0 0 3px var(--violet-wash);
+  }
+
+  .daily-step h3 {
+    margin: 0 0 3px;
+    color: var(--ink);
+    font-size: 13px;
+  }
+
+  .daily-step p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11.5px;
+    line-height: 1.65;
+  }
+
+  .daily-side {
+    padding: 20px;
+    background: var(--surface);
+  }
+
+  .daily-side h3 {
+    margin: 3px 0 12px;
+    color: var(--ink);
+    font-size: 18px;
+  }
+
+  .say-list {
+    display: grid;
+    gap: 8px;
+  }
+
+  .say-item {
+    display: grid;
+    gap: 2px;
+    padding-bottom: 7px;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .say-avoid {
+    color: var(--muted);
+    font-size: 9.5px;
+    line-height: 1.5;
+    text-decoration: line-through;
+    text-decoration-color: rgba(255, 139, 123, 0.55);
+  }
+
+  .say-instead {
+    color: var(--ink);
+    font-size: 10.5px;
+    font-weight: 650;
+    line-height: 1.55;
+  }
+
+  .daily-side-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin-top: 13px;
+    padding: 9px 10px;
+    border-radius: 9px;
+    background: var(--sun-wash);
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.6;
+  }
+
+  .daily-side-note .icon {
+    margin-top: 1px;
+    color: var(--sun-700);
+  }
+
+  .daily-side-note p {
+    margin: 0;
+  }
+
+  .ritual-box {
+    margin-top: 17px;
+    padding: 19px;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .ritual-head {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .ritual-head .icon {
+    color: var(--sun-700);
+  }
+
+  .ritual-head h3 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 16px;
+  }
+
+  .ritual-steps {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 13px;
+  }
+
+  .ritual-steps span {
+    padding: 5px 9px;
+    color: var(--violet-700);
+    border: 1px solid var(--violet-300);
+    border-radius: 999px;
+    background: var(--violet-wash);
+    font-size: 8px;
+    font-weight: 750;
+  }
+
+  .ritual-steps i {
+    color: var(--faint);
+    font-style: normal;
+    font-size: 10px;
+  }
+
+  .ritual-box > p {
+    margin: 10px 0 0;
+    color: var(--faint);
+    font-size: 10px;
+    line-height: 1.6;
+  }
+
+  .motivation-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .motivation-card {
+    padding: 16px;
+    background: var(--surface);
+  }
+
+  .motivation-index {
+    color: var(--violet-700);
+    font-family: var(--font-display);
+    font-size: 23px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .motivation-card h3 {
+    margin: 9px 0 5px;
+    color: var(--ink);
+    font-size: 12.5px;
+  }
+
+  .motivation-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .motivation-note {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 17px;
+  }
+
+  .motivation-note :global(.mascot-bubble) {
+    flex: 1;
+  }
+
+  .teacher-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+    gap: 15px;
+    align-items: start;
+  }
+
+  .teacher-questions {
+    padding: 22px;
+    background: var(--surface);
+  }
+
+  .teacher-card-head h3 {
+    margin: 3px 0 0;
+    color: var(--ink);
+    font-size: 19px;
+  }
+
+  .teacher-questions ol {
+    display: grid;
+    gap: 8px;
+    margin: 17px 0 0;
+    padding-left: 1.5em;
+  }
+
+  .teacher-questions li {
+    color: var(--ink-soft);
+    font-size: 11.5px;
+    line-height: 1.65;
+    padding-left: 2px;
+  }
+
+  .teacher-questions li::marker {
+    color: var(--violet-500);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+  }
+
+  .teacher-side {
+    display: grid;
+    gap: 11px;
+  }
+
+  .red-flag-card {
+    padding: 19px;
+    border: 1.5px solid rgba(255, 139, 123, 0.3);
+    border-radius: var(--radius);
+    background: var(--coral-wash);
+  }
+
+  .red-flag-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .red-flag-icon {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    color: #963f35;
+    border-radius: 11px;
+    background: var(--coral-200);
+  }
+
+  .red-flag-head h3 {
+    margin: 2px 0 0;
+    color: var(--ink);
+    font-size: 16px;
+  }
+
+  .red-flag-card ul {
+    display: grid;
+    gap: 6px;
+    margin: 13px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .red-flag-card li {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    color: var(--ink-soft);
+    font-size: 10.5px;
+    line-height: 1.6;
+  }
+
+  .red-flag-card li .icon {
+    margin-top: 1px;
+    color: var(--coral-500);
+  }
+
+  .teacher-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 12px 13px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 11px;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.65;
+  }
+
+  .teacher-tip .icon {
+    margin-top: 1px;
+    color: var(--sun-700);
+  }
+
+  .teacher-tip p {
+    margin: 0;
+  }
+
+  .teacher-tip strong {
+    color: var(--ink);
+  }
+
+  .where-teacher {
+    margin-top: 16px;
+    padding: 20px;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .where-teacher h3 {
+    margin: 0 0 10px;
+    color: var(--ink);
+    font-size: 16px;
+  }
+
+  .where-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .where-grid > div {
+    padding: 11px;
+    border-radius: 10px;
+    background: var(--surface-2);
+  }
+
+  .where-grid .icon {
+    color: var(--violet-700);
+  }
+
+  .where-grid strong {
+    display: block;
+    margin-top: 6px;
+    color: var(--ink);
+    font-size: 9.5px;
+    line-height: 1.4;
+  }
+
+  .where-grid p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 9.5px;
+    line-height: 1.6;
+  }
+
+  .parent-milestones {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .parent-milestone {
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: var(--surface);
+  }
+
+  .pm-dot {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    color: #fff;
+    border-radius: 50%;
+    background: var(--violet-600);
+    font-family: var(--font-mono);
+    font-size: 7px;
+    font-weight: 800;
+  }
+
+  .pm-when {
+    display: block;
+    margin-top: 10px;
+    color: var(--violet-700);
+    font-size: 9px;
+    font-weight: 850;
+  }
+
+  .parent-milestone p {
+    margin: 4px 0 0;
+    color: var(--ink-soft);
+    font-size: 10.5px;
+    line-height: 1.7;
+  }
+
+  .progress-signs {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 22px;
+    align-items: start;
+    margin-top: 16px;
+    padding: 21px;
+    border-radius: var(--radius);
+    background: var(--sun-wash);
+    border: 1px solid rgba(219, 169, 54, 0.25);
+  }
+
+  .signs-copy h3 {
+    margin: 3px 0 5px;
+    color: var(--ink);
+    font-size: 18px;
+  }
+
+  .signs-copy p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.65;
+  }
+
+  .progress-signs ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .progress-signs li {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    color: var(--ink-soft);
+    font-size: 10.5px;
+    line-height: 1.6;
+  }
+
+  .progress-signs li .icon {
+    margin-top: 1px;
+    color: var(--sun-700);
+  }
+
+  .privacy-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+    gap: 18px;
+    align-items: start;
+  }
+
+  .privacy-list {
+    display: grid;
+    gap: 8px;
+  }
+
+  .privacy-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 11px 13px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: var(--surface);
+  }
+
+  .privacy-item span {
+    color: var(--violet-600);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 1.8;
+  }
+
+  .privacy-item p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 10.5px;
+    line-height: 1.65;
+  }
+
+  .privacy-side {
+    display: grid;
+    gap: 11px;
+  }
+
+  .parent-checklist {
+    padding: 19px;
+    background: var(--surface);
+  }
+
+  .checklist-head h3 {
+    margin: 3px 0 11px;
+    color: var(--ink);
+    font-size: 17px;
+  }
+
+  .parent-check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    padding: 7px 0;
+    color: var(--ink-soft);
+    border-bottom: 1px dashed var(--line);
+    font-size: 10.5px;
+    line-height: 1.55;
+    cursor: pointer;
+  }
+
+  .parent-check-item input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .parent-check-box {
+    display: grid;
+    place-items: center;
+    flex: 0 0 19px;
+    width: 19px;
+    height: 19px;
+    color: transparent;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 6px;
+    background: var(--surface-2);
+    transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+  }
+
+  .parent-check-item input:focus-visible + .parent-check-box {
+    outline: 3px solid var(--sun-500);
+    outline-offset: 2px;
+  }
+
+  .parent-check-item input:checked + .parent-check-box {
+    color: #fff;
+    border-color: var(--mint-500);
+    background: var(--mint-500);
+  }
+
+  .parent-check-item:has(input:checked) > span:last-child {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: var(--mint-500);
+  }
+
+  .parent-check-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 11px;
+    padding-top: 9px;
+    border-top: 1px dashed var(--line);
+    color: var(--sun-700);
+    font-size: 8px;
+    font-weight: 700;
+  }
+
+  .privacy-link-card {
+    padding: 18px;
+    border: 1.5px dashed var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--surface-2);
+  }
+
+  .privacy-link-card > .icon {
+    color: var(--violet-700);
+  }
+
+  .privacy-link-card h3 {
+    margin: 8px 0 4px;
+    color: var(--ink);
+    font-size: 15px;
+  }
+
+  .privacy-link-card p {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.6;
+  }
+
+  .hearing-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 15px;
+    padding: 15px 17px;
+    border-left: 4px solid var(--sky-500);
+    border-radius: 0 12px 12px 0;
+    background: var(--sky-wash);
+  }
+
+  .hearing-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+    color: var(--sky-700);
+    border-radius: 11px;
+    background: var(--surface);
+  }
+
+  .hearing-note h3 {
+    margin: 0 0 3px;
+    color: var(--ink);
+    font-size: 13px;
+  }
+
+  .hearing-note p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 10.5px;
+    line-height: 1.65;
+  }
+
+  .parent-faq {
+    display: grid;
+    gap: 7px;
+    max-width: 920px;
+  }
+
+  .parent-faq details {
+    background: var(--surface);
+  }
+
+  .parent-faq summary {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 13px 15px;
+    color: var(--ink);
+    font-size: 13.5px;
+    font-weight: 750;
+    list-style: none;
+  }
+
+  .parent-faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .parent-faq summary span {
+    color: var(--violet-600);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+  }
+
+  .parent-faq summary .icon {
+    margin-left: auto;
+    color: var(--faint);
+    transition: transform 180ms ease;
+  }
+
+  .parent-faq details[open] summary .icon {
+    transform: rotate(180deg);
+  }
+
+  .parent-faq details > p {
+    padding: 0 15px 15px 38px;
+    color: var(--ink-soft);
+    font-size: 11px;
+    line-height: 1.72;
+  }
+
+  .medical-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    max-width: 800px;
+    margin-top: 15px;
+    color: var(--faint);
+    font-size: 8px;
+    line-height: 1.6;
+  }
+
+  .medical-note .icon {
+    margin-top: 1px;
+  }
+
+  .parents-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 26px;
+    padding: clamp(23px, 4vw, 34px);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 90% 10%, rgba(255, 216, 111, 0.2), transparent 25%),
+      var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .parents-bottom h2 {
+    margin-top: 10px;
+    font-size: clamp(24px, 3vw, 32px);
+  }
+
+  @media (max-width: 1000px) {
+    .vitals-grid,
+    .motivation-grid,
+    .parent-milestones {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .start-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .first-lesson-steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .where-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .teacher-layout,
+    .privacy-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 850px) {
+    .size-guide,
+    .daily-layout,
+    .progress-signs {
+      grid-template-columns: 1fr;
+    }
+
+    .size-table {
+      max-width: 520px;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .vitals-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .motivation-grid,
+    .parent-milestones {
+      grid-template-columns: 1fr;
+    }
+
+    .daily-timeline::before {
+      left: 52px;
+    }
+
+    .daily-step {
+      grid-template-columns: 50px 22px minmax(0, 1fr);
+      gap: 9px;
+    }
+
+    .progress-signs ul {
+      grid-template-columns: 1fr;
+    }
+
+    .motivation-note {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .parents-bottom {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .vitals-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .vital-card {
+      padding: 11px;
+    }
+
+    .parent-manifesto {
+      align-items: flex-start;
+    }
+
+    .parent-manifesto p {
+      font-size: 11px;
+    }
+
+    .size-table {
+      grid-template-columns: 1fr;
+    }
+
+    .first-lesson-steps,
+    .where-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .ritual-steps {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .ritual-steps i {
+      display: none;
+    }
+
+    .parent-faq summary {
+      align-items: flex-start;
+      font-size: 10.5px;
+    }
+
+    .parent-faq details > p {
+      padding-left: 32px;
+    }
+  }
+</style>

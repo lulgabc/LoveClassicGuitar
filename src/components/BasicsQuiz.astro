@@ -1,0 +1,392 @@
+---
+import { BASICS_QUIZ } from "../data/basics";
+import Icon from "./Icon.astro";
+
+const first = BASICS_QUIZ[0];
+---
+
+<div class="quiz-card card" data-quiz>
+  <div class="quiz-head">
+    <div>
+      <span class="quiz-kicker">Little quiz · 真假小侦探</span>
+      <h3>你发现了吗？</h3>
+    </div>
+    <span class="quiz-badge"><Icon name="game" size={16} /> 6 题</span>
+  </div>
+
+  <div class="quiz-progress" aria-hidden="true">
+    {BASICS_QUIZ.map((_, index) => <span class={index === 0 ? "is-current" : ""} data-quiz-dot></span>)}
+  </div>
+
+  <p class="quiz-count"><span data-quiz-index>第 1 题</span> / {BASICS_QUIZ.length}</p>
+  <h4 class="quiz-question" data-quiz-question>{first?.q}</h4>
+
+  <div class="quiz-options" data-quiz-options>
+    {first?.options.map((option) => <button type="button" disabled>{option}</button>)}
+  </div>
+
+  <div class="quiz-feedback" data-quiz-feedback hidden role="status"></div>
+
+  <div class="quiz-bottom">
+    <span class="quiz-score"><Icon name="star" size={14} /> 得分 <strong data-quiz-score>0</strong></span>
+    <button class="btn btn-primary btn-sm" type="button" data-quiz-next hidden>下一题 <Icon name="arrow-right" size={13} /></button>
+  </div>
+
+  <div class="quiz-result" data-quiz-result hidden>
+    <div class="result-stars" data-quiz-result-stars aria-hidden="true">☆ ☆ ☆</div>
+    <h4 data-quiz-result-title>完成啦！</h4>
+    <p data-quiz-result-text></p>
+    <button class="btn btn-secondary btn-sm" type="button" data-quiz-restart><Icon name="refresh" size={14} /> 再玩一次</button>
+  </div>
+
+  <noscript><p class="quiz-noscript">小测验需要 JavaScript 才能作答，不过上面的知识仍然可以阅读。</p></noscript>
+</div>
+
+<script>
+  import { BASICS_QUIZ } from "../data/basics";
+  import { celebrate } from "../lib/celebrate";
+  import { playChime } from "../lib/audio";
+  import { copyScope } from "../lib/scope";
+
+  const root = document.querySelector<HTMLElement>("[data-quiz]")!;
+  if (root) {
+    const questionEl = root.querySelector<HTMLElement>("[data-quiz-question]");
+    const optionsEl = root.querySelector<HTMLElement>("[data-quiz-options]");
+    const indexEl = root.querySelector<HTMLElement>("[data-quiz-index]");
+    const scoreEl = root.querySelector<HTMLElement>("[data-quiz-score]");
+    const feedbackEl = root.querySelector<HTMLElement>("[data-quiz-feedback]");
+    const nextBtn = root.querySelector<HTMLButtonElement>("[data-quiz-next]");
+    const dots = Array.from(root.querySelectorAll<HTMLElement>("[data-quiz-dot]"));
+    const resultEl = root.querySelector<HTMLElement>("[data-quiz-result]");
+    const resultStars = root.querySelector<HTMLElement>("[data-quiz-result-stars]");
+    const resultTitle = root.querySelector<HTMLElement>("[data-quiz-result-title]");
+    const resultText = root.querySelector<HTMLElement>("[data-quiz-result-text]");
+    const restartBtn = root.querySelector<HTMLButtonElement>("[data-quiz-restart]");
+
+    let index = 0;
+    let score = 0;
+    let answered = false;
+
+    function updateDots(): void {
+      dots.forEach((dot, dotIndex) => {
+        dot.classList.toggle("is-current", dotIndex === index);
+        dot.classList.toggle("is-done", dotIndex < index);
+      });
+    }
+
+    function renderQuestion(): void {
+      const question = BASICS_QUIZ[index];
+      if (!question || !optionsEl || !questionEl) return;
+      answered = false;
+      questionEl.textContent = question.q;
+      if (indexEl) indexEl.textContent = `第 ${index + 1} 题`;
+      optionsEl.replaceChildren();
+      optionsEl.classList.remove("is-locked");
+      feedbackEl?.setAttribute("hidden", "");
+      nextBtn?.setAttribute("hidden", "");
+      updateDots();
+
+      question.options.forEach((option, optionIndex) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        copyScope(root, button);
+        button.textContent = option;
+        button.addEventListener("click", () => {
+          if (answered) return;
+          answered = true;
+          optionsEl.classList.add("is-locked");
+          const correct = optionIndex === question.answer;
+          if (correct) score += 1;
+
+          Array.from(optionsEl.children).forEach((child, childIndex) => {
+            child.classList.toggle("is-correct", childIndex === question.answer);
+            child.classList.toggle("is-wrong", childIndex === optionIndex && !correct);
+            (child as HTMLButtonElement).disabled = true;
+          });
+
+          if (feedbackEl) {
+            feedbackEl.hidden = false;
+            feedbackEl.className = `quiz-feedback ${correct ? "is-correct" : "is-wrong"}`;
+            feedbackEl.innerHTML = `<strong>${correct ? "答对啦！" : "差一点点。"}</strong><span>${question.explain}</span>`;
+            copyScope(root, feedbackEl);
+          }
+          if (scoreEl) scoreEl.textContent = String(score);
+          if (correct) playChime();
+          nextBtn?.removeAttribute("hidden");
+          nextBtn?.focus({ preventScroll: true });
+        });
+        optionsEl.appendChild(button);
+      });
+    }
+
+    function showResult(): void {
+      questionEl?.setAttribute("hidden", "");
+      optionsEl?.setAttribute("hidden", "");
+      feedbackEl?.setAttribute("hidden", "");
+      nextBtn?.setAttribute("hidden", "");
+      if (resultEl) resultEl.hidden = false;
+      root.querySelector(".quiz-progress")?.setAttribute("hidden", "");
+      root.querySelector(".quiz-count")?.setAttribute("hidden", "");
+      const stars = score >= 5 ? "★ ★ ★" : score >= 3 ? "★ ★ ☆" : "★ ☆ ☆";
+      if (resultStars) resultStars.textContent = stars;
+      if (resultTitle) resultTitle.textContent = score >= 5 ? "音乐小侦探，全部找到！" : score >= 3 ? "很棒，已经找到大部分星星。" : "再去知识里逛一圈，回来就是高手。";
+      if (resultText) resultText.textContent = `你答对了 ${score} / ${BASICS_QUIZ.length} 题。不会的题也没关系，回到上面读一读，下一次就会了。`;
+      playChime();
+      celebrate(score >= 4 ? 38 : 18);
+    }
+
+    function reset(): void {
+      index = 0;
+      score = 0;
+      if (scoreEl) scoreEl.textContent = "0";
+      if (resultEl) resultEl.hidden = true;
+      questionEl?.removeAttribute("hidden");
+      optionsEl?.removeAttribute("hidden");
+      root.querySelector(".quiz-progress")?.removeAttribute("hidden");
+      root.querySelector(".quiz-count")?.removeAttribute("hidden");
+      renderQuestion();
+    }
+
+    nextBtn?.addEventListener("click", () => {
+      index += 1;
+      if (index >= BASICS_QUIZ.length) showResult();
+      else renderQuestion();
+    });
+
+    restartBtn?.addEventListener("click", reset);
+    renderQuestion();
+  }
+</script>
+
+<style>
+  .quiz-card {
+    padding: clamp(22px, 3.5vw, 34px);
+    background:
+      radial-gradient(circle at 94% 4%, rgba(255, 216, 111, 0.17), transparent 24%),
+      var(--surface);
+    overflow: hidden;
+  }
+
+  .quiz-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .quiz-kicker {
+    display: block;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .quiz-head h3 {
+    margin: 3px 0 0;
+    color: var(--ink);
+    font-size: clamp(23px, 2.8vw, 30px);
+  }
+
+  .quiz-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 9px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--ink-soft);
+    background: var(--surface-2);
+    font-size: 9px;
+    font-weight: 750;
+    white-space: nowrap;
+  }
+
+  .quiz-progress {
+    display: flex;
+    gap: 5px;
+    margin-top: 18px;
+  }
+
+  .quiz-progress span {
+    flex: 1;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--surface-3);
+    transition: background 200ms ease;
+  }
+
+  .quiz-progress span.is-current {
+    background: var(--violet-500);
+  }
+
+  .quiz-progress span.is-done {
+    background: var(--mint-500);
+  }
+
+  .quiz-count {
+    margin: 17px 0 4px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  .quiz-question {
+    margin: 0 0 16px;
+    color: var(--ink);
+    font-size: 20px;
+    line-height: 1.55;
+  }
+
+  .quiz-options {
+    display: grid;
+    gap: 8px;
+  }
+
+  .quiz-options button {
+    display: flex;
+    align-items: center;
+    min-height: 50px;
+    padding: 11px 14px;
+    color: var(--ink);
+    border: 1.5px solid var(--line);
+    border-radius: 13px;
+    background: var(--surface-2);
+    text-align: left;
+    font-size: 14.5px;
+    font-weight: 650;
+    line-height: 1.5;
+    transition: transform 150ms ease, background 150ms ease, border-color 150ms ease;
+  }
+
+  .quiz-options button:hover:not(:disabled) {
+    border-color: var(--violet-300);
+    background: var(--violet-wash);
+    transform: translateX(3px);
+  }
+
+  .quiz-options button:disabled {
+    cursor: default;
+    opacity: 0.72;
+  }
+
+  .quiz-options button.is-correct {
+    color: #08634c;
+    border-color: #62d8af;
+    background: var(--mint-wash);
+    opacity: 1;
+  }
+
+  .quiz-options button.is-wrong {
+    color: #9b3f35;
+    border-color: #ffada3;
+    background: var(--coral-wash);
+    opacity: 1;
+  }
+
+  html[data-theme="night"] .quiz-options button.is-correct {
+    color: var(--mint-500);
+  }
+
+  html[data-theme="night"] .quiz-options button.is-wrong {
+    color: var(--coral-500);
+  }
+
+  .quiz-feedback {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 14px;
+    padding: 11px 13px;
+    border-radius: 12px;
+    color: var(--ink-soft);
+    background: var(--surface-2);
+    font-size: 12.5px;
+    line-height: 1.65;
+  }
+
+  .quiz-feedback strong {
+    color: var(--ink);
+    font-size: 13.5px;
+  }
+
+  .quiz-feedback.is-correct {
+    background: var(--mint-wash);
+  }
+
+  .quiz-feedback.is-wrong {
+    background: var(--coral-wash);
+  }
+
+  .quiz-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 17px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .quiz-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--muted);
+    font-size: 10px;
+  }
+
+  .quiz-score .icon {
+    color: var(--sun-700);
+  }
+
+  .quiz-score strong {
+    color: var(--ink);
+  }
+
+  .quiz-result {
+    padding-top: 6px;
+    text-align: center;
+  }
+
+  .result-stars {
+    margin-bottom: 7px;
+    color: var(--sun-700);
+    font-size: 30px;
+    letter-spacing: 0.15em;
+  }
+
+  .quiz-result h4 {
+    margin: 0 0 6px;
+    color: var(--ink);
+    font-size: 23px;
+  }
+
+  .quiz-result p {
+    max-width: 410px;
+    margin: 0 auto 16px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .quiz-noscript {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  @media (max-width: 480px) {
+    .quiz-head {
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .quiz-options button {
+      font-size: 12px;
+    }
+  }
+</style>

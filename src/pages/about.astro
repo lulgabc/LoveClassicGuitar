@@ -1,0 +1,588 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import SectionHead from "../components/SectionHead.astro";
+import MascotBubble from "../components/MascotBubble.astro";
+import Icon from "../components/Icon.astro";
+import { SITE } from "../data/site";
+
+const principles = [
+  {
+    icon: "heart" as const,
+    title: "先为一个小音乐家而做",
+    body: "这不是一个“考级工厂”，而是一个 7 岁孩子可以自己打开、自己选择、自己点星星的地方。大人在旁边，但不需要一直指挥。",
+  },
+  {
+    icon: "shield" as const,
+    title: "不追踪，不排名，不比较",
+    body: "没有账号、没有访问统计、没有广告和排行榜。名字和进度只存在浏览器里，也可以随时清空。",
+  },
+  {
+    icon: "compass" as const,
+    title: "资源是入口，不是收藏比赛",
+    body: "课程、视频、教材和乐谱都标注了语言、费用和适合阶段。希望孩子和家长少一点“收藏焦虑”，多一点实际弹琴的时间。",
+  },
+  {
+    icon: "sparkle" as const,
+    title: "保留不完美的空间",
+    body: "路线图是参考，不是标准答案。没有按计划完成，也不会失去资格。音乐不是打卡系统。",
+  },
+];
+
+const sources = [
+  {
+    title: "课程与教学方法",
+    items: [
+      { name: "This is Classical Guitar", url: "https://www.thisisclassicalguitar.com/" },
+      { name: "Classical Guitar Shed", url: "https://classicalguitarshed.com/" },
+      { name: "Classical Guitar Corner", url: "https://www.classicalguitarcorner.com/" },
+      { name: "tonebase Guitar", url: "https://www.tonebase.co/guitar" },
+    ],
+  },
+  {
+    title: "乐谱与历史资料",
+    items: [
+      { name: "IMSLP · Petrucci Music Library", url: "https://imslp.org/wiki/Category:For_guitar" },
+      { name: "Mutopia Project", url: "https://www.mutopiaproject.org/" },
+      { name: "Classical Guitar Delcamp Forum", url: "https://www.classicalguitardelcamp.com/" },
+      { name: "Classical Guitar Magazine", url: "https://classicalguitarmagazine.com/" },
+    ],
+  },
+  {
+    title: "演奏与视频",
+    items: [
+      { name: "Siccas Guitars · YouTube", url: "https://www.youtube.com/@SiccasGuitars" },
+      { name: "Guitar Salon International · YouTube", url: "https://www.youtube.com/@Guitarsalon" },
+      { name: "Tatyana Ryzhkova · YouTube", url: "https://www.youtube.com/@tatyanaryzhkova" },
+      { name: "Kids Guitar Dojo · YouTube", url: "https://www.youtube.com/@kidsguitardojo" },
+    ],
+  },
+  {
+    title: "考级与曲目体系（仅供参考）",
+    items: [
+      { name: "ABRSM", url: "https://www.abrsm.org/" },
+      { name: "Trinity College London", url: "https://www.trinitycollege.com/" },
+      { name: "The Royal Conservatory", url: "https://www.rcmusic.com/" },
+      { name: "MuseScore（用户社区，需注意版权）", url: "https://musescore.com/" },
+    ],
+  },
+];
+
+const changelog = [
+  {
+    date: "2026-11-13",
+    title: "第一版：星空练习室",
+    body: "完成 6 站学习地图、38 个小任务、互动练习室、音乐厅、免费资源库、家长指南和可打印练习卡。所有外部视频链接逐项核验。",
+  },
+];
+---
+
+<BaseLayout
+  title="关于本站"
+  description="关于 Love Classic Guitar 爱古典吉他：创作初衷、内容来源、版权、隐私、可访问性与更新记录。"
+>
+  <PageHero
+    kicker="About this little universe"
+    title="一个为小音乐家<br />做的小小<em>星球</em>。"
+    lead="这里不是官方机构，也不是课程广告。它只是把一位家长想陪孩子做的事，整理成了一个可以一起打开的小世界。"
+  >
+    <div class="slug">
+      <span><Icon name="heart" size={12} /> 家庭自制</span>
+      <span><Icon name="shield" size={12} /> 无追踪</span>
+      <span><Icon name="guitar" size={12} /> 古典吉他启蒙</span>
+      <span><Icon name="sparkle" size={12} /> 原创小蝙蝠与水豚</span>
+    </div>
+  </PageHero>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead
+        kicker="Why this exists"
+        title="为什么会有<em>这个网站</em>？"
+        lead="7 岁的小手、10 分钟的注意力、一个喜欢紫色和蓝色的小朋友。我们想做的不是一个“学习平台”，而是一个她愿意自己点开的小房间。"
+      />
+      <div class="about-intro">
+        <div class="about-intro-copy">
+          <p>
+            很多古典吉他资料非常优秀，但对一个 7 岁的孩子来说，它们常常藏在英文网站、长视频和密密麻麻的目录里。
+            这个网站试着把“第一步”变得温柔一点：先认识琴、听六根弦、坐好、拨响第一声，然后慢慢走到一首曲子。
+          </p>
+          <p>
+            小蝙蝠 <strong>Momo</strong> 和水豚 <strong>Capi</strong> 是原创角色。Momo 负责在你犹豫时轻轻推一下，Capi 负责提醒你：慢一点也没关系。
+            页面里的星星、月亮、练习卡和小小音乐会，都是围绕“让音乐先发生”设计的。
+          </p>
+          <p>
+            路线图参考了古典吉他启蒙常见的顺序、公开教学资料和儿童练习节奏，但每个孩子都不同。请让老师根据孩子的琴、手和身体来调整。
+          </p>
+        </div>
+        <div class="about-note">
+          <MascotBubble who="momo" text="如果这个网站只能帮上一个小忙，我希望是：让你今天愿意坐下来，拨响一根弦。" tone="violet" />
+          <div class="about-fact"><span>适合</span><p>6–10 岁零基础儿童，以及愿意陪伴的家长。成人也欢迎，但练习节奏可以自行加长。</p></div>
+          <div class="about-fact"><span>不是</span><p>不是考级机构、医疗建议、教师替代品，也不是“神童养成计划”。</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container">
+      <SectionHead kicker="How it is built" title="四件我们<em>认真对待</em>的事" />
+      <div class="about-principles">
+        {
+          principles.map((principle) => (
+            <article class="about-principle card">
+              <span class="about-icon"><Icon name={principle.icon} size={21} /></span>
+              <h3>{principle.title}</h3>
+              <p>{principle.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="privacy">
+    <div class="container">
+      <SectionHead
+        kicker="Privacy & accessibility"
+        title="隐私、版权和<em>可访问性</em>"
+        lead="一个给孩子用的网站，应该尽可能简单、透明、没有隐形收集。"
+      />
+      <div class="about-columns">
+        <div class="about-column card">
+          <span class="mini-kicker">Privacy</span>
+          <h3>隐私说明</h3>
+          <ul>
+            <li>没有账号、登录、评论、广告、访问分析或跨站追踪。</li>
+            <li>名字、任务进度和练习记录只保存在当前浏览器的 localStorage 中，不会发送到任何服务器。</li>
+            <li>清除浏览器数据会删除这些记录；不同设备之间不会同步。</li>
+            <li>YouTube 视频默认不加载。点击播放后会加载 YouTube 的隐私增强播放器，之后适用 YouTube 的隐私政策。</li>
+            <li>外部链接会离开本站。请家长先预览内容，并为孩子开启适合的设备和平台设置。</li>
+            <li>请不要公开上传孩子的正脸、学校、住址、课表或练琴视频，除非已经认真考虑隐私并取得孩子同意。</li>
+          </ul>
+        </div>
+        <div class="about-column card">
+          <span class="mini-kicker">Copyright</span>
+          <h3>内容与版权</h3>
+          <ul>
+            <li>本站原创文字、插画、练习卡和交互设计：CC BY-NC-SA 4.0（署名—非商业—相同方式共享）。</li>
+            <li>网站代码：MIT License，可在 GitHub 仓库查看。</li>
+            <li>外部视频、乐谱、教材、商标和演奏录音版权归各自权利人；本站只提供链接、介绍和原创学习笔记。</li>
+            <li>不提供受版权保护的商业教材、改编谱或录音下载。</li>
+            <li>YouTube 是 Google LLC 的商标。本站与 YouTube、任何考级机构或课程平台无隶属关系。</li>
+          </ul>
+        </div>
+        <div class="about-column card">
+          <span class="mini-kicker">Accessibility</span>
+          <h3>使用体验</h3>
+          <ul>
+            <li>所有互动控件都可以用键盘操作，并尽量提供可见的焦点样式和文字标签。</li>
+            <li>动画遵循系统的“减少动态效果”设置；音频只在用户点击后播放。</li>
+            <li>页面使用较大的触控区域、清晰的层级和对色盲友好的文字标签。</li>
+            <li>这不是经过正式认证的无障碍声明，但我们会持续检查和改进。</li>
+            <li>如果发现任何不方便阅读、点击或播放的问题，欢迎通过 GitHub Issue 告诉我们。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container">
+      <SectionHead
+        kicker="Sources"
+        title="内容参考的<em>公开资源</em>"
+        lead="课程选择、技术术语、演奏家与作曲家信息综合参考了以下公开网站和资料。链接仅作学习和进一步阅读，不代表合作或背书。"
+      />
+      <div class="sources-grid">
+        {
+          sources.map((source) => (
+            <div class="source-group">
+              <h3>{source.title}</h3>
+              <ul>
+                {source.items.map((item) => (
+                  <li><a href={item.url} target="_blank" rel="noopener noreferrer">{item.name} <Icon name="external" size={11} /></a></li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+      <p class="source-note">
+        历史人物、作曲家生卒年与曲目信息参考公开百科、演奏家官网、唱片介绍与机构网站。课程链接在发布前通过 YouTube oEmbed 或网站访问进行核验；外部内容可能随时间变化、下架或调整，欢迎反馈失效链接。
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead kicker="Changelog" title="这个星球还在<em>长大</em>" lead="每一次更新都尽量让内容更准确、更温柔、更容易使用。" />
+      <div class="changelog">
+        {
+          changelog.map((entry) => (
+            <article class="changelog-item">
+              <span class="changelog-date">{entry.date}</span>
+              <span class="changelog-dot"></span>
+              <div><h3>{entry.title}</h3><p>{entry.body}</p></div>
+            </article>
+          ))
+        }
+      </div>
+      <div class="about-contact">
+        <div>
+          <span class="mini-kicker">Say hello</span>
+          <h2>发现问题，或者想留一句话？</h2>
+          <p>这是一个开源的小项目。失效链接、事实错误、无障碍问题，或者你和孩子喜欢的曲子，都可以通过 GitHub Issue 告诉我们。</p>
+        </div>
+        <div class="btn-row">
+          <a class="btn btn-primary" href={SITE.repo} target="_blank" rel="noopener noreferrer"><Icon name="external" size={15} /> 打开 GitHub 仓库</a>
+          <a class="btn btn-ghost" href={SITE.repo + "/issues"} target="_blank" rel="noopener noreferrer">提交 Issue</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container about-bottom">
+      <p>“愿你一直记得，音乐最开始的样子，只是一个声音。”</p>
+      <span>— Momo & Capi · {SITE.updated}</span>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .slug {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .slug span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 9px;
+    color: #d7caf4;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+
+  .slug .icon {
+    color: #ffd86f;
+  }
+
+  .about-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+    gap: 25px;
+    align-items: start;
+  }
+
+  .about-intro-copy p {
+    margin: 0 0 13px;
+    color: var(--ink-soft);
+    font-size: 12px;
+    line-height: 1.85;
+  }
+
+  .about-intro-copy strong {
+    color: var(--violet-700);
+  }
+
+  .about-note {
+    display: grid;
+    gap: 11px;
+  }
+
+  .about-fact {
+    padding: 13px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+  }
+
+  .about-fact span {
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .about-fact p {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1.65;
+  }
+
+  .about-principles {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 11px;
+  }
+
+  .about-principle {
+    padding: 17px;
+    background: var(--surface);
+  }
+
+  .about-icon {
+    display: grid;
+    place-items: center;
+    width: 39px;
+    height: 39px;
+    color: var(--violet-700);
+    border-radius: 12px;
+    background: var(--violet-wash);
+  }
+
+  .about-principle h3 {
+    margin: 13px 0 5px;
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .about-principle p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 8.5px;
+    line-height: 1.65;
+  }
+
+  .about-columns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .about-column {
+    padding: 19px;
+    background: var(--surface);
+  }
+
+  .mini-kicker {
+    display: block;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .about-column h3 {
+    margin: 3px 0 9px;
+    color: var(--ink);
+    font-size: 17px;
+  }
+
+  .about-column ul {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .about-column li {
+    position: relative;
+    padding-left: 10px;
+    color: var(--muted);
+    font-size: 8.5px;
+    line-height: 1.65;
+  }
+
+  .about-column li::before {
+    content: "✦";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--violet-300);
+    font-size: 7px;
+  }
+
+  .sources-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 17px;
+  }
+
+  .source-group h3 {
+    margin: 0 0 8px;
+    color: var(--ink);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .source-group ul {
+    display: grid;
+    gap: 5px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .source-group li a {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 3px;
+    color: var(--violet-700);
+    font-size: 8.5px;
+    line-height: 1.55;
+    text-decoration: none;
+  }
+
+  .source-group li a:hover {
+    color: var(--violet-800);
+    text-decoration: underline;
+  }
+
+  .source-group li .icon {
+    margin-top: 1px;
+  }
+
+  .source-note {
+    max-width: 850px;
+    margin: 18px 0 0;
+    padding: 11px 13px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 10px;
+    color: var(--faint);
+    font-size: 8px;
+    line-height: 1.65;
+  }
+
+  .changelog {
+    display: grid;
+    gap: 7px;
+    max-width: 780px;
+  }
+
+  .changelog-item {
+    display: grid;
+    grid-template-columns: 82px 18px 1fr;
+    align-items: start;
+    gap: 9px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .changelog-date {
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    line-height: 1.8;
+  }
+
+  .changelog-dot {
+    width: 8px;
+    height: 8px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: var(--violet-500);
+    box-shadow: 0 0 0 4px var(--violet-wash);
+  }
+
+  .changelog-item h3 {
+    margin: 0 0 3px;
+    color: var(--ink);
+    font-size: 12px;
+  }
+
+  .changelog-item p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1.65;
+  }
+
+  .about-contact {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    margin-top: 27px;
+    padding: 21px;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    background:
+      radial-gradient(circle at 95% 0%, rgba(255, 216, 111, 0.16), transparent 26%),
+      var(--surface);
+  }
+
+  .about-contact h2 {
+    margin: 3px 0 5px;
+    color: var(--ink);
+    font-size: 20px;
+  }
+
+  .about-contact p {
+    max-width: 560px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1.65;
+  }
+
+  .about-bottom {
+    text-align: center;
+  }
+
+  .about-bottom p {
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: clamp(17px, 2.4vw, 23px);
+    font-weight: 800;
+    line-height: 1.5;
+  }
+
+  .about-bottom span {
+    display: block;
+    margin-top: 5px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 8px;
+  }
+
+  @media (max-width: 1000px) {
+    .about-intro {
+      grid-template-columns: 1fr;
+    }
+
+    .about-note {
+      max-width: 620px;
+    }
+
+    .about-principles,
+    .sources-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .about-columns {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 650px) {
+    .about-principles,
+    .sources-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .about-contact {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .changelog-item {
+      grid-template-columns: 68px 14px 1fr;
+    }
+  }
+</style>

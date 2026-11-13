@@ -1,0 +1,444 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import RoadmapBoard from "../components/RoadmapBoard.astro";
+import SectionHead from "../components/SectionHead.astro";
+import MascotBubble from "../components/MascotBubble.astro";
+import Icon from "../components/Icon.astro";
+import { MILESTONES, PRINCIPLES, STAGES, TOTAL_QUESTS, WEEKLY_RHYTHM } from "../data/roadmap";
+import { url } from "../lib/url";
+---
+
+<BaseLayout
+  title="学习地图"
+  description="一份给 7 岁孩子的古典吉他学习路线图：6 站、38 个小任务，从认识琴、空弦、第一把位到家庭小音乐会。可勾选进度并保存在本机。"
+>
+  <PageHero
+    kicker="A 9-month adventure · 6 stations"
+    title="把“不会”，<br />一站一站走成<em>“我会”</em>。"
+    lead="这条路线不是考试，也不是比赛。它只是一张地图：告诉你下一小步在哪里，也允许你在喜欢的风景里多待一会儿。"
+  >
+    <div class="slug">
+      <span><Icon name="map" size={12} /> {STAGES.length} 站</span>
+      <span><Icon name="check" size={12} /> {TOTAL_QUESTS} 个小任务</span>
+      <span><Icon name="clock" size={12} /> 每次 10–15 分钟</span>
+      <span><Icon name="star" size={12} /> 进度只保存在本机</span>
+    </div>
+  </PageHero>
+
+  <section class="section-tight">
+    <div class="container">
+      <RoadmapBoard />
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container">
+      <SectionHead
+        kicker="A gentle rhythm"
+        title="一周不用天天较劲，<em>有节奏就好</em>"
+        lead="下面是一个很轻的参考节奏。可以根据学校、心情和家庭安排调整，不需要打卡补作业。"
+      />
+      <div class="week-grid">
+        {
+          WEEKLY_RHYTHM.map((day) => (
+            <article class:list={["week-card", `week-${day.color}`]}>
+              <span class="week-day">{day.day}</span>
+              <h3>{day.title}</h3>
+              <p>{day.body}</p>
+            </article>
+          ))
+        }
+      </div>
+      <div class="week-note">
+        <Icon name="info" size={16} />
+        <p>如果某一周只弹了一次，也没有关系。音乐不是账单，不需要“补交”。下一次坐下来，重新从一根空弦开始就好。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead
+        kicker="Milestones, not deadlines"
+        title="大概会走到哪里？<em>只是参考</em>"
+        lead="每个孩子的起点、练琴频率和老师安排都不同。这些时间点不是标准答案，只是让你知道“进步长什么样”。"
+      />
+      <div class="milestone-grid">
+        {
+          MILESTONES.map((milestone, index) => (
+            <article class="milestone-card card">
+              <span class="milestone-index">{String(index + 1).padStart(2, "0")}</span>
+              <span class="milestone-when">{milestone.when}</span>
+              <p>{milestone.what}</p>
+            </article>
+          ))
+        }
+      </div>
+      <div class="milestone-note">
+        <MascotBubble who="capi" text="9 个月不是截止日期。有人走得快一点，有人走得慢一点，但喜欢音乐的人，最后都会到达自己的舞台。" tone="sun" />
+        <a class="btn btn-ghost" href={url("/parents/#milestones")}>给爸妈的里程碑说明 <Icon name="arrow-right" size={13} /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container">
+      <SectionHead
+        kicker="How to use this map"
+        title="这张地图，<em>这样用</em>"
+        lead="不要把它当任务清单刷完。把它当作一个可以随时回来查看的指南。"
+      />
+      <div class="how-grid">
+        <article class="how-card card">
+          <span class="how-icon"><Icon name="compass" size={22} /></span>
+          <h3>一次只开一站</h3>
+          <p>只关注眼前这一站。没完成也没关系，先把每个任务当成一个可以反复玩的小游戏。</p>
+        </article>
+        <article class="how-card card">
+          <span class="how-icon how-icon-sky"><Icon name="clock" size={22} /></span>
+          <h3>15 分钟就收工</h3>
+          <p>短时间、高专注，比长时间硬撑更适合小朋友。练完还有力气笑，就是刚刚好。</p>
+        </article>
+        <article class="how-card card">
+          <span class="how-icon how-icon-pink"><Icon name="heart" size={22} /></span>
+          <h3>允许重复和倒退</h3>
+          <p>喜欢的曲子可以弹一个月。前几天会的音突然忘了，也很正常。回到简单的地方，不是失败。</p>
+        </article>
+        <article class="how-card card">
+          <span class="how-icon how-icon-sun"><Icon name="users" size={22} /></span>
+          <h3>让老师帮你微调</h3>
+          <p>每个孩子的手、琴和身体都不同。路线图给方向，老师根据真实情况调整细节。</p>
+        </article>
+      </div>
+
+      <div class="principles-grid">
+        {
+          PRINCIPLES.map((principle, index) => (
+            <div class="principle-item">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div><strong>{principle.title}</strong><p>{principle.body}</p></div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container roadmap-end">
+      <div>
+        <span class="eyebrow"><Icon name="sparkle" size={13} /> 不着急</span>
+        <h2>你不需要一次点亮所有星星。<br />今天点亮一颗，就很好。</h2>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href={url("/practice/")}><Icon name="timer" size={15} /> 去练习室</a>
+        <a class="btn btn-ghost" href={url("/parents/")}>给爸妈看</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .slug {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .slug span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 9px;
+    color: #d7caf4;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+
+  .slug .icon {
+    color: #ffd86f;
+  }
+
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .week-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 158px;
+    padding: 14px 12px;
+    border: 1px solid var(--line);
+    border-radius: 15px;
+    background: var(--week-bg);
+  }
+
+  .week-day {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 3px 7px;
+    border-radius: 999px;
+    color: var(--week-ink);
+    background: var(--surface);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+  }
+
+  .week-card h3 {
+    margin: 13px 0 5px;
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .week-card p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 9.5px;
+    line-height: 1.65;
+  }
+
+  .week-violet { --week-bg: var(--violet-wash); --week-ink: var(--violet-700); }
+  .week-sky { --week-bg: var(--sky-wash); --week-ink: var(--sky-700); }
+  .week-pink { --week-bg: var(--pink-wash); --week-ink: #a63672; }
+  .week-mint { --week-bg: var(--mint-wash); --week-ink: #18735b; }
+  .week-sun { --week-bg: var(--sun-wash); --week-ink: var(--sun-700); }
+
+  html[data-theme="night"] .week-pink { --week-ink: var(--pink-500); }
+  html[data-theme="night"] .week-mint { --week-ink: var(--mint-500); }
+
+  .week-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    margin-top: 14px;
+    padding: 11px 13px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 12px;
+    color: var(--muted);
+  }
+
+  .week-note .icon {
+    margin-top: 1px;
+    color: var(--violet-700);
+  }
+
+  .week-note p {
+    margin: 0;
+    font-size: 10px;
+    line-height: 1.65;
+  }
+
+  .milestone-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .milestone-card {
+    padding: 17px;
+    background: var(--surface);
+  }
+
+  .milestone-index {
+    display: block;
+    color: var(--violet-700);
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .milestone-when {
+    display: block;
+    margin-top: 10px;
+    color: var(--violet-700);
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 0.04em;
+  }
+
+  .milestone-card p {
+    margin: 4px 0 0;
+    color: var(--ink-soft);
+    font-size: 10px;
+    line-height: 1.7;
+  }
+
+  .milestone-note {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    margin-top: 16px;
+  }
+
+  .milestone-note :global(.mascot-bubble) {
+    flex: 1;
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .how-card {
+    padding: 18px 17px;
+    background: var(--surface);
+  }
+
+  .how-icon {
+    display: grid;
+    place-items: center;
+    width: 43px;
+    height: 43px;
+    margin-bottom: 14px;
+    color: var(--violet-700);
+    border-radius: 14px;
+    background: var(--violet-wash);
+  }
+
+  .how-icon-sky {
+    color: var(--sky-700);
+    background: var(--sky-wash);
+  }
+
+  .how-icon-pink {
+    color: #aa3974;
+    background: var(--pink-wash);
+  }
+
+  .how-icon-sun {
+    color: var(--sun-700);
+    background: var(--sun-wash);
+  }
+
+  .how-card h3 {
+    margin: 0 0 6px;
+    color: var(--ink);
+    font-size: 14px;
+  }
+
+  .how-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.7;
+  }
+
+  .principles-grid {
+    display: grid;
+    gap: 8px;
+    max-width: 860px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .principle-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 9px 0;
+  }
+
+  .principle-item > span {
+    flex: 0 0 22px;
+    color: var(--violet-600);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 800;
+    line-height: 1.8;
+  }
+
+  .principle-item strong {
+    display: block;
+    color: var(--ink);
+    font-size: 11.5px;
+  }
+
+  .principle-item p {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.65;
+  }
+
+  .roadmap-end {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 26px;
+    padding: clamp(24px, 4vw, 36px);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 90% 10%, rgba(255, 216, 111, 0.2), transparent 25%),
+      var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .roadmap-end h2 {
+    margin-top: 11px;
+    font-size: clamp(24px, 3.1vw, 33px);
+  }
+
+  @media (max-width: 1000px) {
+    .week-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .week-card {
+      min-height: 140px;
+    }
+
+    .milestone-grid,
+    .how-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 720px) {
+    .week-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .week-card:last-child {
+      grid-column: 1 / -1;
+      min-height: auto;
+    }
+
+    .milestone-grid,
+    .how-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .milestone-note {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .roadmap-end {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .week-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .week-card:last-child {
+      grid-column: auto;
+    }
+  }
+</style>

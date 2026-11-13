@@ -1,0 +1,356 @@
+---
+import type { Performance } from "../data/concert";
+import Icon from "./Icon.astro";
+
+interface Props {
+  performance: Performance;
+  compact?: boolean;
+}
+
+const { performance, compact = false } = Astro.props;
+const href = `https://www.youtube.com/watch?v=${performance.youtubeId}`;
+const colorClass = `color-${performance.color}`;
+---
+
+<article class:list={["performance-card", "card", "card-hover", compact && "is-compact"]}>
+  <div class:list={["performance-cover", colorClass]}>
+    <div class="cover-stars" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <span class="cover-label">LOVE CLASSIC GUITAR · LISTENING ROOM</span>
+    <span class="cover-number" aria-hidden="true">0{(performance.id.length % 9) + 1}</span>
+    <div class="cover-disc" aria-hidden="true">
+      <span class="disc-hole"></span>
+    </div>
+    <div class="cover-content">
+      <div class="cover-moods">
+        {performance.mood.map((mood) => <span>{mood}</span>)}
+      </div>
+      <h3>{performance.title}</h3>
+      <p>{performance.composer}</p>
+    </div>
+    <a class="cover-play" href={href} target="_blank" rel="noopener noreferrer" aria-label={`在 YouTube 听 ${performance.title}`}>
+      <Icon name="play" size={22} />
+    </a>
+    <span class="cover-duration">{performance.duration}</span>
+  </div>
+
+  <div class="performance-body">
+    <p class="performance-performer"><Icon name="guitar" size={14} /> {performance.performer}</p>
+    <p class="performance-story">{performance.story}</p>
+    {!compact && (
+      <>
+        <div class="listen-for">
+          <span class="listen-icon"><Icon name="headphones" size={16} /></span>
+          <div>
+            <strong>竖起耳朵</strong>
+            <p>{performance.listenFor}</p>
+          </div>
+        </div>
+        <p class="stage-tip"><strong>小观察：</strong>{performance.stageTip}</p>
+      </>
+    )}
+    <div class="performance-footer">
+      <span>{performance.duration} · {performance.mood.join(" / ")}</span>
+      <a href={href} target="_blank" rel="noopener noreferrer">去 YouTube 听 <Icon name="external" size={12} /></a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .performance-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .performance-cover {
+    position: relative;
+    min-height: 238px;
+    padding: 16px 17px 18px;
+    overflow: hidden;
+    color: #fff;
+    background: linear-gradient(145deg, #4b2eaf, #1a0e44);
+    isolation: isolate;
+  }
+
+  .is-compact .performance-cover {
+    min-height: 188px;
+  }
+
+  .color-violet { background: linear-gradient(145deg, #6d4edb, #211049 82%); }
+  .color-sky { background: linear-gradient(145deg, #378fbe, #172b66 82%); }
+  .color-pink { background: linear-gradient(145deg, #c64f91, #3c1a5b 82%); }
+  .color-mint { background: linear-gradient(145deg, #39a98b, #123b4b 82%); }
+  .color-sun { background: linear-gradient(145deg, #e4a74e, #53304a 82%); }
+  .color-coral { background: linear-gradient(145deg, #e56e62, #4d1e52 82%); }
+
+  .cover-disc {
+    position: absolute;
+    z-index: -1;
+    right: -56px;
+    top: 24px;
+    width: 218px;
+    height: 218px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at center, rgba(255, 255, 255, 0.08) 0 8%, transparent 8.5% 19%, rgba(255, 255, 255, 0.08) 19.5% 20%, transparent 20.5% 30%, rgba(255, 255, 255, 0.06) 30.5% 31%, transparent 31.5% 41%, rgba(255, 255, 255, 0.06) 41.5% 42%, transparent 42.5% 52%, rgba(255, 255, 255, 0.05) 52.5% 53%, transparent 53.5%),
+      radial-gradient(circle at 35% 30%, #483474, #170f28 70%);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    box-shadow: 0 18px 30px rgba(4, 2, 14, 0.28);
+    transform: rotate(19deg);
+    transition: transform 500ms var(--ease);
+  }
+
+  .performance-card:hover .cover-disc {
+    transform: rotate(32deg) scale(1.04);
+  }
+
+  .disc-hole {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f6e9c0;
+    border: 10px solid #513183;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25);
+  }
+
+  .cover-stars {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .cover-stars span {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #ffe7a0;
+    box-shadow: 0 0 8px 2px rgba(255, 231, 160, 0.28);
+  }
+
+  .cover-stars span:nth-child(1) { left: 13%; top: 25%; }
+  .cover-stars span:nth-child(2) { left: 43%; top: 12%; }
+  .cover-stars span:nth-child(3) { left: 28%; top: 74%; }
+  .cover-stars span:nth-child(4) { left: 74%; top: 14%; }
+
+  .cover-label {
+    display: block;
+    max-width: 66%;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 7.5px;
+    font-weight: 850;
+    letter-spacing: 0.13em;
+    line-height: 1.5;
+  }
+
+  .cover-number {
+    position: absolute;
+    right: 14px;
+    bottom: 6px;
+    color: rgba(255, 255, 255, 0.12);
+    font-family: var(--font-display);
+    font-size: 78px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.08em;
+  }
+
+  .cover-content {
+    position: relative;
+    z-index: 2;
+    max-width: 68%;
+    margin-top: 39px;
+  }
+
+  .cover-moods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .cover-moods span {
+    padding: 2px 7px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 9.5px;
+    font-weight: 750;
+    line-height: 1.4;
+    backdrop-filter: blur(4px);
+  }
+
+  .cover-content h3 {
+    margin: 0;
+    color: #fffaf0;
+    font-family: var(--font-display);
+    font-size: clamp(20px, 2vw, 26px);
+    font-weight: 900;
+    line-height: 1.25;
+    text-shadow: 0 2px 2px rgba(12, 6, 31, 0.3);
+  }
+
+  .is-compact .cover-content h3 {
+    font-size: 20px;
+  }
+
+  .cover-content p {
+    margin: 5px 0 0;
+    color: rgba(255, 255, 255, 0.64);
+    font-size: 11.5px;
+    line-height: 1.45;
+  }
+
+  .cover-play {
+    position: absolute;
+    z-index: 4;
+    right: 16px;
+    top: 16px;
+    display: grid;
+    place-items: center;
+    width: 45px;
+    height: 45px;
+    padding-left: 2px;
+    color: #2a194d;
+    background: #fff2c7;
+    border-radius: 50%;
+    box-shadow: 0 5px 0 rgba(23, 12, 46, 0.25);
+    transition: transform 180ms var(--ease), background 180ms ease;
+  }
+
+  .cover-play:hover {
+    color: #2a194d;
+    background: #ffe083;
+    transform: scale(1.08) rotate(-4deg);
+  }
+
+  .cover-duration {
+    position: absolute;
+    right: 16px;
+    bottom: 13px;
+    color: rgba(255, 255, 255, 0.68);
+    font-family: var(--font-mono);
+    font-size: 10px;
+  }
+
+  .performance-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 17px 18px 15px;
+  }
+
+  .performance-performer {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin: 0 0 8px;
+    color: var(--violet-700);
+    font-size: 12.5px;
+    font-weight: 850;
+    line-height: 1.5;
+  }
+
+  .performance-performer .icon {
+    margin-top: 1px;
+  }
+
+  .performance-story {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .listen-for {
+    display: flex;
+    gap: 9px;
+    margin-top: 13px;
+    padding: 10px 11px;
+    border-radius: 13px;
+    background: var(--violet-wash);
+  }
+
+  .listen-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 27px;
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    color: var(--violet-700);
+    background: var(--surface);
+  }
+
+  .listen-for strong {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--violet-700);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+  }
+
+  .listen-for p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .stage-tip {
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .stage-tip strong {
+    color: var(--ink-soft);
+  }
+
+  .performance-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+    color: var(--faint);
+    font-size: 10.5px;
+  }
+
+  .performance-footer a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--violet-700);
+    font-size: 11.5px;
+    font-weight: 850;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .is-compact .performance-body {
+    padding: 14px 15px;
+  }
+
+  .is-compact .performance-story {
+    font-size: 11.5px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cover-disc {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,465 @@
+---
+import { RESOURCES, RESOURCE_KINDS, type Resource } from "../data/library";
+import Icon from "./Icon.astro";
+
+const kindIcon: Record<string, "compass" | "youtube" | "book" | "trophy" | "music" | "headphones"> = {
+  系统课程: "compass",
+  YouTube: "youtube",
+  网站: "compass",
+  乐谱: "book",
+  考级: "trophy",
+  中文资源: "music",
+  听力: "headphones",
+};
+
+const kindClass: Record<string, string> = {
+  系统课程: "kind-violet",
+  YouTube: "kind-coral",
+  网站: "kind-sky",
+  乐谱: "kind-sun",
+  考级: "kind-mint",
+  中文资源: "kind-pink",
+  听力: "kind-blue",
+};
+
+function searchText(resource: Resource): string {
+  return `${resource.name} ${resource.description} ${resource.bestFor} ${resource.tags.join(" ")} ${resource.kind}`.toLowerCase();
+}
+---
+
+<div class="library-explorer" data-library>
+  <div class="library-toolbar">
+    <label class="library-search">
+      <Icon name="search" size={18} />
+      <span class="sr-only">搜索资源</span>
+      <input type="search" placeholder="搜课程、乐谱、网站或关键词…" data-library-search />
+    </label>
+    <label class="free-toggle">
+      <input type="checkbox" data-library-free />
+      <span class="toggle-track"><span></span></span>
+      <span>只看免费</span>
+    </label>
+    <span class="library-count"><strong data-library-count>{RESOURCES.length}</strong> 个入口</span>
+  </div>
+
+  <div class="kind-filters" role="group" aria-label="按资源类型筛选">
+    <button type="button" class="kind-chip is-active" data-kind="全部" aria-pressed="true">全部</button>
+    {
+      RESOURCE_KINDS.map((kind) => (
+        <button type="button" class="kind-chip" data-kind={kind} aria-pressed="false">
+          <Icon name={kindIcon[kind] ?? "compass"} size={12} /> {kind}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="resource-grid" data-resource-grid>
+    {
+      RESOURCES.map((resource) => (
+        <a
+          class:list={["resource-card", "card", "card-hover", kindClass[resource.kind], { "is-featured": resource.featured }]}
+          href={resource.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-resource-item
+          data-kind={resource.kind}
+          data-free={resource.price !== "付费" ? "true" : "false"}
+          data-search={searchText(resource)}
+        >
+          <div class="resource-top">
+            <span class="resource-icon"><Icon name={kindIcon[resource.kind] ?? "compass"} size={19} /></span>
+            <span class="resource-meta">
+              <span class:list={["pill", resource.price === "付费" ? "pill-paid" : "pill-free"]}>{resource.price}</span>
+              <span class="resource-lang">{resource.lang}</span>
+            </span>
+            {resource.featured && <span class="featured-star"><span class="sr-only">精选</span><Icon name="star" size={14} /></span>}
+          </div>
+          <span class="resource-kind">{resource.kind} · {resource.level}</span>
+          <h3>{resource.name}</h3>
+          <p class="resource-desc">{resource.description}</p>
+          <p class="resource-best"><strong>适合：</strong>{resource.bestFor}</p>
+          <div class="resource-tags">{resource.tags.slice(0, 4).map((tag) => <span>{tag}</span>)}</div>
+          {resource.note && <p class="resource-note"><Icon name="info" size={12} /> {resource.note}</p>}
+          <span class="resource-link">打开看看 <Icon name="external" size={12} /></span>
+        </a>
+      ))
+    }
+  </div>
+
+  <p class="library-empty" data-library-empty hidden>没有找到匹配的资源。试试更短的词，或关掉“只看免费”。</p>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-library]")!;
+  if (root) {
+    const search = root.querySelector<HTMLInputElement>("[data-library-search]");
+    const freeOnly = root.querySelector<HTMLInputElement>("[data-library-free]");
+    const chips = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-kind]"));
+    const items = Array.from(root.querySelectorAll<HTMLElement>("[data-resource-item]"));
+    const count = root.querySelector<HTMLElement>("[data-library-count]");
+    const empty = root.querySelector<HTMLElement>("[data-library-empty]");
+    let activeKind = "全部";
+
+    function apply(): void {
+      const query = (search?.value ?? "").trim().toLowerCase();
+      const free = freeOnly?.checked ?? false;
+      let visible = 0;
+      items.forEach((item) => {
+        const kindOk = activeKind === "全部" || item.dataset.kind === activeKind;
+        const freeOk = !free || item.dataset.free === "true";
+        const searchOk = !query || (item.dataset.search ?? "").includes(query);
+        const show = kindOk && freeOk && searchOk;
+        item.hidden = !show;
+        if (show) visible += 1;
+      });
+      if (count) count.textContent = String(visible);
+      if (empty) empty.hidden = visible !== 0;
+    }
+
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        activeKind = chip.dataset.kind ?? "全部";
+        chips.forEach((item) => {
+          const active = item === chip;
+          item.classList.toggle("is-active", active);
+          item.setAttribute("aria-pressed", String(active));
+        });
+        apply();
+      });
+    });
+    search?.addEventListener("input", apply);
+    freeOnly?.addEventListener("change", apply);
+    apply();
+  }
+</script>
+
+<style>
+  .library-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .library-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 300px;
+    min-width: 0;
+    min-height: 45px;
+    padding: 0 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--muted);
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .library-search:focus-within {
+    border-color: var(--violet-500);
+    box-shadow: 0 0 0 3px var(--violet-wash);
+  }
+
+  .library-search input {
+    flex: 1;
+    min-width: 0;
+    min-height: 41px;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--ink);
+    font-size: 13px;
+  }
+
+  .library-search input::placeholder {
+    color: var(--faint);
+  }
+
+  .free-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 38px;
+    color: var(--muted);
+    font-size: 9.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .free-toggle input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .toggle-track {
+    position: relative;
+    width: 32px;
+    height: 18px;
+    border-radius: 999px;
+    background: var(--surface-3);
+    transition: background 150ms ease;
+  }
+
+  .toggle-track span {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--surface);
+    box-shadow: 0 1px 3px rgba(35, 19, 80, 0.22);
+    transition: transform 150ms ease;
+  }
+
+  .free-toggle input:checked + .toggle-track {
+    background: var(--mint-500);
+  }
+
+  .free-toggle input:checked + .toggle-track span {
+    transform: translateX(14px);
+  }
+
+  .free-toggle input:focus-visible + .toggle-track {
+    outline: 3px solid var(--sun-500);
+    outline-offset: 2px;
+  }
+
+  .library-count {
+    margin-left: auto;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    white-space: nowrap;
+  }
+
+  .library-count strong {
+    color: var(--violet-700);
+  }
+
+  .kind-filters {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 18px;
+  }
+
+  .kind-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 34px;
+    padding: 6px 11px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: 11px;
+    font-weight: 750;
+    transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+  }
+
+  .kind-chip:hover {
+    background: var(--surface-2);
+  }
+
+  .kind-chip.is-active {
+    color: #fff;
+    border-color: #5b3fd4;
+    background: #5b3fd4;
+  }
+
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .resource-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 17px;
+    overflow: hidden;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .resource-card:hover {
+    color: var(--ink);
+  }
+
+  .resource-card::before {
+    content: "";
+    position: absolute;
+    right: -38px;
+    top: -44px;
+    width: 115px;
+    height: 115px;
+    border-radius: 50%;
+    background: var(--resource-soft);
+    pointer-events: none;
+  }
+
+  .resource-top {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+  }
+
+  .resource-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 39px;
+    width: 39px;
+    height: 39px;
+    color: var(--resource-ink);
+    border-radius: 13px;
+    background: var(--resource-bg);
+    box-shadow: 0 3px 0 var(--resource-shadow);
+    transform: rotate(-3deg);
+  }
+
+  .resource-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin-top: 1px;
+  }
+
+  .resource-lang {
+    color: var(--faint);
+    font-size: 8px;
+    white-space: nowrap;
+  }
+
+  .featured-star {
+    margin-left: auto;
+    color: var(--sun-700);
+  }
+
+  .resource-kind {
+    display: block;
+    margin-top: 12px;
+    color: var(--resource-ink);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+
+  .resource-card h3 {
+    margin: 3px 0 6px;
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .resource-desc {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 12.5px;
+    line-height: 1.65;
+  }
+
+  .resource-best {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  .resource-best strong {
+    color: var(--ink-soft);
+  }
+
+  .resource-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 9px;
+  }
+
+  .resource-tags span {
+    padding: 2px 6px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--faint);
+    background: var(--surface-2);
+    font-size: 7.5px;
+  }
+
+  .resource-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 9.5px;
+    line-height: 1.55;
+  }
+
+  .resource-note .icon {
+    margin-top: 1px;
+  }
+
+  .resource-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    width: fit-content;
+    margin-top: auto;
+    padding-top: 12px;
+    color: var(--resource-ink);
+    font-size: 10.5px;
+    font-weight: 850;
+  }
+
+  .resource-card.is-featured {
+    border-color: color-mix(in srgb, var(--resource-ink) 25%, var(--line));
+  }
+
+  .kind-violet { --resource-ink: var(--violet-700); --resource-bg: var(--violet-wash); --resource-soft: rgba(116, 87, 242, 0.1); --resource-shadow: rgba(102, 74, 215, 0.16); }
+  .kind-sky { --resource-ink: var(--sky-700); --resource-bg: var(--sky-wash); --resource-soft: rgba(93, 202, 250, 0.1); --resource-shadow: rgba(65, 165, 205, 0.16); }
+  .kind-sun { --resource-ink: var(--sun-700); --resource-bg: var(--sun-wash); --resource-soft: rgba(255, 216, 111, 0.13); --resource-shadow: rgba(191, 143, 39, 0.16); }
+  .kind-mint { --resource-ink: #14735b; --resource-bg: var(--mint-wash); --resource-soft: rgba(100, 223, 180, 0.1); --resource-shadow: rgba(46, 157, 124, 0.16); }
+  .kind-pink { --resource-ink: #a33470; --resource-bg: var(--pink-wash); --resource-soft: rgba(255, 151, 209, 0.1); --resource-shadow: rgba(196, 79, 145, 0.16); }
+  .kind-coral { --resource-ink: #a44538; --resource-bg: var(--coral-wash); --resource-soft: rgba(255, 139, 123, 0.1); --resource-shadow: rgba(194, 86, 71, 0.16); }
+  .kind-blue { --resource-ink: #3966b4; --resource-bg: rgba(91, 139, 223, 0.11); --resource-soft: rgba(91, 139, 223, 0.1); --resource-shadow: rgba(64, 107, 183, 0.16); }
+
+  html[data-theme="night"] .kind-mint { --resource-ink: var(--mint-500); }
+  html[data-theme="night"] .kind-pink { --resource-ink: var(--pink-500); }
+  html[data-theme="night"] .kind-coral { --resource-ink: var(--coral-500); }
+  html[data-theme="night"] .kind-blue { --resource-ink: #9bbfff; }
+
+  .library-empty {
+    padding: 36px 0;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+  }
+
+  @media (max-width: 1000px) {
+    .resource-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .resource-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .library-count {
+      margin-left: 0;
+    }
+  }
+</style>

@@ -1,0 +1,440 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Bat from "../../components/Bat.astro";
+import Capybara from "../../components/Capybara.astro";
+import Icon from "../../components/Icon.astro";
+import { url } from "../../lib/url";
+
+const days = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+const prompts = [
+  "听一首 / 空弦呼吸",
+  "技术小任务",
+  "听音乐，不碰琴",
+  "只练最难的 2 小节",
+  "即兴 4 小节",
+  "给家人弹一次",
+  "回看这一周",
+];
+---
+
+<BaseLayout title="可打印练习卡" description="一张给琴童的每周练习卡，可打印、贴贴纸、画星星。" noindex>
+  <div class="print-page">
+    <div class="container print-toolbar">
+      <div>
+        <a href={url("/practice/")} class="back-link"><Icon name="arrow-right" size={13} class="back-icon" /> 回到练习室</a>
+        <h1>每周星空练习卡</h1>
+        <p>按 A4 竖版打印。可以贴贴纸、画星星，也可以只写一句话。</p>
+      </div>
+      <button class="btn btn-primary" type="button" data-print><Icon name="printer" size={16} /> 打印这张卡</button>
+    </div>
+
+    <div class="container">
+      <article class="practice-sheet">
+        <header class="sheet-head">
+          <div class="sheet-brand">
+            <div class="sheet-mark" aria-hidden="true"><Bat /></div>
+            <div>
+              <span>LOVE CLASSIC GUITAR</span>
+              <h2>我的星空练习卡</h2>
+              <p>Little steps, bright stars.</p>
+            </div>
+          </div>
+          <div class="sheet-meta">
+            <span>姓名：________________</span>
+            <span>这一周：____ 月 ____ 日 — ____ 月 ____ 日</span>
+            <span>本周曲目 / 目标：______________________</span>
+          </div>
+        </header>
+
+        <div class="sheet-days">
+          {
+            days.map((day, index) => (
+              <div class="sheet-day">
+                <div class="day-label"><strong>{day}</strong><span>{prompts[index]}</span></div>
+                <div class="day-lines">
+                  <span>今天练了什么：</span>
+                  <i></i>
+                  <i></i>
+                </div>
+                <div class="day-stars" role="img" aria-label="贴星星或画星星">☆　☆　☆</div>
+              </div>
+            ))
+          }
+        </div>
+
+        <div class="sheet-lower">
+          <div class="sheet-box">
+            <h3>本周我最喜欢的一个声音</h3>
+            <i></i><i></i>
+          </div>
+          <div class="sheet-box">
+            <h3>下周想试的一件小事</h3>
+            <i></i><i></i>
+          </div>
+          <div class="sheet-box sheet-note">
+            <h3>给家长的小提示</h3>
+            <ul>
+              <li>先听完，再给建议。</li>
+              <li>夸一个具体细节。</li>
+              <li>疼就停下来，慢一点也很好。</li>
+            </ul>
+          </div>
+        </div>
+
+        <footer class="sheet-footer">
+          <div class="sheet-mascot" aria-hidden="true"><Capybara /></div>
+          <p>音乐不是比赛，是一颗每天都能点亮的小星星。<br /><span>— Love Classic Guitar · {new Date().getFullYear()}</span></p>
+          <div class="sheet-sign">家长签名：__________</div>
+        </footer>
+      </article>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  document.querySelector("[data-print]")?.addEventListener("click", () => window.print());
+</script>
+
+<style>
+  .print-page {
+    padding-block: 42px 70px;
+    background:
+      radial-gradient(circle at 85% 5%, rgba(255, 216, 111, 0.12), transparent 28%),
+      var(--bg);
+  }
+
+  .print-toolbar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 22px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--violet-700);
+    font-size: 9px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .back-icon {
+    transform: rotate(180deg);
+  }
+
+  .print-toolbar h1 {
+    margin: 7px 0 3px;
+    font-size: clamp(28px, 4vw, 40px);
+  }
+
+  .print-toolbar p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10px;
+  }
+
+  .practice-sheet {
+    width: min(100%, 820px);
+    margin-inline: auto;
+    padding: 36px 42px 32px;
+    color: #45362a;
+    border: 1px solid #e3d5bf;
+    border-radius: 6px;
+    background:
+      radial-gradient(circle at 95% 4%, rgba(255, 216, 111, 0.16), transparent 22%),
+      #fffaf0;
+    box-shadow: 10px 16px 0 rgba(118, 88, 48, 0.08), var(--shadow);
+  }
+
+  .sheet-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 17px;
+    border-bottom: 2px solid #d7c2a1;
+  }
+
+  .sheet-brand {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    flex: 0 0 auto;
+  }
+
+  .sheet-mark {
+    width: 48px;
+    margin-top: -7px;
+  }
+
+  .sheet-brand span {
+    color: #a8895a;
+    font-family: var(--font-mono);
+    font-size: 6px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+  }
+
+  .sheet-brand h2 {
+    margin: 2px 0 1px;
+    color: #45362a;
+    font-size: 25px;
+    line-height: 1.2;
+  }
+
+  .sheet-brand p {
+    margin: 0;
+    color: #a8895a;
+    font-family: var(--font-mono);
+    font-size: 7px;
+    letter-spacing: 0.04em;
+  }
+
+  .sheet-meta {
+    display: grid;
+    gap: 7px;
+    flex: 0 1 300px;
+    padding-top: 6px;
+    color: #69543e;
+    font-size: 8px;
+  }
+
+  .sheet-days {
+    display: grid;
+    margin-top: 8px;
+    border-top: 1px solid #e7d8c1;
+  }
+
+  .sheet-day {
+    display: grid;
+    grid-template-columns: 126px 1fr 100px;
+    align-items: center;
+    gap: 13px;
+    min-height: 65px;
+    padding: 7px 0;
+    border-bottom: 1px solid #e7d8c1;
+  }
+
+  .day-label strong {
+    display: block;
+    color: #5b442d;
+    font-family: var(--font-display);
+    font-size: 14px;
+  }
+
+  .day-label span {
+    display: block;
+    margin-top: 2px;
+    color: #a8895a;
+    font-size: 7px;
+  }
+
+  .day-lines {
+    min-width: 0;
+  }
+
+  .day-lines span {
+    display: block;
+    margin-bottom: 5px;
+    color: #998166;
+    font-size: 7px;
+  }
+
+  .day-lines i {
+    display: block;
+    height: 1px;
+    margin-bottom: 8px;
+    border-bottom: 1px dashed #d9c6ab;
+  }
+
+  .day-stars {
+    color: #c39d58;
+    font-size: 15px;
+    letter-spacing: 0.16em;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .sheet-lower {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.15fr;
+    gap: 11px;
+    margin-top: 16px;
+  }
+
+  .sheet-box {
+    min-height: 91px;
+    padding: 11px;
+    border: 1px solid #e3d5bf;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  .sheet-box h3 {
+    margin: 0 0 6px;
+    color: #66503b;
+    font-family: var(--font-display);
+    font-size: 9px;
+  }
+
+  .sheet-box i {
+    display: block;
+    height: 1px;
+    margin-bottom: 12px;
+    border-bottom: 1px dashed #d9c6ab;
+  }
+
+  .sheet-note ul {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding: 0 0 0 1.1em;
+    color: #937959;
+    font-size: 7.5px;
+    line-height: 1.5;
+  }
+
+  .sheet-footer {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px solid #d7c2a1;
+  }
+
+  .sheet-mascot {
+    width: 66px;
+    margin-bottom: -12px;
+    opacity: 0.8;
+  }
+
+  .sheet-footer p {
+    margin: 0;
+    flex: 1;
+    color: #876e52;
+    font-family: var(--font-display);
+    font-size: 9px;
+    line-height: 1.65;
+  }
+
+  .sheet-footer p span {
+    color: #b09166;
+    font-family: var(--font-mono);
+    font-size: 6.5px;
+  }
+
+  .sheet-sign {
+    color: #876e52;
+    font-size: 8px;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 750px) {
+    .print-toolbar {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .practice-sheet {
+      padding: 24px 19px;
+    }
+
+    .sheet-head {
+      flex-direction: column;
+    }
+
+    .sheet-meta {
+      width: 100%;
+      flex-basis: auto;
+    }
+
+    .sheet-day {
+      grid-template-columns: 1fr auto;
+      gap: 5px 10px;
+      padding: 9px 0;
+    }
+
+    .day-label {
+      grid-column: 1 / -1;
+    }
+
+    .day-label strong,
+    .day-label span {
+      display: inline;
+    }
+
+    .day-label span {
+      margin-left: 6px;
+    }
+
+    .sheet-lower {
+      grid-template-columns: 1fr;
+    }
+
+    .sheet-box {
+      min-height: auto;
+    }
+
+    .sheet-footer {
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .sheet-footer p {
+      flex-basis: calc(100% - 80px);
+    }
+
+    .sheet-sign {
+      margin-left: 76px;
+    }
+  }
+
+  @media print {
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+
+    html,
+    body {
+      background: #fff !important;
+      color: #000 !important;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+
+    .print-page {
+      padding: 0 !important;
+      background: #fff !important;
+    }
+
+    .print-toolbar,
+    .site-header,
+    .site-footer,
+    .scroll-progress,
+    .skip-link {
+      display: none !important;
+    }
+
+    .container {
+      width: 100% !important;
+      max-width: none !important;
+      margin: 0 !important;
+    }
+
+    .practice-sheet {
+      width: 100% !important;
+      max-width: none !important;
+      margin: 0 !important;
+      padding: 7mm 9mm !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      background: #fffaf0 !important;
+    }
+  }
+</style>

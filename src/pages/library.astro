@@ -1,0 +1,805 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import SectionHead from "../components/SectionHead.astro";
+import LibraryExplorer from "../components/LibraryExplorer.astro";
+import ChannelCard from "../components/ChannelCard.astro";
+import MascotBubble from "../components/MascotBubble.astro";
+import Icon from "../components/Icon.astro";
+import { BOOKS, EXAM_BOARDS, RESOURCES, SHEET_SOURCES } from "../data/library";
+import { CHANNELS } from "../data/videos";
+import { url } from "../lib/url";
+
+const bookKindClass: Record<string, string> = {
+  启蒙教材: "book-violet",
+  "曲集 / 练习曲": "book-sky",
+  技术参考: "book-mint",
+  分级曲集: "book-sun",
+  "家长 / 老师": "book-pink",
+};
+
+const starterPaths = [
+  {
+    icon: "compass" as const,
+    label: "想按顺序学",
+    title: "一条免费主线",
+    text: "从 This is Classical Guitar 的免费教材开始，配本站学习地图，一次只学一小段。",
+    href: "https://www.thisisclassicalguitar.com/free-classical-guitar-method-book-pdf/",
+    color: "violet",
+    external: true,
+  },
+  {
+    icon: "youtube" as const,
+    label: "想先看孩子向视频",
+    title: "儿童吉他视频",
+    text: "Kids Guitar Dojo 和 Kasey 的短课，先把“吉他很好玩”的感觉建立起来。",
+    href: "https://www.youtube.com/@kidsguitardojo",
+    color: "coral",
+    external: true,
+  },
+  {
+    icon: "book" as const,
+    label: "想找中文讲解",
+    title: "中文资源入口",
+    text: "B 站搜索合集，家长先筛选讲得慢、有目录、没有广告诱导的内容。",
+    href: "https://search.bilibili.com/all?keyword=%E5%84%BF%E7%AB%A5%E5%8F%A4%E5%85%B8%E5%90%89%E4%BB%96",
+    color: "sky",
+    external: true,
+  },
+];
+
+const chooseTips = [
+  "先看它教不教“怎样听自己的声音”，而不只是教你按哪里。",
+  "讲解速度适合孩子吗？有没有清楚的近景、慢速示范和可重复的片段？",
+  "谱例和指法是否有版权说明？不要下载或传播未经授权的商业教材。",
+  "是否要求孩子长时间保持疼痛的姿势？好的教学会先讲放松和安全。",
+  "有没有循序渐进的目录？零散视频适合补充，不适合当唯一主线。",
+  "免费资源很好，但一位能看孩子手型和琴的老师仍然很难被视频替代。",
+];
+---
+
+<BaseLayout
+  title="资源宝库"
+  description="精选免费古典吉他课程、YouTube 频道、教材书籍、公共领域乐谱和考级体系。所有资源均标明语言、费用与适合阶段。"
+>
+  <PageHero
+    kicker="The library · 资源宝库"
+    title="好东西很多，<br />但你不必<em>全都收藏</em>。"
+    lead="这里把免费课程、YouTube 频道、教材、曲谱和考级信息整理在一起。先选一条主线，其他的当作补充。"
+  >
+    <div class="slug">
+      <span><Icon name="compass" size={12} /> {RESOURCES.length} 个入口</span>
+      <span><Icon name="youtube" size={12} /> {CHANNELS.length} 个频道</span>
+      <span><Icon name="book" size={12} /> {BOOKS.length} 本参考</span>
+      <span><Icon name="shield" size={12} /> 标明免费 / 付费</span>
+    </div>
+  </PageHero>
+
+  <section class="section">
+    <div class="container">
+      <div class="starter-paths">
+        {
+          starterPaths.map((path) => (
+            <a class:list={["starter-path", "card", "card-hover", `starter-${path.color}`]} href={path.href} target="_blank" rel="noopener noreferrer">
+              <span class="starter-icon"><Icon name={path.icon} size={21} /></span>
+              <span class="starter-label">{path.label}</span>
+              <h2>{path.title}</h2>
+              <p>{path.text}</p>
+              <span class="starter-link">从这里开始 <Icon name={path.external ? "external" : "arrow-right"} size={12} /></span>
+            </a>
+          ))
+        }
+      </div>
+
+      <div class="library-intro-note">
+        <MascotBubble
+          who="momo"
+          text="收藏夹越满，不代表学得越快。今天只选一个链接，看完 5 分钟，然后去弹一根空弦。"
+          tone="violet"
+        />
+        <div class="library-legend">
+          <span><span class="pill pill-free">免费</span> 不需要付费</span>
+          <span><span class="pill pill-paid">付费</span> 需购买或订阅</span>
+          <span><Icon name="external" size={12} /> 外部网站 / YouTube</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="resources">
+    <div class="container">
+      <SectionHead
+        kicker="01 · Courses & websites"
+        title="先选一条<em>主线</em>，再慢慢加料"
+        lead="可以按类型、语言和是否免费筛选。搜索框也可以直接搜“儿童”“乐谱”“中文”。"
+      />
+      <LibraryExplorer />
+    </div>
+  </section>
+
+  <section class="section" id="channels">
+    <div class="container">
+      <SectionHead
+        kicker="02 · YouTube channels"
+        title="值得订阅的<em>免费频道</em>"
+        lead="不用全订阅。选一个主线频道，一个演奏频道，最多再加一个儿童频道就够用了。"
+      />
+      <div class="channels-grid">
+        {CHANNELS.map((channel) => <ChannelCard channel={channel} />)}
+      </div>
+      <div class="channels-note">
+        <Icon name="info" size={15} />
+        <p>YouTube 可能根据地区显示广告和推荐。孩子观看时建议家长陪同或使用儿童模式；不要以自动播放作为“练琴背景”。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="books">
+    <div class="container">
+      <SectionHead
+        kicker="03 · Books & methods"
+        title="书不用多，<em>一本吃透</em>就很好"
+        lead="下面有免费公版教材，也有适合家长/老师参考的现代方法书。没有购物链接，本站不赚取任何佣金。"
+      />
+      <div class="books-grid">
+        {
+          BOOKS.map((book) => (
+            <article class:list={["book-card", "card", bookKindClass[book.kind] ?? "book-violet"]}>
+              <div class="book-top">
+                <span class="book-kind">{book.kind}</span>
+                <span class={book.free ? "pill pill-free" : "pill pill-paid"}>{book.free ? "公版 / 免费" : "购买 / 借阅"}</span>
+              </div>
+              <h3>{book.title}</h3>
+              <p class="book-author">{book.author} · {book.level}</p>
+              <p class="book-desc">{book.description}</p>
+              <p class="book-why"><strong>为什么值得看：</strong>{book.why}</p>
+              {book.note && <p class="book-note"><Icon name="info" size={12} /> {book.note}</p>}
+              {book.link ? (
+                <a class="book-link" href={book.link} target="_blank" rel="noopener noreferrer">{book.linkLabel ?? "打开资源"} <Icon name="external" size={12} /></a>
+              ) : (
+                <span class="book-where">可在图书馆、正规书店或老师处寻找</span>
+              )}
+            </article>
+          ))
+        }
+      </div>
+      <div class="copyright-note">
+        <Icon name="shield" size={18} />
+        <div><strong>关于教材与谱子</strong><p>公共领域作品可以在 IMSLP 等网站阅读和打印，但现代版本、编辑指法、翻译版和商业教材仍受版权保护。请不要在网站或群里传播盗版 PDF。老师指定的教材，建议购买正版或使用图书馆。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="scores">
+    <div class="container">
+      <SectionHead
+        kicker="04 · Sheet music"
+        title="免费乐谱的<em>正确打开方式</em>"
+        lead="先确认版权和版本，再请老师帮孩子选难度、改指法。网上的谱不一定适合小手。"
+      />
+      <div class="sheet-grid">
+        {
+          SHEET_SOURCES.map((source, index) => (
+            <a class="sheet-card card card-hover" href={source.url} target="_blank" rel="noopener noreferrer">
+              <span class="sheet-number">{String(index + 1).padStart(2, "0")}</span>
+              <div class="sheet-copy"><h3>{source.name}</h3><p>{source.description}</p><div class="sheet-tags">{source.tags.map((tag) => <span>{tag}</span>)}</div></div>
+              <Icon name="external" size={14} />
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="exams">
+    <div class="container">
+      <SectionHead
+        kicker="05 · Graded exams (optional)"
+        title="考级是路标，<em>不是奖杯</em>"
+        lead="如果孩子喜欢清晰的目标，考级可以提供曲目库和阶段感。但它不是必需品，也不该取代基础、兴趣和健康。"
+      />
+      <div class="exam-grid">
+        {
+          EXAM_BOARDS.map((exam, index) => (
+            <article class="exam-card card">
+              <span class="exam-number">{String(index + 1).padStart(2, "0")}</span>
+              <span class="exam-label">GRADED MUSIC</span>
+              <h3>{exam.name}</h3>
+              <p class="exam-what">{exam.what}</p>
+              <p class="exam-why"><strong>可能的好处：</strong>{exam.why}</p>
+              <p class="exam-caveat"><Icon name="info" size={12} /> {exam.caveat}</p>
+              <a href={exam.url} target="_blank" rel="noopener noreferrer">查看官网 <Icon name="external" size={12} /></a>
+            </article>
+          ))
+        }
+      </div>
+      <div class="exam-note">
+        <MascotBubble who="capi" text="如果考级让你紧张到不想碰琴，那就先不考。音乐的路很长，证书不能替你听声音。" tone="sun" />
+        <a class="btn btn-ghost" href={url("/parents/#teacher")}>怎样和老师讨论目标 <Icon name="arrow-right" size={13} /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead
+        kicker="How to choose"
+        title="判断一个资源<em>适不适合</em>"
+        lead="免费不是唯一标准，贵也不是保证。下面六个问题，比“别人推荐”更有用。"
+      />
+      <div class="choose-grid">
+        {chooseTips.map((tip, index) => <div class="choose-item"><span>{String(index + 1).padStart(2, "0")}</span><p>{tip}</p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container library-bottom">
+      <div><span class="eyebrow"><Icon name="sparkle" size={13} /> 选好了吗？</span><h2>把收藏夹关掉，<br />去拨第一根弦吧。</h2></div>
+      <div class="btn-row"><a class="btn btn-primary" href={url("/practice/")}>去练习室 <Icon name="arrow-right" size={14} /></a><a class="btn btn-ghost" href={url("/roadmap/")}>看学习地图</a></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .slug {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .slug span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 9px;
+    color: #d7caf4;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+
+  .slug .icon {
+    color: #ffd86f;
+  }
+
+  .starter-paths {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .starter-path {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    color: var(--ink);
+    text-decoration: none;
+    background:
+      radial-gradient(circle at 95% 0%, var(--starter-soft), transparent 28%),
+      var(--surface);
+  }
+
+  .starter-path:hover {
+    color: var(--ink);
+  }
+
+  .starter-icon {
+    display: grid;
+    place-items: center;
+    width: 43px;
+    height: 43px;
+    color: var(--starter-ink);
+    border-radius: 14px;
+    background: var(--starter-bg);
+    box-shadow: 0 3px 0 var(--starter-shadow);
+    transform: rotate(-3deg);
+  }
+
+  .starter-label {
+    margin-top: 17px;
+    color: var(--starter-ink);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .starter-path h2 {
+    margin: 3px 0 5px;
+    color: var(--ink);
+    font-size: 21px;
+  }
+
+  .starter-path p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .starter-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: auto;
+    padding-top: 14px;
+    color: var(--starter-ink);
+    font-size: 9px;
+    font-weight: 850;
+  }
+
+  .starter-violet { --starter-ink: var(--violet-700); --starter-bg: var(--violet-wash); --starter-soft: rgba(116, 87, 242, 0.1); --starter-shadow: rgba(102, 74, 215, 0.16); }
+  .starter-sky { --starter-ink: var(--sky-700); --starter-bg: var(--sky-wash); --starter-soft: rgba(93, 202, 250, 0.1); --starter-shadow: rgba(65, 165, 205, 0.16); }
+  .starter-coral { --starter-ink: #a44538; --starter-bg: var(--coral-wash); --starter-soft: rgba(255, 139, 123, 0.1); --starter-shadow: rgba(194, 86, 71, 0.16); }
+
+  html[data-theme="night"] .starter-coral { --starter-ink: var(--coral-500); }
+
+  .library-intro-note {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 15px;
+  }
+
+  .library-intro-note :global(.mascot-bubble) {
+    flex: 1;
+  }
+
+  .library-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px 13px;
+    flex: 0 0 auto;
+    max-width: 260px;
+    color: var(--faint);
+    font-size: 8px;
+  }
+
+  .library-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .channels-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 11px;
+  }
+
+  .channels-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    margin-top: 14px;
+    padding: 10px 13px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 11px;
+    color: var(--muted);
+    font-size: 8.5px;
+    line-height: 1.6;
+  }
+
+  .channels-note .icon {
+    margin-top: 1px;
+    color: var(--violet-700);
+  }
+
+  .channels-note p {
+    margin: 0;
+  }
+
+  .books-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .book-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 19px 19px 17px 24px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .book-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 7px;
+    background: var(--book-spine);
+    border-radius: 20px 0 0 20px;
+  }
+
+  .book-card::after {
+    content: "";
+    position: absolute;
+    right: -35px;
+    bottom: -50px;
+    width: 130px;
+    height: 130px;
+    border: 1px dashed var(--book-line);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .book-top {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .book-kind {
+    color: var(--book-ink);
+    font-family: var(--font-mono);
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .book-top .pill {
+    margin-left: auto;
+  }
+
+  .book-card h3 {
+    margin: 9px 0 1px;
+    color: var(--ink);
+    font-size: 17px;
+    line-height: 1.4;
+  }
+
+  .book-author {
+    margin: 0;
+    color: var(--book-ink);
+    font-size: 8.5px;
+    font-weight: 650;
+    line-height: 1.5;
+  }
+
+  .book-desc {
+    margin: 10px 0 0;
+    color: var(--ink-soft);
+    font-size: 11.5px;
+    line-height: 1.7;
+  }
+
+  .book-why {
+    margin: 8px 0 0;
+    padding: 8px 10px;
+    border-radius: 9px;
+    background: var(--surface-2);
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.65;
+  }
+
+  .book-why strong {
+    color: var(--ink-soft);
+  }
+
+  .book-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    margin: 8px 0 0;
+    color: var(--faint);
+    font-size: 9px;
+    line-height: 1.55;
+  }
+
+  .book-note .icon {
+    margin-top: 1px;
+  }
+
+  .book-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 11px;
+    color: var(--book-ink);
+    font-size: 10px;
+    font-weight: 850;
+    text-decoration: none;
+  }
+
+  .book-where {
+    margin-top: 11px;
+    color: var(--faint);
+    font-size: 9px;
+  }
+
+  .book-violet { --book-spine: linear-gradient(180deg, #8b72ff, #5b3fd4); --book-ink: var(--violet-700); --book-line: rgba(116, 87, 242, 0.16); }
+  .book-sky { --book-spine: linear-gradient(180deg, #5dcafa, #2b7fb4); --book-ink: var(--sky-700); --book-line: rgba(93, 202, 250, 0.18); }
+  .book-mint { --book-spine: linear-gradient(180deg, #64dfb4, #239a78); --book-ink: #14735b; --book-line: rgba(100, 223, 180, 0.18); }
+  .book-sun { --book-spine: linear-gradient(180deg, #ffd86f, #c58b23); --book-ink: var(--sun-700); --book-line: rgba(255, 216, 111, 0.2); }
+  .book-pink { --book-spine: linear-gradient(180deg, #ff97d1, #b3387c); --book-ink: #a33470; --book-line: rgba(255, 151, 209, 0.2); }
+
+  html[data-theme="night"] .book-mint { --book-ink: var(--mint-500); }
+  html[data-theme="night"] .book-pink { --book-ink: var(--pink-500); }
+
+  .copyright-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 17px;
+    padding: 13px 15px;
+    border-left: 4px solid var(--sun-500);
+    border-radius: 0 12px 12px 0;
+    background: var(--sun-wash);
+  }
+
+  .copyright-note > .icon {
+    margin-top: 1px;
+    color: var(--sun-700);
+  }
+
+  .copyright-note strong {
+    color: var(--ink);
+    font-size: 10px;
+  }
+
+  .copyright-note p {
+    margin: 2px 0 0;
+    color: var(--ink-soft);
+    font-size: 10.5px;
+    line-height: 1.65;
+  }
+
+  .sheet-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .sheet-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 14px 15px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .sheet-card:hover {
+    color: var(--ink);
+  }
+
+  .sheet-number {
+    flex: 0 0 25px;
+    color: var(--violet-700);
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .sheet-copy {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .sheet-copy h3 {
+    margin: 0 0 3px;
+    color: var(--ink);
+    font-size: 14px;
+  }
+
+  .sheet-copy p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.6;
+  }
+
+  .sheet-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 6px;
+  }
+
+  .sheet-tags span {
+    padding: 2px 5px;
+    border-radius: 999px;
+    color: var(--faint);
+    background: var(--surface-2);
+    font-size: 7px;
+  }
+
+  .sheet-card > .icon {
+    margin-top: 3px;
+    color: var(--faint);
+  }
+
+  .exam-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 11px;
+  }
+
+  .exam-card {
+    position: relative;
+    padding: 18px;
+    background: var(--surface);
+  }
+
+  .exam-number {
+    color: var(--violet-700);
+    font-family: var(--font-display);
+    font-size: 27px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .exam-label {
+    display: block;
+    margin-top: 9px;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+
+  .exam-card h3 {
+    margin: 3px 0 7px;
+    color: var(--ink);
+    font-size: 16px;
+  }
+
+  .exam-what {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .exam-why {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.6;
+  }
+
+  .exam-why strong {
+    color: var(--ink-soft);
+  }
+
+  .exam-caveat {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    margin: 9px 0 0;
+    padding-top: 8px;
+    border-top: 1px dashed var(--line);
+    color: var(--faint);
+    font-size: 9.5px;
+    line-height: 1.55;
+  }
+
+  .exam-caveat .icon {
+    margin-top: 1px;
+    color: var(--sun-700);
+  }
+
+  .exam-card > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: 10px;
+    color: var(--violet-700);
+    font-size: 8.5px;
+    font-weight: 850;
+    text-decoration: none;
+  }
+
+  .exam-note {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 15px;
+  }
+
+  .exam-note :global(.mascot-bubble) {
+    flex: 1;
+  }
+
+  .choose-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .choose-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 13px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+  }
+
+  .choose-item span {
+    color: var(--violet-600);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 1.7;
+  }
+
+  .choose-item p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .library-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 26px;
+    padding: clamp(23px, 4vw, 34px);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 90% 12%, rgba(255, 216, 111, 0.2), transparent 25%),
+      var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .library-bottom h2 {
+    margin-top: 10px;
+    font-size: clamp(24px, 3vw, 32px);
+  }
+
+  @media (max-width: 1000px) {
+    .starter-paths,
+    .channels-grid,
+    .exam-grid,
+    .choose-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .library-intro-note {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .library-legend {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .starter-paths,
+    .channels-grid,
+    .books-grid,
+    .sheet-grid,
+    .exam-grid,
+    .choose-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .exam-note {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .library-bottom {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

@@ -1,0 +1,1996 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import SectionHead from "../components/SectionHead.astro";
+import Anatomy from "../components/Anatomy.astro";
+import StringBoard from "../components/StringBoard.astro";
+import GlossaryExplorer from "../components/GlossaryExplorer.astro";
+import BasicsQuiz from "../components/BasicsQuiz.astro";
+import MascotBubble from "../components/MascotBubble.astro";
+import Capybara from "../components/Capybara.astro";
+import Icon from "../components/Icon.astro";
+import {
+  CARE_TIPS,
+  FIT_NOTES,
+  POSTURE_STEPS,
+  RIGHT_HAND,
+  TIMELINE,
+} from "../data/basics";
+import { url } from "../lib/url";
+
+const chapters = [
+  { id: "anatomy", label: "认识琴" },
+  { id: "strings", label: "六根弦" },
+  { id: "posture", label: "坐好" },
+  { id: "hands", label: "两只手" },
+  { id: "reading", label: "读谱" },
+  { id: "care", label: "照顾琴" },
+  { id: "history", label: "小历史" },
+  { id: "glossary", label: "小词典" },
+  { id: "quiz", label: "小测验" },
+];
+
+const faqs = [
+  {
+    q: "手指按弦有点疼，正常吗？",
+    a: "刚开始指尖会有轻微压痛，这是皮肤在适应。但不应该出现刺痛、麻木或持续疼痛。缩短按弦时间、检查琴弦高度和按弦位置；如果疼痛持续，暂停并请老师检查琴，不要硬撑。",
+  },
+  {
+    q: "每天都必须练琴吗？",
+    a: "不必。对 7 岁孩子来说，每周 3–5 次、每次 10–15 分钟的稳定节奏，通常比每天硬撑更可持续。生病、旅行或心情不好时，听一首曲子也算音乐时间。",
+  },
+  {
+    q: "一定要找老师吗？",
+    a: "不是绝对必须，但对初学者非常推荐。老师能检查琴的尺寸、弦距、坐姿和手型，避免把错误练成习惯。即使两周一次课，也比完全没有人看一眼更安心。",
+  },
+  {
+    q: "可以用民谣吉他或拨片先学吗？",
+    a: "可以用通用吉他培养兴趣，但古典吉他的尼龙弦、宽琴颈、坐姿和拨弦方式不同。若目标明确是古典吉他，尽量用合适的古典吉他入门，并让老师检查尺寸。",
+  },
+  {
+    q: "五线谱和 TAB 要学哪个？",
+    a: "TAB 上手快，五线谱能打开更多曲目和音乐理解。小朋友可以先从节奏和少量音符开始，两者不必对立。好的教材通常会用五线谱为主，TAB 辅助。",
+  },
+  {
+    q: "多久才能弹一首完整的曲子？",
+    a: "如果每周稳定练习，很多孩子在第 2–3 个月可以完整弹出一首很短的旋律。但每个孩子的节奏不同。完整、放松、好听，比“多快”更重要。",
+  },
+];
+---
+
+<BaseLayout
+  title="吉他小百科"
+  description="给孩子的古典吉他基础知识：吉他部位、六根弦、坐姿、左右手、读谱、护理、历史和小词典，配互动图解与音频。"
+>
+  <PageHero
+    kicker="Chapter 01 · Guitar basics"
+    title="先和吉他<br />打个<em>招呼</em>。"
+    lead="不用先学会乐理。先认识它、抱抱它、找到最舒服的坐姿。等身体和琴变成朋友，音乐就会慢慢来。"
+  >
+    <div class="slug">
+      <a href="#anatomy">认识琴</a>
+      <a href="#strings">六根弦</a>
+      <a href="#posture">坐好</a>
+      <a href="#reading">读谱</a>
+      <a href="#glossary">小词典</a>
+    </div>
+  </PageHero>
+
+  <nav class="chapter-rail" aria-label="本页目录">
+    <div class="container rail-inner">
+      <span class="rail-label"><Icon name="compass" size={15} /> 本页地图</span>
+      <div class="rail-links">
+        {chapters.map((chapter) => <a href={`#${chapter.id}`} data-chapter-link={chapter.id}>{chapter.label}</a>)}
+      </div>
+      <a class="rail-top" href={url("/roadmap/")}>去学习地图 <Icon name="arrow-right" size={12} /></a>
+    </div>
+  </nav>
+
+  <section class="section" id="anatomy">
+    <div class="container">
+      <SectionHead
+        kicker="01 · Meet the instrument"
+        title="一把琴，<em>11 个小秘密</em>"
+        lead="不用一次记住全部。点一点琴上的数字，认识一个部位，再在真正的琴上找到它。"
+      />
+      <Anatomy />
+      <div class="after-note">
+        <MascotBubble
+          who="capi"
+          text="我的琴弦是尼龙做的，按起来比钢弦软，但也不是“随便按”。手指要立起来，按在品丝旁边，声音才会亮亮的。"
+          tone="sun"
+        />
+        <a class="text-link" href="#strings">接下来：认识六根弦 <Icon name="arrow-right" size={13} /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="strings">
+    <div class="container">
+      <SectionHead
+        kicker="02 · Six singing strings"
+        title="六根弦，<em>六个声音</em>"
+        lead="从最粗的第 6 弦到最细的第 1 弦，它们各有名字、也有自己的性格。先听，再记。"
+      />
+      <StringBoard />
+      <div class="two-col-notes">
+        <div class="fact-card">
+          <span class="fact-icon"><Icon name="info" size={18} /></span>
+          <div><h3>为什么第 1 弦和第 6 弦都叫 E？</h3><p>它们音名相同，但高低相差两个八度。第 6 弦是低音 E，第 1 弦是高音 E。就像同一个名字，一个住在一楼，一个住在三楼。</p></div>
+        </div>
+        <div class="fact-card">
+          <span class="fact-icon fact-icon-sky"><Icon name="tuning" size={18} /></span>
+          <div><h3>标准调弦 E–A–D–G–B–E</h3><p>家长可以用调音器 App 或本站参考音辅助。第一年不建议孩子独自拧弦轴，慢慢来，听到接近就好，别一下子拧太紧。</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="posture">
+    <div class="container">
+      <SectionHead
+        kicker="03 · Sit like a star"
+        title="坐好，不是<em>坐僵硬</em>"
+        lead="好的姿势让手更自由、声音更松，也保护小小的背和肩膀。记住一句话：琴要稳，身体要软。"
+      />
+
+      <div class="posture-banner">
+        <div class="posture-banner-copy">
+          <span class="mini-kicker">The four checks</span>
+          <h3>每次坐下，只检查 4 个点</h3>
+          <ol>
+            <li><span>01</span>脚踩稳，屁股坐椅子前半。</li>
+            <li><span>02</span>左脚踩小凳子，琴腰放在左大腿。</li>
+            <li><span>03</span>琴头抬高，像抬头看星星。</li>
+            <li><span>04</span>肩膀掉下来，右臂轻轻搭住琴。</li>
+          </ol>
+          <p>如果琴老是滑，先加一块防滑垫，不要用手臂死死夹住琴。</p>
+        </div>
+        <div class="posture-mascot" aria-hidden="true">
+          <span class="posture-orbit"></span>
+          <Capybara />
+          <span class="posture-tag tag-a">琴头向上</span>
+          <span class="posture-tag tag-b">肩膀放松</span>
+          <span class="posture-tag tag-c">脚踩稳</span>
+          <span class="posture-star">✦</span>
+        </div>
+      </div>
+
+      <div class="posture-grid">
+        {
+          POSTURE_STEPS.map((step) => (
+            <article class="posture-step card">
+              <div class="posture-step-head">
+                <span class="posture-num">{step.n}</span>
+                <h3>{step.title}</h3>
+              </div>
+              <p>{step.body}</p>
+              <div class="posture-check">✓ {step.check}</div>
+              <label class="posture-checkbox">
+                <input type="checkbox" data-posture-check />
+                <span>这条我检查过了</span>
+              </label>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="posture-progress" aria-live="polite">
+        <div><span class="progress-label"><Icon name="check" size={14} /> 坐姿检查进度</span><strong><span data-posture-count>0</span> / 6</strong></div>
+        <div class="posture-progress-bar"><span data-posture-bar style="width:0%"></span></div>
+        <p data-posture-message>一条条来，不用一次全做到。</p>
+      </div>
+
+      <div class="fit-box">
+        <div class="fit-head"><span class="fit-icon"><Icon name="guitar" size={20} /></span><div><span class="mini-kicker">Instrument fit</span><h3>琴合身吗？比“几岁”更重要</h3></div></div>
+        <ul>{FIT_NOTES.map((note) => <li><Icon name="check" size={14} /> {note}</li>)}</ul>
+        <p class="fit-foot">建议请老师或有经验的琴行老师看一次坐姿和尺寸。不要为了“能用久一点”买过大的琴。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="hands">
+    <div class="container">
+      <SectionHead
+        kicker="04 · Two hands, one band"
+        title="两只手，<em>一支小乐队</em>"
+        lead="右手负责让声音发生，左手负责选择音高。先认识手指的名字，再让它们慢慢学会合作。"
+      />
+
+      <div class="hands-grid">
+        <div class="hand-card card">
+          <div class="hand-card-head">
+            <span class="hand-badge">右手</span>
+            <h3>p · i · m · a</h3>
+          </div>
+          <p class="hand-intro">这是西班牙语名字的首字母。记住它们，老师上课时你们就能用“暗号”交流。</p>
+          <div class="finger-list">
+            {
+              RIGHT_HAND.map((finger) => (
+                <div class="finger-row">
+                  <span class="finger-letter">{finger.finger}</span>
+                  <span class="finger-name">{finger.name}<small>{finger.en}</small></span>
+                  <span class="finger-role">{finger.role}</span>
+                </div>
+              ))
+            }
+          </div>
+          <div class="hand-tip"><Icon name="info" size={14} /> 小指（chico）通常不参与拨弦，轻轻放松就好。</div>
+        </div>
+
+        <div class="hand-card card">
+          <div class="hand-card-head">
+            <span class="hand-badge hand-badge-sky">左手</span>
+            <h3>1 · 2 · 3 · 4</h3>
+          </div>
+          <p class="hand-intro">左手手指用数字 1–4 表示。大拇指在琴颈后方，轻轻托住，不是用力捏住。</p>
+          <div class="left-hand-visual" aria-hidden="true">
+            <span>1<small>食指</small></span><span>2<small>中指</small></span><span>3<small>无名指</small></span><span>4<small>小指</small></span>
+            <div class="left-hand-palm">左手指尖立起来</div>
+          </div>
+          <ul class="mini-list">
+            <li>按在品丝旁边，不是正正压在品丝上。</li>
+            <li>用指尖，不用指肚；手腕保持顺直。</li>
+            <li>手指抬起时不用飞太高，轻轻离开就好。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="stroke-grid">
+        <article class="stroke-card">
+          <div class="stroke-graphic" aria-hidden="true"><span class="stroke-finger">i</span><span class="stroke-string"></span><span class="stroke-arrow">↘</span></div>
+          <div><span class="mini-kicker">Apoyando</span><h3>靠弦 Rest stroke</h3><p>拨完弦后，手指停靠在相邻的下一根弦上。声音更厚、更结实，常用来弹旋律。</p></div>
+        </article>
+        <article class="stroke-card">
+          <div class="stroke-graphic stroke-graphic-sky" aria-hidden="true"><span class="stroke-finger">m</span><span class="stroke-string"></span><span class="stroke-arrow">↗</span></div>
+          <div><span class="mini-kicker">Tirando</span><h3>勾弦 Free stroke</h3><p>拨完后手指向掌心方向收回，不碰下一根弦。声音更轻巧，适合琶音和和弦。</p></div>
+        </article>
+        <article class="stroke-card stroke-card-soft">
+          <div class="stroke-graphic stroke-graphic-pink" aria-hidden="true"><span class="stroke-finger">p</span><span class="stroke-string"></span><span class="stroke-arrow">↓</span></div>
+          <div><span class="mini-kicker">Pulgar</span><h3>拇指低音</h3><p>p 负责低音，像地毯一样托住旋律。低音要稳，但不要盖过旋律。</p></div>
+        </article>
+      </div>
+
+      <div class="hands-bottom">
+        <MascotBubble who="momo" text="手指酸了就先停下来，甩甩手。放松不是偷懒，是让下一次声音更好听。" tone="pink" />
+        <a class="btn btn-secondary" href={url("/practice/#strings")}><Icon name="volume" size={14} /> 去听六根弦</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="reading">
+    <div class="container">
+      <SectionHead
+        kicker="05 · Read the map"
+        title="读谱，是给音乐<em>画地图</em>"
+        lead="五线谱告诉你音高和节奏，TAB 告诉你手放在哪里。它们不是考试，是让音乐从纸上跑到琴上的小路。"
+      />
+
+      <div class="reading-layout">
+        <div class="reading-main">
+          <div class="rhythm-card card">
+            <span class="mini-kicker">Note values</span>
+            <h3>一个音，要唱几拍？</h3>
+            <div class="note-values">
+              <div><span class="music-note whole-note"></span><strong>全音符</strong><small>4 拍 · 圆圆的，没有符干</small></div>
+              <div><span class="music-note half-note"></span><strong>二分音符</strong><small>2 拍 · 空心 + 符干</small></div>
+              <div><span class="music-note quarter-note"></span><strong>四分音符</strong><small>1 拍 · 实心 + 符干</small></div>
+              <div><span class="music-note eighth-note"></span><strong>八分音符</strong><small>半拍 · 带一条小尾巴</small></div>
+            </div>
+            <p class="rhythm-tip"><Icon name="lightbulb" size={14} /> 拍手时嘴里数“1–2–3–4”，每个音唱几拍，手就保持几拍。</p>
+          </div>
+
+          <div class="tab-card card">
+            <div class="tab-head"><div><span class="mini-kicker">Tablature</span><h3>六线 TAB 怎么读？</h3></div><span class="tab-badge">数字 = 第几品</span></div>
+            <pre><span class="tab-string"><b>e</b>|--0--1--3--|</span>
+<span class="tab-string"><b>B</b>|-----------|</span>
+<span class="tab-string"><b>G</b>|-----------|</span>
+<span class="tab-string"><b>D</b>|-----------|</span>
+<span class="tab-string"><b>A</b>|-----------|</span>
+<span class="tab-string"><b>E</b>|-----------|</span></pre>
+            <div class="tab-explain">
+              <div><span>0</span><p>空弦，左手不用按。</p></div>
+              <div><span>1</span><p>按住第 1 品。</p></div>
+              <div><span>3</span><p>按住第 3 品。</p></div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="reading-side">
+          <div class="staff-card card">
+            <span class="mini-kicker">Five lines</span>
+            <h3>五线谱像一栋小楼</h3>
+            <div class="staff-visual" aria-hidden="true">
+              <span class="staff-clef">𝄞</span>
+              <span class="staff-line"></span><span class="staff-line"></span><span class="staff-line"></span><span class="staff-line"></span><span class="staff-line"></span>
+              <span class="staff-note-dot note-pos-a"></span>
+              <span class="staff-note-dot note-pos-b"></span>
+              <span class="staff-note-dot note-pos-c"></span>
+            </div>
+            <p>音符住在线上或线间的空格里。位置越高，声音通常越高。左边的漩涡叫高音谱号。</p>
+            <div class="reading-tip-box">
+              <strong>第一次读谱，只做三件事：</strong>
+              <ol><li>说出音名</li><li>拍手数拍</li><li>再上琴慢慢找</li></ol>
+            </div>
+          </div>
+          <div class="transpose-note">
+            <span class="transpose-icon"><Icon name="sparkle" size={16} /></span>
+            <p><strong>吉他的小秘密：</strong>吉他谱写出来的音，实际听起来低一个八度。知道就好，不用急着背。</p>
+          </div>
+          <a class="btn btn-primary" href={url("/practice/#note-game")}><Icon name="game" size={15} /> 玩音符捉迷藏</a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="care">
+    <div class="container">
+      <SectionHead
+        kicker="06 · Care"
+        title="琴也会累，<em>对它温柔一点</em>"
+        lead="吉他喜欢干净、稳定、不冷不热的地方。你照顾它，它就会用更好听的声音回报你。"
+      />
+      <div class="care-grid">
+        {
+          CARE_TIPS.map((tip, index) => (
+            <article class="care-card">
+              <span class="care-number">{String(index + 1).padStart(2, "0")}</span>
+              <p>{tip}</p>
+            </article>
+          ))
+        }
+      </div>
+      <div class="care-emergency">
+        <Icon name="shield" size={20} />
+        <div><strong>如果琴弦断了</strong><p>先不要自己乱拽。请大人帮忙换弦，或带去琴行。崩断的弦头可能会弹到脸和眼睛，换弦时让小朋友退后一点。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="history">
+    <div class="container">
+      <SectionHead
+        kicker="07 · A little history"
+        title="六根弦，走过<em>五百年</em>"
+        lead="古典吉他不是凭空出现的。它有很多远方亲戚，也有一群把它带上舞台的人。"
+      />
+      <div class="timeline">
+        {
+          TIMELINE.map((item, index) => (
+            <article class="timeline-item">
+              <span class="timeline-year">{item.year}</span>
+              <span class="timeline-dot" aria-hidden="true">{index + 1}</span>
+              <div class="timeline-card card">
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+      <div class="history-cta">
+        <MascotBubble who="capi" text="想听听这五百年最后变成了什么声音？去音乐厅挑一首塔雷加或巴赫吧。" tone="violet" />
+        <a class="btn btn-secondary" href={url("/concert/")}><Icon name="headphones" size={15} /> 去音乐厅</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="glossary">
+    <div class="container">
+      <SectionHead
+        kicker="08 · Little dictionary"
+        title="遇到不懂的词，<em>来这里查</em>"
+        lead="不用背。听到一个陌生词，搜一搜、读一读，下次再见就认识了。"
+      />
+      <GlossaryExplorer />
+    </div>
+  </section>
+
+  <section class="section" id="quiz">
+    <div class="container quiz-layout">
+      <div class="quiz-copy">
+        <SectionHead
+          kicker="09 · Little quiz"
+          title="来当一次<em>音乐小侦探</em>"
+          lead="六道小题，没有考试压力。答错也没关系，答案会告诉你为什么。"
+        />
+        <div class="quiz-mascot" aria-hidden="true">
+          <span class="quiz-mascot-star">✦</span>
+          <span class="quiz-mascot-bubble">我发现你已经在变成小专家了！</span>
+          <span class="quiz-mascot-face">ᵔᴥᵔ</span>
+        </div>
+      </div>
+      <BasicsQuiz />
+    </div>
+  </section>
+
+  <section class="section faq-section">
+    <div class="container">
+      <SectionHead
+        kicker="FAQ"
+        title="小朋友和家长常问的 6 件事"
+        lead="没有笨问题。每个演奏家也都是从“这个怎么弄”开始的。"
+      />
+      <div class="faq-list">
+        {
+          faqs.map((faq, index) => (
+            <details class="faq-item" open={index === 0}>
+              <summary><span>{String(index + 1).padStart(2, "0")}</span>{faq.q}<Icon name="chevron-down" size={18} /></summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container next-cta">
+      <div><span class="eyebrow"><Icon name="map" size={14} /> 下一站</span><h2>知识已经在心里了，<br />现在让手指出发吧。</h2></div>
+      <div class="btn-row"><a class="btn btn-primary" href={url("/roadmap/")}>打开学习地图 <Icon name="arrow-right" size={14} /></a><a class="btn btn-ghost" href={url("/practice/")}>先玩 15 分钟</a></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { celebrate } from "../lib/celebrate";
+
+  // Sticky chapter rail: active section
+  const chapterLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-chapter-link]"));
+  const sections = chapterLinks
+    .map((link) => document.getElementById(link.dataset.chapterLink ?? ""))
+    .filter((section): section is HTMLElement => Boolean(section));
+
+  if (sections.length && "IntersectionObserver" in window) {
+    const chapterObserver = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!visible) return;
+        chapterLinks.forEach((link) => {
+          const active = link.dataset.chapterLink === visible.target.id;
+          link.classList.toggle("is-active", active);
+          if (active) link.setAttribute("aria-current", "true");
+          else link.removeAttribute("aria-current");
+        });
+      },
+      { rootMargin: "-18% 0px -68% 0px", threshold: [0.01, 0.2, 0.5] },
+    );
+    sections.forEach((section) => chapterObserver.observe(section));
+  }
+
+  // Posture checklist
+  const checks = Array.from(document.querySelectorAll<HTMLInputElement>("[data-posture-check]"));
+  const postureCount = document.querySelector<HTMLElement>("[data-posture-count]");
+  const postureBar = document.querySelector<HTMLElement>("[data-posture-bar]");
+  const postureMessage = document.querySelector<HTMLElement>("[data-posture-message]");
+  let celebrated = false;
+
+  function updatePosture(): void {
+    const done = checks.filter((check) => check.checked).length;
+    if (postureCount) postureCount.textContent = String(done);
+    if (postureBar) postureBar.style.width = `${(done / checks.length) * 100}%`;
+    if (postureMessage) {
+      postureMessage.textContent =
+        done === checks.length
+          ? "六项都检查过了。现在抱好琴，轻轻拨一根空弦吧！"
+          : done === 0
+            ? "一条条来，不用一次全做到。"
+            : `已经检查了 ${done} 项，再找找剩下的。`;
+    }
+    checks.forEach((check) => check.closest(".posture-checkbox")?.classList.toggle("is-checked", check.checked));
+    if (done === checks.length && !celebrated) {
+      celebrated = true;
+      postureMessage?.classList.add("is-done");
+      celebrate(22);
+    }
+    if (done < checks.length) {
+      celebrated = false;
+      postureMessage?.classList.remove("is-done");
+    }
+  }
+
+  checks.forEach((check) => check.addEventListener("change", updatePosture));
+  updatePosture();
+</script>
+
+<style>
+  #anatomy,
+  #strings,
+  #posture,
+  #hands,
+  #reading,
+  #care,
+  #history,
+  #glossary,
+  #quiz {
+    scroll-margin-top: calc(var(--header-h) + 82px);
+  }
+
+  .slug {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .slug a {
+    display: inline-flex;
+    padding: 5px 10px;
+    color: #d9cef6;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 150ms ease, color 150ms ease;
+  }
+
+  .slug a:hover {
+    color: #fff3ce;
+    background: rgba(255, 216, 111, 0.1);
+  }
+
+  .chapter-rail {
+    position: sticky;
+    top: var(--header-h);
+    z-index: 40;
+    margin-top: -1px;
+    background: color-mix(in srgb, var(--bg) 90%, transparent);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(16px);
+  }
+
+  .rail-inner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 53px;
+  }
+
+  .rail-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex: 0 0 auto;
+    color: var(--violet-700);
+    font-size: 10px;
+    font-weight: 850;
+  }
+
+  .rail-links {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    overflow-x: auto;
+    padding: 6px 2px;
+    scrollbar-width: none;
+  }
+
+  .rail-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rail-links a {
+    flex: 0 0 auto;
+    padding: 5px 9px;
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 9.5px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 150ms ease, color 150ms ease;
+  }
+
+  .rail-links a:hover,
+  .rail-links a.is-active {
+    color: var(--violet-700);
+    background: var(--violet-wash);
+  }
+
+  .rail-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+    margin-left: auto;
+    color: var(--ink-soft);
+    font-size: 9.5px;
+    font-weight: 750;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .rail-top:hover {
+    color: var(--violet-700);
+  }
+
+  .posture-banner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(270px, 0.9fr);
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 22px;
+    padding: clamp(23px, 4vw, 38px);
+    overflow: hidden;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 87% 18%, rgba(255, 216, 111, 0.25), transparent 26%),
+      radial-gradient(circle at 10% 90%, rgba(139, 114, 255, 0.12), transparent 30%),
+      var(--surface-2);
+  }
+
+  .mini-kicker {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .posture-banner-copy h3 {
+    margin: 5px 0 14px;
+    color: var(--ink);
+    font-size: clamp(23px, 3vw, 31px);
+  }
+
+  .posture-banner-copy ol {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .posture-banner-copy li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  .posture-banner-copy li span {
+    color: var(--violet-600);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 1.9;
+  }
+
+  .posture-banner-copy > p {
+    margin: 17px 0 0;
+    padding-top: 13px;
+    border-top: 1px dashed var(--line);
+    color: var(--muted);
+    font-size: 11.5px;
+    line-height: 1.65;
+  }
+
+  .posture-mascot {
+    position: relative;
+    width: min(100%, 300px);
+    aspect-ratio: 1;
+    margin-inline: auto;
+  }
+
+  .posture-mascot :global(.mascot-capy) {
+    position: absolute;
+    z-index: 1;
+    left: 5%;
+    top: 9%;
+    width: 93%;
+    filter: drop-shadow(0 13px 20px rgba(61, 35, 93, 0.18));
+  }
+
+  .posture-orbit {
+    position: absolute;
+    inset: 4%;
+    border: 1px dashed var(--line-strong);
+    border-radius: 50%;
+    animation: orbit-drift 28s linear infinite;
+  }
+
+  .posture-orbit::before {
+    content: "";
+    position: absolute;
+    inset: 11%;
+    border: 1px dashed rgba(255, 216, 111, 0.45);
+    border-radius: 50%;
+  }
+
+  .posture-tag {
+    position: absolute;
+    z-index: 2;
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--ink-soft);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    font-size: 8.5px;
+    font-weight: 750;
+    white-space: nowrap;
+  }
+
+  .tag-a { left: -1%; top: 13%; }
+  .tag-b { right: -3%; top: 44%; }
+  .tag-c { left: 8%; bottom: 6%; }
+
+  .posture-star {
+    position: absolute;
+    right: 2%;
+    top: 2%;
+    color: var(--sun-700);
+    font-size: 22px;
+    animation: star-pulse 4s ease-in-out infinite;
+  }
+
+  .posture-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 13px;
+  }
+
+  .posture-step {
+    display: flex;
+    flex-direction: column;
+    padding: 17px 16px;
+    background: var(--surface);
+  }
+
+  .posture-step-head {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .posture-num {
+    display: grid;
+    place-items: center;
+    flex: 0 0 29px;
+    width: 29px;
+    height: 29px;
+    color: var(--violet-700);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--violet-wash);
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    font-weight: 800;
+  }
+
+  .posture-step h3 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .posture-step > p {
+    margin: 11px 0 0;
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .posture-check {
+    margin-top: 10px;
+    padding: 7px 9px;
+    border-radius: 9px;
+    color: #0d6b52;
+    background: var(--mint-wash);
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 1.5;
+  }
+
+  .posture-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 12px;
+    color: var(--muted);
+    font-size: 11px;
+    cursor: pointer;
+  }
+
+  .posture-checkbox input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--violet-600);
+  }
+
+  .posture-checkbox.is-checked {
+    color: var(--violet-700);
+    font-weight: 750;
+  }
+
+  .posture-progress {
+    margin-top: 18px;
+    padding: 14px 17px;
+    border: 1.5px dashed var(--line-strong);
+    border-radius: 16px;
+    background: var(--surface-2);
+  }
+
+  .posture-progress > div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .posture-progress strong {
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 10px;
+  }
+
+  .posture-progress-bar {
+    height: 7px;
+    margin-top: 9px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--surface-3);
+  }
+
+  .posture-progress-bar span {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--mint-500), var(--sky-500), var(--violet-500));
+    transition: width 300ms var(--ease);
+  }
+
+  .posture-progress p {
+    margin: 7px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .posture-progress p.is-done {
+    color: var(--violet-700);
+    font-weight: 750;
+  }
+
+  .fit-box {
+    margin-top: 20px;
+    padding: 20px 22px;
+    border-left: 4px solid var(--sun-500);
+    border-radius: 0 16px 16px 0;
+    background: var(--sun-wash);
+  }
+
+  .fit-head {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .fit-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+    color: #704c0a;
+    border-radius: 12px;
+    background: var(--sun-200);
+  }
+
+  .fit-head h3 {
+    margin: 1px 0 0;
+    color: var(--ink);
+    font-size: 17px;
+  }
+
+  .fit-box ul {
+    display: grid;
+    gap: 6px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .fit-box li {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .fit-box li .icon {
+    margin-top: 2px;
+    color: var(--sun-700);
+  }
+
+  .fit-foot {
+    margin: 12px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  .two-col-notes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+  }
+
+  .fact-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 15px 17px;
+    border: 1px solid var(--line);
+    border-radius: 15px;
+    background: var(--surface);
+  }
+
+  .fact-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 33px;
+    width: 33px;
+    height: 33px;
+    color: var(--violet-700);
+    border-radius: 11px;
+    background: var(--violet-wash);
+  }
+
+  .fact-icon-sky {
+    color: var(--sky-700);
+    background: var(--sky-wash);
+  }
+
+  .fact-card h3 {
+    margin: 1px 0 3px;
+    color: var(--ink);
+    font-size: 14.5px;
+  }
+
+  .fact-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .after-note,
+  .hands-bottom,
+  .history-cta {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  .after-note :global(.mascot-bubble),
+  .hands-bottom :global(.mascot-bubble),
+  .history-cta :global(.mascot-bubble) {
+    flex: 1;
+  }
+
+  .text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+    color: var(--violet-700);
+    font-size: 11px;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .text-link:hover {
+    color: var(--violet-800);
+  }
+
+  .hands-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .hand-card {
+    padding: clamp(20px, 3vw, 28px);
+  }
+
+  .hand-card-head {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .hand-badge {
+    padding: 4px 8px;
+    border-radius: 999px;
+    color: var(--violet-700);
+    background: var(--violet-wash);
+    font-size: 9px;
+    font-weight: 850;
+  }
+
+  .hand-badge-sky {
+    color: var(--sky-700);
+    background: var(--sky-wash);
+  }
+
+  .hand-card h3 {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: clamp(22px, 2.8vw, 30px);
+    letter-spacing: 0.03em;
+  }
+
+  .hand-intro {
+    margin: 10px 0 15px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .finger-list {
+    display: grid;
+    gap: 3px;
+  }
+
+  .finger-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .finger-row:last-child {
+    border-bottom: 0;
+  }
+
+  .finger-letter {
+    display: grid;
+    place-items: center;
+    flex: 0 0 30px;
+    width: 30px;
+    height: 30px;
+    color: var(--violet-700);
+    border-radius: 10px;
+    background: var(--violet-wash);
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .finger-name {
+    flex: 0 0 82px;
+    color: var(--ink);
+    font-size: 12.5px;
+    font-weight: 750;
+  }
+
+  .finger-name small {
+    display: block;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 7.5px;
+    font-weight: 500;
+  }
+
+  .finger-role {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .hand-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin-top: 12px;
+    padding-top: 11px;
+    border-top: 1px dashed var(--line);
+    color: var(--faint);
+    font-size: 10.5px;
+    line-height: 1.55;
+  }
+
+  .hand-tip .icon {
+    margin-top: 1px;
+  }
+
+  .left-hand-visual {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+    margin: 10px 0 15px;
+    padding: 13px 10px 15px;
+    border-radius: 15px;
+    background: var(--sky-wash);
+  }
+
+  .left-hand-visual > span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2px;
+    min-height: 88px;
+    padding: 9px 3px 7px;
+    color: var(--sky-700);
+    border: 1px solid rgba(74, 178, 220, 0.25);
+    border-radius: 9px 9px 15px 15px;
+    background: var(--surface);
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .left-hand-visual > span:nth-child(1) { height: 76px; }
+  .left-hand-visual > span:nth-child(2) { height: 88px; }
+  .left-hand-visual > span:nth-child(3) { height: 82px; }
+  .left-hand-visual > span:nth-child(4) { height: 65px; margin-top: 20px; }
+
+  .left-hand-visual small {
+    font-family: var(--font-body);
+    font-size: 7.5px;
+    font-weight: 600;
+  }
+
+  .left-hand-palm {
+    position: absolute;
+    left: 50%;
+    bottom: 5px;
+    color: var(--faint);
+    font-size: 7.5px;
+    white-space: nowrap;
+    transform: translateX(-50%);
+  }
+
+  .mini-list {
+    margin: 0;
+    padding-left: 1.1em;
+    color: var(--ink-soft);
+    font-size: 12.5px;
+    line-height: 1.75;
+  }
+
+  .mini-list li + li {
+    margin-top: 4px;
+  }
+
+  .stroke-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 13px;
+    margin-top: 16px;
+  }
+
+  .stroke-card {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .stroke-graphic {
+    position: relative;
+    flex: 0 0 74px;
+    width: 74px;
+    height: 74px;
+    border-radius: 20px;
+    background: var(--violet-wash);
+    overflow: hidden;
+  }
+
+  .stroke-graphic-sky { background: var(--sky-wash); }
+  .stroke-graphic-pink { background: var(--pink-wash); }
+
+  .stroke-finger {
+    position: absolute;
+    left: 24px;
+    top: 12px;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 800;
+  }
+
+  .stroke-graphic-sky .stroke-finger { color: var(--sky-700); }
+  .stroke-graphic-pink .stroke-finger { color: #b23e83; }
+
+  .stroke-string {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    top: 43px;
+    height: 2px;
+    background: var(--ink-soft);
+    opacity: 0.5;
+  }
+
+  .stroke-arrow {
+    position: absolute;
+    right: 12px;
+    bottom: 8px;
+    color: var(--violet-700);
+    font-size: 20px;
+  }
+
+  .stroke-graphic-sky .stroke-arrow { color: var(--sky-700); }
+  .stroke-graphic-pink .stroke-arrow { color: #b23e83; }
+
+  .stroke-card h3 {
+    margin: 1px 0 4px;
+    color: var(--ink);
+    font-size: 14px;
+  }
+
+  .stroke-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11.5px;
+    line-height: 1.6;
+  }
+
+  .reading-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.75fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  .reading-main {
+    display: grid;
+    gap: 16px;
+  }
+
+  .rhythm-card,
+  .tab-card,
+  .staff-card {
+    padding: clamp(20px, 3vw, 29px);
+  }
+
+  .rhythm-card h3,
+  .tab-card h3,
+  .staff-card h3 {
+    margin: 3px 0 0;
+    color: var(--ink);
+    font-size: clamp(21px, 2.5vw, 27px);
+  }
+
+  .note-values {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  .note-values > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 124px;
+    padding: 12px 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: var(--surface-2);
+    text-align: center;
+  }
+
+  .music-note {
+    position: relative;
+    display: block;
+    width: 32px;
+    height: 45px;
+    margin-bottom: 9px;
+  }
+
+  .music-note::before {
+    content: "";
+    position: absolute;
+    left: 1px;
+    bottom: 2px;
+    width: 19px;
+    height: 14px;
+    border: 2.4px solid var(--violet-700);
+    border-radius: 50%;
+    background: transparent;
+    transform: rotate(-18deg);
+  }
+
+  .music-note::after {
+    content: "";
+    position: absolute;
+    right: 7px;
+    top: 2px;
+    width: 2.4px;
+    height: 31px;
+    border-radius: 2px;
+    background: var(--violet-700);
+  }
+
+  .whole-note::after {
+    display: none;
+  }
+
+  .quarter-note::before {
+    background: var(--violet-700);
+  }
+
+  .eighth-note::before {
+    background: var(--violet-700);
+  }
+
+  .eighth-note .note-flag {
+    display: none;
+  }
+
+  .eighth-note::after {
+    box-shadow: 8px 3px 0 -0.2px var(--violet-700);
+    border-radius: 50% 50% 0 0;
+    width: 2.4px;
+    height: 20px;
+  }
+
+  .note-values strong {
+    color: var(--ink);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .note-values small {
+    margin-top: 2px;
+    color: var(--faint);
+    font-size: 10px;
+    line-height: 1.45;
+  }
+
+  .rhythm-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin: 15px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  .rhythm-tip .icon {
+    margin-top: 1px;
+    color: var(--sun-700);
+  }
+
+  .tab-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .tab-badge {
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    background: var(--surface-2);
+    font-size: 8px;
+    font-weight: 750;
+    white-space: nowrap;
+  }
+
+  .tab-card pre {
+    margin: 16px 0 0;
+    padding: 15px 17px;
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: #201631;
+    color: #ebdffd;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .tab-string b {
+    color: #ffd86f;
+    font-weight: 700;
+  }
+
+  .tab-explain {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 11px;
+  }
+
+  .tab-explain > div {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .tab-explain span {
+    display: grid;
+    place-items: center;
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    color: var(--violet-700);
+    background: var(--violet-wash);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 800;
+  }
+
+  .tab-explain p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.45;
+  }
+
+  .reading-side {
+    display: grid;
+    gap: 12px;
+  }
+
+  .staff-visual {
+    position: relative;
+    height: 122px;
+    margin: 16px 0 12px;
+    padding: 22px 15px;
+    border-radius: 13px;
+    background: var(--surface-2);
+    overflow: hidden;
+  }
+
+  .staff-line {
+    display: block;
+    height: 1px;
+    margin-top: 15px;
+    background: var(--ink-soft);
+    opacity: 0.26;
+  }
+
+  .staff-clef {
+    position: absolute;
+    left: 13px;
+    top: 12px;
+    color: var(--violet-700);
+    font-family: Georgia, serif;
+    font-size: 54px;
+    line-height: 1;
+    opacity: 0.8;
+  }
+
+  .staff-note-dot {
+    position: absolute;
+    width: 12px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--violet-600);
+    transform: rotate(-15deg);
+  }
+
+  .staff-note-dot::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 4px;
+    width: 1.5px;
+    height: 28px;
+    background: var(--violet-600);
+  }
+
+  .note-pos-a { left: 42%; top: 73px; }
+  .note-pos-b { left: 60%; top: 57px; }
+  .note-pos-c { left: 76%; top: 65px; }
+
+  .staff-card > p {
+    color: var(--ink-soft);
+    font-size: 12.5px;
+    line-height: 1.65;
+  }
+
+  .reading-tip-box {
+    margin-top: 13px;
+    padding: 11px 12px;
+    border-radius: 11px;
+    background: var(--sun-wash);
+    color: var(--ink-soft);
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .reading-tip-box strong {
+    color: var(--ink);
+  }
+
+  .reading-tip-box ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin: 5px 0 0;
+    padding-left: 1.1em;
+  }
+
+  .transpose-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 13px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 12px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .transpose-icon {
+    color: var(--violet-700);
+  }
+
+  .transpose-note p {
+    margin: 0;
+  }
+
+  .transpose-note strong {
+    color: var(--ink);
+  }
+
+  .care-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .care-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+  }
+
+  .care-number {
+    color: var(--violet-700);
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .care-card p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .care-card:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .care-emergency {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    margin-top: 16px;
+    padding: 15px 18px;
+    border-left: 4px solid var(--coral-500);
+    border-radius: 0 14px 14px 0;
+    background: var(--coral-wash);
+  }
+
+  .care-emergency > .icon {
+    color: var(--coral-500);
+  }
+
+  .care-emergency strong {
+    display: block;
+    color: var(--ink);
+    font-size: 12px;
+  }
+
+  .care-emergency p {
+    margin: 2px 0 0;
+    color: var(--ink-soft);
+    font-size: 11.5px;
+    line-height: 1.6;
+  }
+
+  .timeline {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+    padding-top: 14px;
+  }
+
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 31px;
+    height: 2px;
+    background-image: linear-gradient(90deg, var(--violet-300) 50%, transparent 50%);
+    background-size: 10px 2px;
+    opacity: 0.7;
+  }
+
+  .timeline-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .timeline-year {
+    position: relative;
+    z-index: 1;
+    padding: 3px 7px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--violet-700);
+    background: var(--surface);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .timeline-dot {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    margin: 7px 0 10px;
+    color: #fff;
+    border-radius: 50%;
+    background: var(--violet-600);
+    box-shadow: 0 0 0 4px var(--violet-wash);
+    font-family: var(--font-mono);
+    font-size: 7px;
+  }
+
+  .timeline-card {
+    flex: 1;
+    padding: 13px 12px;
+    box-shadow: none;
+  }
+
+  .timeline-card h3 {
+    margin: 0 0 5px;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .timeline-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .quiz-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(26px, 5vw, 62px);
+    align-items: start;
+  }
+
+  .quiz-mascot {
+    position: relative;
+    width: min(100%, 330px);
+    margin-top: 24px;
+    padding: 26px;
+    border: 1.5px dashed var(--line-strong);
+    border-radius: 40% 60% 50% 50% / 55% 45% 55% 45%;
+    background: var(--sun-wash);
+    text-align: center;
+  }
+
+  .quiz-mascot-star {
+    display: block;
+    color: var(--sun-700);
+    font-size: 26px;
+  }
+
+  .quiz-mascot-face {
+    display: block;
+    margin-top: 4px;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 30px;
+    line-height: 1.3;
+  }
+
+  .quiz-mascot-bubble {
+    display: inline-block;
+    margin-top: 7px;
+    color: var(--ink-soft);
+    font-size: 12.5px;
+    font-weight: 650;
+    line-height: 1.55;
+  }
+
+  .faq-section {
+    background: var(--surface-2);
+  }
+
+  .faq-list {
+    display: grid;
+    gap: 8px;
+    max-width: 880px;
+  }
+
+  .faq-item {
+    background: var(--surface);
+  }
+
+  .faq-item summary {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 15px 17px;
+    color: var(--ink);
+    font-size: 14.5px;
+    font-weight: 750;
+    list-style: none;
+  }
+
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item summary span {
+    color: var(--violet-600);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+  }
+
+  .faq-item summary .icon {
+    margin-left: auto;
+    color: var(--faint);
+    transition: transform 180ms ease;
+  }
+
+  .faq-item[open] summary .icon {
+    transform: rotate(180deg);
+  }
+
+  .faq-item > p {
+    padding: 0 17px 17px 41px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.75;
+  }
+
+  .next-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    padding: clamp(24px, 4vw, 38px);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 85% 20%, rgba(255, 216, 111, 0.2), transparent 25%),
+      var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .next-cta h2 {
+    margin-top: 12px;
+    font-size: clamp(24px, 3vw, 33px);
+  }
+
+  html[data-theme="night"] .posture-check {
+    color: var(--mint-500);
+  }
+
+  @keyframes orbit-drift {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes star-pulse {
+    0%, 100% { transform: scale(0.9) rotate(0deg); opacity: 0.7; }
+    50% { transform: scale(1.15) rotate(18deg); opacity: 1; }
+  }
+
+  @media (max-width: 1000px) {
+    .posture-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .timeline {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px 10px;
+    }
+
+    .timeline::before {
+      display: none;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .posture-banner {
+      grid-template-columns: 1fr;
+    }
+
+    .posture-mascot {
+      width: min(100%, 270px);
+    }
+
+    .hands-grid,
+    .reading-layout,
+    .quiz-layout,
+    .care-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .stroke-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .care-card:last-child {
+      grid-column: auto;
+    }
+
+    .reading-side {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+
+    .reading-side > .btn {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+
+    .rail-label {
+      display: none;
+    }
+
+    .rail-top {
+      display: none;
+    }
+
+    .rail-inner {
+      gap: 0;
+    }
+
+    .quiz-layout {
+      gap: 20px;
+    }
+
+    .quiz-mascot {
+      display: none;
+    }
+
+    .next-cta {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .two-col-notes {
+      grid-template-columns: 1fr;
+    }
+
+    .posture-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .note-values {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .timeline {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .after-note,
+    .hands-bottom,
+    .history-cta {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .reading-side {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .chapter-rail {
+      top: calc(var(--header-h) - 1px);
+    }
+
+    .rail-links a {
+      padding: 5px 8px;
+      font-size: 9px;
+    }
+
+    .posture-banner {
+      padding: 20px 17px;
+    }
+
+    .posture-tag {
+      font-size: 7.5px;
+    }
+
+    .timeline {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 58px 20px 1fr;
+      align-items: start;
+      gap: 5px;
+    }
+
+    .timeline-year {
+      margin-top: 2px;
+    }
+
+    .timeline-dot {
+      margin: 4px 0 0;
+    }
+
+    .timeline-card {
+      margin-bottom: 8px;
+    }
+
+    .tab-explain {
+      grid-template-columns: 1fr;
+    }
+
+    .care-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .faq-item summary {
+      align-items: flex-start;
+      font-size: 12px;
+    }
+
+    .faq-item > p {
+      padding-left: 36px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .posture-orbit,
+    .posture-star {
+      animation: none;
+    }
+  }
+</style>
