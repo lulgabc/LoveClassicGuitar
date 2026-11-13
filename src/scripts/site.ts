@@ -12,8 +12,10 @@ function applyTheme(theme: "day" | "night"): void {
   const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
   if (meta) meta.content = theme === "night" ? "#120e2f" : "#fbf7ff";
   if (themeToggle) {
-    themeToggle.setAttribute("aria-label", theme === "night" ? "切换到日间模式" : "切换到夜晚模式");
-    themeToggle.title = theme === "night" ? "切换到日间模式" : "切换到夜晚模式";
+    const dayLabel = themeToggle.dataset.labelDay || "切换到日间模式";
+    const nightLabel = themeToggle.dataset.labelNight || "切换到夜晚模式";
+    themeToggle.setAttribute("aria-label", theme === "night" ? dayLabel : nightLabel);
+    themeToggle.title = theme === "night" ? dayLabel : nightLabel;
   }
 }
 
@@ -38,7 +40,10 @@ function setNav(open: boolean): void {
   if (!nav || !navToggle) return;
   nav.classList.toggle("is-open", open);
   navToggle.setAttribute("aria-expanded", String(open));
-  navToggle.setAttribute("aria-label", open ? "关闭菜单" : "打开菜单");
+  navToggle.setAttribute(
+    "aria-label",
+    open ? navToggle.dataset.labelClose || "关闭菜单" : navToggle.dataset.labelOpen || "打开菜单",
+  );
 }
 
 navToggle?.addEventListener("click", () => {

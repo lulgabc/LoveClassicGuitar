@@ -1,35 +1,112 @@
 ---
-import { STAGES, TOTAL_QUESTS } from "../data/roadmap";
+import { STAGES, type Stage } from "../data/roadmap";
 import { getTutorial } from "../data/videos";
 import { url } from "../lib/url";
 import Icon from "./Icon.astro";
 import Bat from "./Bat.astro";
 
-const stages = STAGES.map((stage) => ({
+interface Props {
+  stages?: Stage[];
+  lang?: "zh" | "fr";
+  printPath?: string;
+  concertPath?: string;
+  watchTitles?: Record<string, string>;
+}
+
+const {
+  stages: stageSource = STAGES,
+  lang = "zh",
+  printPath = "/print/weekly/",
+  concertPath = "/concert/",
+  watchTitles = {},
+} = Astro.props;
+const isFr = lang === "fr";
+const stages = stageSource.map((stage) => ({
   ...stage,
-  watchItems: stage.watch.map((id) => getTutorial(id)).filter((item): item is NonNullable<typeof item> => Boolean(item)),
+  watchItems: stage.watch
+    .map((id) => getTutorial(id))
+    .filter((item): item is NonNullable<typeof item> => Boolean(item))
+    .map((item) => ({ ...item, displayTitle: isFr ? watchTitles[item.id] ?? item.title : item.zhTitle })),
 }));
+const totalQuests = stages.reduce((sum, stage) => sum + stage.quests.length, 0);
+const t = isFr
+  ? {
+      mascotNote: "On y va",
+      eyebrow: "Ma carte des étoiles",
+      greeting: "Bonjour, jeune guitariste",
+      lead: "Chaque petite mission allume une étoile. Pas besoin de courir.",
+      nameLabel: "Ton prénom (seulement sur cet appareil)",
+      namePlaceholder: "par exemple : Lila",
+      print: "Imprimer la fiche de la semaine",
+      restart: "Recommencer",
+      ringLabel: "progression",
+      missions: "missions",
+      stages: "étapes",
+      practices: "séances",
+      startFrom: "Tu peux commencer ici",
+      startValue: "Préparation · Faire connaissance avec la guitare",
+      seeStages: "Voir les six étapes",
+      suggested: "conseillé",
+      taskCount: "missions",
+      completePill: "Allumée",
+      stageWatch: "À regarder",
+      stagePieces: "Pièces et jeux",
+      parentWord: "Un mot pour les adultes",
+      checkpoint: "Quand cette étape est terminée, je peux…",
+      allLit: "Toutes les étoiles sont allumées",
+      completeTitle: "Ta carte du ciel est toute illuminée.",
+      completeText: "Ce n'est pas une fin, juste le début de la prochaine aventure musicale. Va jouer pour quelqu'un que tu aimes.",
+      concert: "Fêter ça à la salle de concert",
+    }
+  : {
+      mascotNote: "一起走",
+      eyebrow: "My star map",
+      greeting: "你好，小音乐家",
+      lead: "每完成一个小任务，就点亮一颗星。不用赶路，慢慢来。",
+      nameLabel: "写下你的名字（只保存在这台设备）",
+      namePlaceholder: "例如：小星星",
+      print: "打印本周练习卡",
+      restart: "重新开始",
+      ringLabel: "星星进度",
+      missions: "个小任务",
+      stages: "站",
+      practices: "次练习",
+      startFrom: "现在可以从这里出发",
+      startValue: "准备站 · 先和吉他做朋友",
+      seeStages: "看全部六站",
+      suggested: "建议",
+      taskCount: "个任务",
+      completePill: "已点亮",
+      stageWatch: "推荐观看",
+      stagePieces: "本站曲目与游戏",
+      parentWord: "给大人的一句话",
+      checkpoint: "这一站通关时，我能……",
+      allLit: "All stars lit",
+      completeTitle: "你的星空地图，全部点亮了。",
+      completeText: "这不是终点，只是下一段音乐旅程的起点。去弹给一个你喜欢的人听吧。",
+      concert: "去音乐厅庆祝",
+    };
 ---
 
-<div class="roadmap-board" data-roadmap>
+<div class="roadmap-board" data-roadmap data-lang={lang}>
   <div class="progress-panel" data-progress-panel>
     <div class="progress-mascot" aria-hidden="true">
       <span class="mascot-orbit"></span>
       <Bat />
-      <span class="mascot-note">一起走</span>
+      <span class="mascot-note">{t.mascotNote}</span>
     </div>
 
     <div class="progress-main">
-      <span class="progress-eyebrow">My star map</span>
-      <h2 data-greeting>你好，小音乐家</h2>
-      <p class="progress-lead" data-progress-lead>每完成一个小任务，就点亮一颗星。不用赶路，慢慢来。</p>
+      <span class="progress-eyebrow">{t.eyebrow}</span>
+      <h2 data-greeting>{t.greeting}</h2>
+      <p class="progress-lead" data-progress-lead>{t.lead}</p>
       <div class="name-row">
-        <label for="star-name">写下你的名字（只保存在这台设备）</label>
-        <input id="star-name" type="text" maxlength="24" placeholder="例如：小星星" data-name-input autocomplete="off" />
+        <label for="star-name">{t.nameLabel}</label>
+        <input id="star-name" type="text" maxlength="24" placeholder={t.namePlaceholder} data-name-input autocomplete="off" />
       </div>
       <div class="progress-actions">
-        <a class="btn btn-primary btn-sm" href={url("/print/weekly/")}><Icon name="printer" size={14} /> 打印本周练习卡</a>
-        <button class="btn btn-ghost btn-sm" type="button" data-reset-progress><Icon name="refresh" size={13} /> 重新开始</button>
+        <a class="btn btn-primary btn-sm" href={url(printPath)}><Icon name="printer" size={14} /> {t.print}</a>
+        <button class="btn btn-ghost btn-sm" type="button" data-reset-progress><Icon name="refresh" size={13} /> {t.restart}</button>
       </div>
     </div>
 
@@ -37,13 +114,13 @@ const stages = STAGES.map((stage) => ({
       <div class="progress-ring" data-progress-ring style="--progress: 0">
         <div class="ring-inner">
           <strong><span data-progress-percent>0</span><small>%</small></strong>
-          <span>星星进度</span>
+          <span>{t.ringLabel}</span>
         </div>
       </div>
       <div class="ring-caption">
-        <span><Icon name="star" size={13} /> <strong data-quest-count>0</strong> / {TOTAL_QUESTS} 个小任务</span>
-        <span><Icon name="check" size={13} /> <strong data-stage-count>0</strong> / {STAGES.length} 站</span>
-        <span><Icon name="music" size={13} /> <strong data-practice-count>0</strong> 次练习</span>
+        <span><Icon name="star" size={13} /> <strong data-quest-count>0</strong> / {totalQuests} {t.missions}</span>
+        <span><Icon name="check" size={13} /> <strong data-stage-count>0</strong> / {stages.length} {t.stages}</span>
+        <span><Icon name="music" size={13} /> <strong data-practice-count>0</strong> {t.practices}</span>
       </div>
     </div>
   </div>
@@ -51,10 +128,10 @@ const stages = STAGES.map((stage) => ({
   <div class="current-stage" data-current-stage-card>
     <div class="current-stage-icon"><Icon name="compass" size={19} /></div>
     <div>
-      <span>现在可以从这里出发</span>
-      <strong data-current-stage>准备站 · 先和吉他做朋友</strong>
+      <span>{t.startFrom}</span>
+      <strong data-current-stage>{t.startValue}</strong>
     </div>
-    <a href="#stage-list">看全部六站 <Icon name="arrow-right" size={13} /></a>
+    <a href="#stage-list">{t.seeStages} <Icon name="arrow-right" size={13} /></a>
   </div>
 
   <div class="stage-list" id="stage-list">
@@ -64,15 +141,15 @@ const stages = STAGES.map((stage) => ({
           <summary>
             <span class="stage-number">{stage.n === 0 ? "✦" : String(stage.n).padStart(2, "0")}</span>
             <span class="stage-title-wrap">
-              <span class="stage-mini">{stage.level} · 建议 {stage.weeks}</span>
+              <span class="stage-mini">{stage.level} · {t.suggested} {stage.weeks}</span>
               <strong>{stage.title}</strong>
               <small>{stage.subtitle}</small>
             </span>
             <span class="stage-summary-meta">
               <span class="stage-badge"><Icon name="star" size={12} /> {stage.badge}</span>
-              <span class="stage-count" data-stage-progress>0 / {stage.quests.length} 个任务</span>
+              <span class="stage-count" data-stage-progress>0 / {stage.quests.length} {t.taskCount}</span>
             </span>
-            <span class="stage-complete-pill" data-stage-complete hidden><Icon name="check" size={11} /> 已点亮</span>
+            <span class="stage-complete-pill" data-stage-complete hidden><Icon name="check" size={11} /> {t.completePill}</span>
             <span class="stage-chevron"><Icon name="chevron-down" size={18} /></span>
           </summary>
 
@@ -86,10 +163,10 @@ const stages = STAGES.map((stage) => ({
               {
                 stage.quests.map((quest, questIndex) => (
                   <label class="quest-item" data-quest-item>
-                    <input type="checkbox" data-quest={quest.id} aria-label={`完成任务：${quest.title}`} />
+                    <input type="checkbox" data-quest={quest.id} aria-label={isFr ? `Terminer : ${quest.title}` : `完成任务：${quest.title}`} />
                     <span class="quest-check" aria-hidden="true"><Icon name="check" size={13} /></span>
                     <span class="quest-body">
-                      <span class="quest-head"><strong>{quest.title}</strong><span class="quest-minutes"><Icon name="clock" size={11} /> {quest.minutes} 分钟</span></span>
+                      <span class="quest-head"><strong>{quest.title}</strong><span class="quest-minutes"><Icon name="clock" size={11} /> {quest.minutes} {isFr ? "min" : "分钟"}</span></span>
                       <span class="quest-task">{quest.task}</span>
                       {quest.tip && <span class="quest-tip"><Icon name="sparkle" size={11} /> {quest.tip}</span>}
                       <span class="quest-index">{String(questIndex + 1).padStart(2, "0")}</span>
@@ -101,19 +178,19 @@ const stages = STAGES.map((stage) => ({
 
             <div class="stage-details-grid">
               <div class="stage-box">
-                <span class="stage-box-label"><Icon name="music" size={14} /> 本站曲目与游戏</span>
+                <span class="stage-box-label"><Icon name="music" size={14} /> {t.stagePieces}</span>
                 <ul>
                   {stage.pieces.map((piece) => <li><strong>{piece.title}</strong><span>{piece.note}</span></li>)}
                 </ul>
               </div>
               <div class="stage-box">
-                <span class="stage-box-label"><Icon name="play" size={14} /> 推荐观看</span>
+                <span class="stage-box-label"><Icon name="play" size={14} /> {t.stageWatch}</span>
                 <ul class="watch-list">
                   {
                     stage.watchItems.map((tutorial) => (
                       <li>
                         <a href={`https://www.youtube.com/watch?v=${tutorial.youtubeId}`} target="_blank" rel="noopener noreferrer">
-                          <span>{tutorial.zhTitle}</span>
+                          <span>{tutorial.displayTitle}</span>
                           <small>{tutorial.channel} · {tutorial.duration}</small>
                         </a>
                       </li>
@@ -124,13 +201,13 @@ const stages = STAGES.map((stage) => ({
             </div>
 
             <div class="stage-parent-tip">
-              <span><Icon name="heart" size={14} /> 给大人的一句话</span>
+              <span><Icon name="heart" size={14} /> {t.parentWord}</span>
               <p>{stage.parentTip}</p>
             </div>
 
             <div class="stage-checkpoint">
               <span class="checkpoint-icon"><Icon name="trophy" size={19} /></span>
-              <div><span class="stage-box-label">这一站通关时，我能……</span><p>{stage.checkpoint}</p></div>
+              <div><span class="stage-box-label">{t.checkpoint}</span><p>{stage.checkpoint}</p></div>
             </div>
           </div>
         </details>
@@ -141,11 +218,11 @@ const stages = STAGES.map((stage) => ({
   <div class="roadmap-complete" data-roadmap-complete hidden>
     <div class="complete-burst" aria-hidden="true">✦</div>
     <div>
-      <span class="mini-kicker">All stars lit</span>
-      <h2>你的星空地图，全部点亮了。</h2>
-      <p>这不是终点，只是下一段音乐旅程的起点。去弹给一个你喜欢的人听吧。</p>
+      <span class="mini-kicker">{t.allLit}</span>
+      <h2>{t.completeTitle}</h2>
+      <p>{t.completeText}</p>
     </div>
-    <a class="btn btn-sun" href={url("/concert/")}><Icon name="headphones" size={15} /> 去音乐厅庆祝</a>
+    <a class="btn btn-sun" href={url(concertPath)}><Icon name="headphones" size={15} /> {t.concert}</a>
   </div>
 </div>
 
@@ -156,6 +233,26 @@ const stages = STAGES.map((stage) => ({
 
   const root = document.querySelector<HTMLElement>("[data-roadmap]")!;
   if (root) {
+    const isFr = root.dataset.lang === "fr";
+    const txt = isFr
+      ? {
+          greeting: (name: string) => (name ? `Bonjour, ${name}` : "Bonjour, jeune guitariste"),
+          taskLabel: (done: number, total: number) => `${done} / ${total} missions`,
+          leadStart: "Chaque petite mission allume une étoile. Pas besoin de courir.",
+          leadDone: "Toutes les étoiles sont allumées. Tu peux maintenant jouer pour le monde.",
+          leadSome: (done: number) => `Tu as déjà allumé ${done} étoiles. La prochaine demande juste un petit geste.`,
+          allDone: "Tout est allumé · va fêter ça à la salle de concert",
+          confirm: "Effacer toutes les étoiles et le prénom ? Cette action est définitive.",
+        }
+      : {
+          greeting: (name: string) => (name ? `你好，${name}` : "你好，小音乐家"),
+          taskLabel: (done: number, total: number) => `${done} / ${total} 个任务`,
+          leadStart: "每完成一个小任务，就点亮一颗星。不用赶路，慢慢来。",
+          leadDone: "全部星星都亮了。现在的你，已经可以弹给世界听了。",
+          leadSome: (done: number) => `你已经点亮了 ${done} 颗星。下一颗，不用很用力，只要轻轻拨响。`,
+          allDone: "全部点亮 · 去音乐厅庆祝吧",
+          confirm: "要把所有星星和名字都清空吗？这个操作不能撤销。",
+        };
     const stageEls = Array.from(root.querySelectorAll<HTMLDetailsElement>("[data-stage]"));
     const checkboxes = Array.from(root.querySelectorAll<HTMLInputElement>("[data-quest]"));
     const ring = root.querySelector<HTMLElement>("[data-progress-ring]");
@@ -186,7 +283,7 @@ const stages = STAGES.map((stage) => ({
 
       stageEls.forEach((stage) => {
         const { done: stageDoneCount, total: stageTotal } = stageDone(stage);
-        stage.querySelector<HTMLElement>("[data-stage-progress]")!.textContent = `${stageDoneCount} / ${stageTotal} 个任务`;
+        stage.querySelector<HTMLElement>("[data-stage-progress]")!.textContent = txt.taskLabel(stageDoneCount, stageTotal);
         if (stageDoneCount === stageTotal) {
           stagesDone += 1;
           stage.classList.add("is-complete");
@@ -207,14 +304,14 @@ const stages = STAGES.map((stage) => ({
       if (practiceCountEl) practiceCountEl.textContent = String(progress.sessions.length);
 
       const name = progress.name.trim();
-      if (greeting) greeting.textContent = name ? `你好，${name}` : "你好，小音乐家";
+      if (greeting) greeting.textContent = txt.greeting(name);
       if (lead) {
         lead.textContent =
           done === 0
-            ? "每完成一个小任务，就点亮一颗星。不用赶路，慢慢来。"
+            ? txt.leadStart
             : done === total
-              ? "全部星星都亮了。现在的你，已经可以弹给世界听了。"
-              : `你已经点亮了 ${done} 颗星。下一颗，不用很用力，只要轻轻拨响。`;
+              ? txt.leadDone
+              : txt.leadSome(done);
       }
 
       const firstIncomplete = stageEls.find((stage) => {
@@ -226,7 +323,7 @@ const stages = STAGES.map((stage) => ({
         const subtitle = firstIncomplete.querySelector(".stage-title-wrap small")?.textContent ?? "";
         currentStageEl.textContent = `${title} · ${subtitle}`;
       } else if (currentStageEl) {
-        currentStageEl.textContent = "全部点亮 · 去音乐厅庆祝吧";
+        currentStageEl.textContent = txt.allDone;
       }
 
       if (nameInput && nameInput.value !== name) nameInput.value = name;
@@ -258,7 +355,7 @@ const stages = STAGES.map((stage) => ({
     nameInput?.addEventListener("input", () => {
       saveName(nameInput.value);
       const name = nameInput.value.trim();
-      if (greeting) greeting.textContent = name ? `你好，${name}` : "你好，小音乐家";
+      if (greeting) greeting.textContent = txt.greeting(name);
     });
 
     checkboxes.forEach((checkbox) => {
@@ -270,7 +367,7 @@ const stages = STAGES.map((stage) => ({
     });
 
     resetBtn?.addEventListener("click", () => {
-      const confirmed = window.confirm("要把所有星星和名字都清空吗？这个操作不能撤销。");
+      const confirmed = window.confirm(txt.confirm);
       if (!confirmed) return;
       resetProgress();
       checkboxes.forEach((checkbox) => (checkbox.checked = false));

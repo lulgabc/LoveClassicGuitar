@@ -2,17 +2,48 @@
 import { GLOSSARY } from "../data/basics";
 import Icon from "./Icon.astro";
 
-const categories = ["全部", "琴与手", "读谱", "声音", "练习"] as const;
+type GlossaryEntryLike = {
+  term: string;
+  en: string;
+  category: string;
+  definition: string;
+};
+
+interface Props {
+  entries?: GlossaryEntryLike[];
+  categories?: string[];
+  lang?: "zh" | "fr";
+}
+
+const {
+  entries = GLOSSARY,
+  categories = ["全部", "琴与手", "读谱", "声音", "练习"],
+  lang = "zh",
+} = Astro.props;
+const isFr = lang === "fr";
+const t = isFr
+  ? {
+      search: "Chercher un mot, par exemple « corde »…",
+      filters: "Filtrer par catégorie",
+      count: "mots",
+      empty: "Aucun mot trouvé. Essaie un mot plus court.",
+    }
+  : {
+      search: "搜一个词，比如“空弦”…",
+      filters: "按类别筛选",
+      count: "个词",
+      empty: "还没有找到这个词。换个短一点的词试试？",
+    };
 ---
 
-<div class="glossary" data-glossary>
+<div class="glossary" data-glossary data-all={categories[0]}>
   <div class="glossary-toolbar">
     <label class="glossary-search">
       <Icon name="search" size={17} />
-      <span class="sr-only">搜索音乐术语</span>
-      <input type="search" placeholder="搜一个词，比如“空弦”…" data-glossary-search />
+      <span class="sr-only">{t.search}</span>
+      <input type="search" placeholder={t.search} data-glossary-search />
     </label>
-    <div class="glossary-filters" role="group" aria-label="按类别筛选">
+    <div class="glossary-filters" role="group" aria-label={t.filters}>
       {
         categories.map((category, index) => (
           <button
@@ -26,12 +57,12 @@ const categories = ["全部", "琴与手", "读谱", "声音", "练习"] as cons
         ))
       }
     </div>
-    <span class="glossary-count"><strong data-glossary-count>{GLOSSARY.length}</strong> 个词</span>
+    <span class="glossary-count"><strong data-glossary-count>{entries.length}</strong> {t.count}</span>
   </div>
 
   <div class="glossary-grid" data-glossary-grid>
     {
-      GLOSSARY.map((entry) => (
+      entries.map((entry) => (
         <article class="glossary-card" data-glossary-item data-category={entry.category} data-search={`${entry.term} ${entry.en} ${entry.definition}`.toLowerCase()}>
           <div class="glossary-card-top">
             <h3>{entry.term}</h3>
@@ -44,7 +75,7 @@ const categories = ["全部", "琴与手", "读谱", "声音", "练习"] as cons
     }
   </div>
 
-  <p class="glossary-empty" data-glossary-empty hidden>还没有找到这个词。换个短一点的词试试？</p>
+  <p class="glossary-empty" data-glossary-empty hidden>{t.empty}</p>
 </div>
 
 <script>
@@ -55,13 +86,13 @@ const categories = ["全部", "琴与手", "读谱", "声音", "练习"] as cons
     const items = Array.from(root.querySelectorAll<HTMLElement>("[data-glossary-item]"));
     const count = root.querySelector<HTMLElement>("[data-glossary-count]");
     const empty = root.querySelector<HTMLElement>("[data-glossary-empty]");
-    let activeCategory = "全部";
+    let activeCategory = root.dataset.all ?? "全部";
 
     function apply(): void {
       const query = (search?.value ?? "").trim().toLowerCase();
       let visible = 0;
       items.forEach((item) => {
-        const categoryOk = activeCategory === "全部" || item.dataset.category === activeCategory;
+        const categoryOk = activeCategory === (root.dataset.all ?? "全部") || item.dataset.category === activeCategory;
         const searchOk = !query || (item.dataset.search ?? "").includes(query);
         const show = categoryOk && searchOk;
         item.hidden = !show;
@@ -73,7 +104,7 @@ const categories = ["全部", "琴与手", "读谱", "声音", "练习"] as cons
 
     filters.forEach((button) => {
       button.addEventListener("click", () => {
-        activeCategory = button.dataset.glossaryFilter ?? "全部";
+        activeCategory = button.dataset.glossaryFilter ?? root.dataset.all ?? "全部";
         filters.forEach((item) => {
           const active = item === button;
           item.classList.toggle("is-active", active);

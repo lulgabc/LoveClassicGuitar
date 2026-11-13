@@ -4,18 +4,17 @@ import HeroScene from "../components/HeroScene.astro";
 import SectionHead from "../components/SectionHead.astro";
 import MascotBubble from "../components/MascotBubble.astro";
 import TutorialCard from "../components/TutorialCard.astro";
-import YouTubePanel from "../components/YouTubePanel.astro";
+import Jukebox from "../components/Jukebox.astro";
 import Icon from "../components/Icon.astro";
 import { HERO_CHIPS } from "../data/site";
-import { STAGES, TOTAL_QUESTS, PRINCIPLES } from "../data/roadmap";
+import { STAGES, TOTAL_QUESTS } from "../data/roadmap";
 import { FEATURED_TUTORIALS } from "../data/videos";
 import { PERFORMANCES, MASTERS } from "../data/concert";
 import { RESOURCES } from "../data/library";
 import { url } from "../lib/url";
 
 const featuredTutorials = FEATURED_TUTORIALS.slice(0, 3);
-const featured = PERFORMANCES[0];
-const menu = [PERFORMANCES[1], PERFORMANCES[6], PERFORMANCES[7]];
+const homeTracks = PERFORMANCES.slice(0, 4);
 const stats = [
   { value: String(STAGES.length), label: "站学习地图" },
   { value: String(TOTAL_QUESTS), label: "个小任务" },
@@ -27,7 +26,7 @@ const quickLinks = [
     icon: "book" as const,
     eyebrow: "先认识它",
     title: "吉他小百科",
-    text: "六根弦、坐姿、左右手和读谱，用孩子听得懂的话慢慢讲。",
+    text: "认识琴、姿势、六根弦和读谱。点一点，就能听见声音。",
     href: "/basics/",
     color: "sky",
   },
@@ -35,7 +34,7 @@ const quickLinks = [
     icon: "timer" as const,
     eyebrow: "今天练什么",
     title: "15 分钟练习室",
-    text: "跟着计时器、节拍器和小游戏，把练习变成一场小冒险。",
+    text: "计时器、节拍器和两个小游戏，把练习变成一场冒险。",
     href: "/practice/",
     color: "violet",
   },
@@ -43,7 +42,7 @@ const quickLinks = [
     icon: "headphones" as const,
     eyebrow: "耳朵先出发",
     title: "星空音乐厅",
-    text: "听大师演奏，不用懂乐理也能找到喜欢的声音和故事。",
+    text: "在页面里直接听大师演奏，找到你喜欢的声音。",
     href: "/concert/",
     color: "pink",
   },
@@ -54,7 +53,7 @@ const featureBoxes = [
     number: "01",
     icon: "music" as const,
     title: "一把琴，就是一支小乐队",
-    text: "古典吉他可以同时唱旋律、走低音、铺和声。一个人坐着，也能拥有一个完整的音乐世界。",
+    text: "旋律、低音和和声，一个人也能拥有完整的小乐队。",
     foot: "melody + bass + harmony",
     color: "violet",
   },
@@ -62,7 +61,7 @@ const featureBoxes = [
     number: "02",
     icon: "wand" as const,
     title: "十根手指，就是调色盘",
-    text: "不用拨片。靠弦、勾弦、靠琴桥或靠音孔，同一个音可以变成亮晶晶、暖融融或软绵绵。",
+    text: "不用拨片。触弦位置一变，同一个音就有了不同颜色。",
     foot: "tone color is a superpower",
     color: "sky",
   },
@@ -70,7 +69,7 @@ const featureBoxes = [
     number: "03",
     icon: "compass" as const,
     title: "一根弦，能走 500 年",
-    text: "从巴赫的舞曲、西班牙的城堡，到南美的雨林和今天的电影音乐，六根弦一直有新故事。",
+    text: "从巴赫到西班牙，再到今天的电影音乐，六根弦一直有新故事。",
     foot: "Bach → Tárrega → today",
     color: "pink",
   },
@@ -91,8 +90,8 @@ const resourceHighlights = RESOURCES.filter((resource) =>
           带你去<span class="hero-highlight">星星上面</span>
         </h1>
         <p class="hero-lead">
-          和小蝙蝠 Momo、水豚 Capi 一起，从第一声拨弦开始，慢慢弹出自己的音乐会。
-          这里没有催促，也没有排名，只有一颗一颗亮起来的小星星。
+          和小蝙蝠 Momo、水豚 Capi 一起，从第一声拨弦开始，弹出自己的小音乐会。
+          这里没有催促，也没有排名。
         </p>
         <div class="btn-row hero-actions">
           <a class="btn btn-sun btn-lg" href={url("/roadmap/")}>
@@ -243,16 +242,6 @@ const resourceHighlights = RESOURCES.filter((resource) =>
           ))
         }
       </div>
-      <div class="principles-row">
-        {
-          PRINCIPLES.slice(0, 3).map((principle) => (
-            <div class="principle">
-              <Icon name="check" size={16} />
-              <div><strong>{principle.title}</strong><p>{principle.body}</p></div>
-            </div>
-          ))
-        }
-      </div>
     </div>
   </section>
 
@@ -262,7 +251,7 @@ const resourceHighlights = RESOURCES.filter((resource) =>
         <SectionHead
           kicker="A little every day"
           title="15 分钟，<em>刚刚好</em>。"
-          lead="热身 2 分钟，技术 4 分钟，曲目 6 分钟，听一听 3 分钟。短而专注，比硬撑一小时更适合 7 岁的小手。"
+          lead="热身 2 分钟，技术 4 分钟，曲目 6 分钟，听一听 3 分钟。短而专注，刚刚好。"
         />
         <div class="practice-points">
           <div><span>01</span><p><strong>先听声音</strong>不急着弹下一根弦。</p></div>
@@ -303,47 +292,13 @@ const resourceHighlights = RESOURCES.filter((resource) =>
     <div class="container">
       <div class="section-head-row">
         <SectionHead
-          kicker="Listening room"
-          title="今晚，听一首会讲故事的<em>吉他</em>"
-          lead="不需要正襟危坐。把音量调到舒服，听 2 分钟，找到一条你喜欢的旋律。"
+          kicker="Listening room · 直接在页面里听"
+          title="点一首，让<em>音乐</em>开始。"
+          lead="Momo 已经准备好播放器。选一首，闭上眼睛，听 2 分钟；也可以只是找到你喜欢的那个声音。"
         />
-        <a class="btn btn-secondary" href={url("/concert/")}>进入音乐厅 <Icon name="arrow-right" size={14} /></a>
+        <a class="btn btn-secondary" href={url("/concert/")}>更多曲目 <Icon name="arrow-right" size={14} /></a>
       </div>
-
-      <div class="listening-layout">
-        <YouTubePanel performance={featured} />
-        <aside class="listen-menu card">
-          <div class="listen-menu-head">
-            <span class="listen-menu-kicker">Momo's playlist</span>
-            <h3>从这三首开始</h3>
-            <p>每首听一遍，挑一首你愿意再听一次的。</p>
-          </div>
-          <ul>
-            {
-              menu.map((item, index) => (
-                <li>
-                  <a href={`https://www.youtube.com/watch?v=${item.youtubeId}`} target="_blank" rel="noopener noreferrer">
-                    <span class="menu-number">0{index + 1}</span>
-                    <span class="menu-copy">
-                      <strong>{item.title}</strong>
-                      <small>{item.performer}</small>
-                    </span>
-                    <span class="menu-play"><Icon name="play" size={13} /></span>
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-          <div class="listen-menu-moment">
-            <span class="moment-note" aria-hidden="true">♪</span>
-            <p><strong>听不出来也没关系。</strong>先找一段你愿意再听一次的声音，就已经是很好的开始。</p>
-          </div>
-          <div class="listen-menu-foot">
-            <span><Icon name="headphones" size={14} /> 视频外链 · 家长可先预览</span>
-            <a href={url("/concert/#masters")}>认识演奏家 <Icon name="arrow-right" size={12} /></a>
-          </div>
-        </aside>
-      </div>
+      <Jukebox items={homeTracks} lang="zh" />
     </div>
   </section>
 
@@ -353,7 +308,7 @@ const resourceHighlights = RESOURCES.filter((resource) =>
         <SectionHead
           kicker="Free & public"
           title="免费好课，<em>先挑三个</em>"
-          lead="不是收藏夹里越多越好。先看一个姿势视频，再练一个手指热身，最后试一首《欢乐颂》。"
+          lead="先看一个姿势视频，再试一个手指热身。一次只挑一个。"
         />
         <a class="btn btn-ghost" href={url("/library/")}>全部免费资源 <Icon name="arrow-right" size={14} /></a>
       </div>
@@ -381,10 +336,7 @@ const resourceHighlights = RESOURCES.filter((resource) =>
         <div class="parent-preview-copy">
           <span class="eyebrow"><Icon name="heart" size={13} /> 给爸爸妈妈</span>
           <h2>你不需要懂吉他，<br />也可以是最好的陪练。</h2>
-          <p>
-            帮她调好音、留出 15 分钟、在她弹完时说一句“谢谢你弹给我听”。
-            剩下的，让老师和时间慢慢来。这里有一份不焦虑的陪伴指南。
-          </p>
+          <p>帮她调好音、留出 15 分钟，在她弹完时说一句“谢谢你弹给我听”。剩下的，慢慢来。</p>
           <div class="btn-row">
             <a class="btn btn-primary" href={url("/parents/")}>读陪伴指南 <Icon name="arrow-right" size={14} /></a>
             <a class="btn btn-ghost" href={url("/parents/#teacher")}>怎样找老师？</a>
@@ -1126,7 +1078,6 @@ const resourceHighlights = RESOURCES.filter((resource) =>
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 800;
-    opacity: 0.65;
   }
 
   .why-card h3 {
@@ -1157,7 +1108,6 @@ const resourceHighlights = RESOURCES.filter((resource) =>
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    opacity: 0.75;
   }
 
   .why-orbit {

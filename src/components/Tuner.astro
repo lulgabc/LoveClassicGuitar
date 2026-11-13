@@ -1,21 +1,44 @@
 ---
-import { GUITAR_STRINGS } from "../data/basics";
+import { GUITAR_STRINGS, type GuitarString } from "../data/basics";
 import Icon from "./Icon.astro";
+
+interface Props {
+  strings?: GuitarString[];
+  lang?: "zh" | "fr";
+}
+
+const { strings = GUITAR_STRINGS, lang = "zh" } = Astro.props;
+const isFr = lang === "fr";
+const t = isFr
+  ? {
+      kicker: "Notes de référence · Accorder",
+      title: "Le son juste des six cordes",
+      lead: "Touche une corde pour entendre sa note. Demande à un adulte de comparer avec un accordeur.",
+      all: "Écouter de la plus grave à la plus aiguë",
+      note: "Ce sont des notes de référence, pas un accordeur automatique. Si le son est différent, ne force pas les mécaniques : tourne très doucement.",
+    }
+  : {
+      kicker: "Tuning reference · 听音调弦",
+      title: "六根弦的标准声音",
+      lead: "点一根弦，听它的标准音。请大人用调音器 App 对照，慢慢转动弦轴。",
+      all: "从低到高听一遍",
+      note: "这是参考音，不是自动调音器。如果你听到的声音和它不一样，不要猛拧弦轴。请大人确认方向，一次只转一点点。",
+    };
 ---
 
 <div class="tuner card" data-tuner>
   <div class="tuner-head">
     <div>
-      <span class="tool-kicker">Tuning reference · 听音调弦</span>
-      <h3>六根弦的标准声音</h3>
-      <p>点一根弦，听它的标准音。请大人用调音器 App 对照，慢慢转动弦轴。</p>
+      <span class="tool-kicker">{t.kicker}</span>
+      <h3>{t.title}</h3>
+      <p>{t.lead}</p>
     </div>
-    <button class="play-all" type="button" data-play-all><Icon name="volume" size={15} /> 从低到高听一遍</button>
+    <button class="play-all" type="button" data-play-all><Icon name="volume" size={15} /> {t.all}</button>
   </div>
 
   <div class="tuner-strings">
     {
-      GUITAR_STRINGS.map((string) => (
+      strings.map((string) => (
         <button class="tuner-string" type="button" data-tone-frequency={string.frequency} data-tuner-string={string.number}>
           <span class="tuner-num">{string.number}</span>
           <span class="tuner-line" style={`--line-color:${string.color};--line-width:${2.3 - (string.number - 1) * 0.22}px`}></span>
@@ -29,7 +52,7 @@ import Icon from "./Icon.astro";
 
   <div class="tuner-note">
     <span class="tuner-note-icon"><Icon name="info" size={15} /></span>
-    <p><strong>这是参考音，不是自动调音器。</strong> 如果你听到的声音和它不一样，不要猛拧弦轴。请大人确认方向，一次只转一点点。</p>
+    <p>{t.note}</p>
   </div>
 </div>
 

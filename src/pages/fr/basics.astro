@@ -1,0 +1,951 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import Anatomy from "../../components/Anatomy.astro";
+import StringBoard from "../../components/StringBoard.astro";
+import GlossaryExplorer from "../../components/GlossaryExplorer.astro";
+import BasicsQuiz from "../../components/BasicsQuiz.astro";
+import MascotBubble from "../../components/MascotBubble.astro";
+import Icon from "../../components/Icon.astro";
+import { BASICS_QUIZ_FR, CARE_TIPS_FR, GLOSSARY_FR, GUITAR_PARTS_FR, GUITAR_STRINGS_FR, POSTURE_STEPS_FR, STRING_CHANT_FR, TIMELINE_FR } from "../../data/fr/basics";
+import { url } from "../../lib/url";
+
+const chapters = [
+  { id: "anatomy", label: "La guitare" },
+  { id: "strings", label: "Les cordes" },
+  { id: "posture", label: "La position" },
+  { id: "hands", label: "Les mains" },
+  { id: "reading", label: "Lire" },
+  { id: "glossary", label: "Mini-dico" },
+  { id: "quiz", label: "Quiz" },
+];
+const rightHand = [
+  { finger: "p", name: "Pouce", role: "Basses et accords" },
+  { finger: "i", name: "Index", role: "Mélodie et cordes hautes" },
+  { finger: "m", name: "Majeur", role: "Alterne avec l'index" },
+  { finger: "a", name: "Annulaire", role: "Couleurs et accords" },
+];
+const faqs = [
+  { q: "J'ai un peu mal au bout des doigts, c'est normal ?", a: "Une légère pression est possible au début. Une douleur vive, un engourdissement ou une douleur qui dure ne sont pas normaux : arrête et parle à un adulte." },
+  { q: "Je dois jouer tous les jours ?", a: "Non. Trois à cinq fois par semaine, pendant 10 à 15 minutes, suffisent souvent. Écouter de la musique compte aussi." },
+  { q: "Faut-il un professeur ?", a: "C'est fortement recommandé au début pour vérifier la taille de la guitare, la posture et les gestes. Même une leçon de temps en temps aide." },
+  { q: "Combien de temps pour jouer un morceau ?", a: "Avec une pratique régulière, beaucoup d'enfants jouent une courte mélodie après deux ou trois mois. Chaque enfant avance à son rythme." },
+];
+---
+
+<BaseLayout lang="fr" title="Découvrir la guitare" description="Les bases de la guitare classique pour les enfants : parties de l'instrument, cordes à vide, posture, mains, lecture, entretien et quiz interactif.">
+  <PageHero
+    kicker="Chapitre 01 · Les bases"
+    title="D'abord, fais<br />connaissance avec <em>la guitare</em>."
+    lead="Pas besoin de théorie. Regarde, touche, écoute : la musique commence avec une seule corde."
+  >
+    <div class="slug">
+      <a href="#anatomy">La guitare</a>
+      <a href="#strings">Les cordes</a>
+      <a href="#posture">La position</a>
+      <a href="#hands">Les mains</a>
+      <a href="#quiz">Quiz</a>
+    </div>
+  </PageHero>
+
+  <nav class="chapter-rail" aria-label="Sommaire de la page">
+    <div class="container rail-inner">
+      <span class="rail-label"><Icon name="compass" size={15} /> Au programme</span>
+      <div class="rail-links">
+        {chapters.map((chapter) => <a href={`#${chapter.id}`}>{chapter.label}</a>)}
+      </div>
+      <a class="rail-top" href={url("/fr/roadmap/")}>Le parcours <Icon name="arrow-right" size={12} /></a>
+    </div>
+  </nav>
+
+  <section class="section" id="anatomy">
+    <div class="container">
+      <SectionHead
+        kicker="01 · Rencontrer l'instrument"
+        title="Onze petits secrets"
+        lead="Touche un chiffre, puis retrouve la partie sur la vraie guitare."
+      />
+      <Anatomy parts={GUITAR_PARTS_FR} lang="fr" />
+      <div class="row-note">
+        <MascotBubble who="capi" title="Le conseil de Capi" text="Mes cordes sont en nylon, plus douces que l'acier. Mais il faut quand même poser les doigts juste derrière la frette." tone="sun" />
+        <a class="text-link" href="#strings">Les six cordes <Icon name="arrow-right" size={13} /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="strings">
+    <div class="container">
+      <SectionHead kicker="02 · Six cordes" title="Six voix à écouter" lead="Touche une corde pour entendre sa note de référence." />
+      <StringBoard strings={GUITAR_STRINGS_FR} chant={STRING_CHANT_FR} lang="fr" />
+    </div>
+  </section>
+
+  <section class="section" id="posture">
+    <div class="container">
+      <SectionHead kicker="03 · Bien s'installer" title="La guitare contre soi, le corps détendu" lead="On vérifie six petits points, sans se raidir. La position doit aider la main, pas la bloquer." />
+      <div class="posture-grid">
+        {POSTURE_STEPS_FR.map((step) => (
+          <article class="posture-card card">
+            <div class="posture-head"><span>{step.n}</span><h3>{step.title}</h3></div>
+            <p>{step.body}</p>
+            <div class="posture-check">✓ {step.check}</div>
+            <label class="check-label"><input type="checkbox" data-fr-posture /><span>Je vérifie ce point</span></label>
+          </article>
+        ))}
+      </div>
+      <div class="posture-progress">
+        <div><span><Icon name="check" size={14} /> Points vérifiés</span><strong><span data-fr-posture-count>0</span> / 6</strong></div>
+        <div class="posture-bar"><span data-fr-posture-bar style="width:0%"></span></div>
+        <p data-fr-posture-message>Un point à la fois, tranquillement.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="hands">
+    <div class="container">
+      <SectionHead kicker="04 · Deux mains" title="p, i, m, a : les quatre amis" lead="La main droite fait sonner les cordes, la main gauche choisit les notes." />
+      <div class="hands-grid">
+        <article class="hand-card card">
+          <span class="mini-kicker">Main droite</span>
+          <h3>p · i · m · a</h3>
+          <p>Ce sont les initiales espagnoles des doigts. La main reste souple, au-dessus des cordes.</p>
+          <div class="finger-grid">
+            {rightHand.map((finger) => <div><b>{finger.finger}</b><span>{finger.name}</span><small>{finger.role}</small></div>)}
+          </div>
+        </article>
+        <article class="hand-card card">
+          <span class="mini-kicker">Main gauche</span>
+          <h3>1 · 2 · 3 · 4</h3>
+          <p>Index, majeur, annulaire, auriculaire. Les doigts se tiennent debout, le pouce reste derrière le manche.</p>
+          <div class="left-hand">
+            <span>1</span><span>2</span><span>3</span><span>4</span>
+          </div>
+          <ul class="mini-list"><li>Appuie juste derrière la frette.</li><li>Cherche un son clair, sans serrer fort.</li></ul>
+        </article>
+      </div>
+      <div class="stroke-grid">
+        <div><b>Apoyando</b><span>Le doigt s'appuie sur la corde voisine : un son plein.</span></div>
+        <div><b>Tirando</b><span>Le doigt revient vers la paume : un son plus léger.</span></div>
+      </div>
+      <div class="row-note">
+        <MascotBubble who="momo" title="Le conseil de Momo" text="Si les doigts se fatiguent, secoue les mains et respire. Le repos fait partie du jeu." tone="pink" />
+        <a class="btn btn-secondary" href={url("/fr/practice/")}>Aller au studio <Icon name="arrow-right" size={13} /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="reading">
+    <div class="container">
+      <SectionHead kicker="05 · Lire la musique" title="Lire, c'est dessiner une carte" lead="La portée indique les hauteurs et le rythme. La tablature indique où poser les doigts." />
+      <div class="reading-grid">
+        <article class="reading-card card">
+          <span class="mini-kicker">Les durées</span>
+          <h3>Combien de temps ?</h3>
+          <div class="note-values">
+            <div><span class="note whole"></span><strong>Ronde</strong><small>4 temps</small></div>
+            <div><span class="note half"></span><strong>Blanche</strong><small>2 temps</small></div>
+            <div><span class="note quarter"></span><strong>Noire</strong><small>1 temps</small></div>
+            <div><span class="note eighth"></span><strong>Croche</strong><small>½ temps</small></div>
+          </div>
+          <p>Tape dans les mains : 1–2–3–4. Chaque note garde sa place.</p>
+        </article>
+        <article class="reading-card card">
+          <span class="mini-kicker">La tablature</span>
+          <h3>Six lignes, des chiffres</h3>
+          <pre>e |--0--1--3--|
+B |-----------|
+G |-----------|
+D |-----------|
+A |-----------|
+E |-----------|</pre>
+          <div class="tab-legend"><span><b>0</b> à vide</span><span><b>1</b> case 1</span><span><b>3</b> case 3</span></div>
+          <p>Guitare : le son écrit est un octave plus haut que le son réel. Un petit secret, pas une urgence.</p>
+        </article>
+      </div>
+      <a class="btn btn-primary" href={url("/fr/practice/")}><Icon name="game" size={15} /> Jouer à la chasse aux notes</a>
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container two-folds">
+      <details class="fold card">
+        <summary><span><Icon name="shield" size={18} /> Prendre soin de la guitare</span><Icon name="chevron-down" size={16} /></summary>
+        <ul>{CARE_TIPS_FR.map((tip) => <li><Icon name="check" size={13} /> {tip}</li>)}</ul>
+      </details>
+      <details class="fold card">
+        <summary><span><Icon name="book" size={18} /> Une petite histoire</span><Icon name="chevron-down" size={16} /></summary>
+        <div class="timeline-fr">
+          {TIMELINE_FR.map((item) => <div><span>{item.year}</span><div><strong>{item.title}</strong><p>{item.body}</p></div></div>)}
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="section" id="glossary">
+    <div class="container">
+      <SectionHead kicker="06 · Mini-dictionnaire" title="Un mot inconnu ? Cherche ici" lead="Pas besoin d'apprendre par cœur. Un mot revient, puis devient familier." />
+      <GlossaryExplorer entries={GLOSSARY_FR} categories={["Tous", "Guitare & mains", "Lecture", "Son", "Pratique"]} lang="fr" />
+    </div>
+  </section>
+
+  <section class="section section-wash" id="quiz">
+    <div class="container quiz-layout">
+      <div>
+        <SectionHead kicker="07 · Petit quiz" title="Détective de la musique" lead="Six questions, zéro pression. Une erreur explique simplement la réponse." />
+        <MascotBubble who="capi" title="Capi te souffle" text="Tu n'as pas besoin d'être parfait. Tu as seulement besoin d'être curieux." tone="sky" />
+      </div>
+      <BasicsQuiz questions={BASICS_QUIZ_FR} lang="fr" />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead kicker="Questions d'enfants" title="Les questions qu'on n'ose pas toujours poser" />
+      <div class="faq-list">
+        {faqs.map((faq, index) => <details open={index === 0}><summary><span>{String(index + 1).padStart(2, "0")}</span>{faq.q}<Icon name="chevron-down" size={16} /></summary><p>{faq.a}</p></details>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container next-cta">
+      <div><span class="eyebrow"><Icon name="map" size={14} /> La suite</span><h2>Les mains ont envie d'essayer ?</h2></div>
+      <div class="btn-row"><a class="btn btn-primary" href={url("/fr/roadmap/")}>Ouvrir le parcours <Icon name="arrow-right" size={14} /></a><a class="btn btn-ghost" href={url("/fr/practice/")}>Aller au studio</a></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const checks = Array.from(document.querySelectorAll<HTMLInputElement>("[data-fr-posture]"));
+  const count = document.querySelector<HTMLElement>("[data-fr-posture-count]");
+  const bar = document.querySelector<HTMLElement>("[data-fr-posture-bar]");
+  const message = document.querySelector<HTMLElement>("[data-fr-posture-message]");
+
+  function updatePosture(): void {
+    const done = checks.filter((check) => check.checked).length;
+    if (count) count.textContent = String(done);
+    if (bar) bar.style.width = `${(done / checks.length) * 100}%`;
+    if (message) {
+      message.textContent = done === checks.length ? "Six points vérifiés. Installe la guitare et pince une corde à vide." : done === 0 ? "Un point à la fois, tranquillement." : `${done} point(s) vérifié(s), regarde les autres.`;
+    }
+    checks.forEach((check) => check.closest(".check-label")?.classList.toggle("is-checked", check.checked));
+  }
+
+  checks.forEach((check) => check.addEventListener("change", updatePosture));
+  updatePosture();
+</script>
+
+<style>
+  .slug {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .slug a {
+    display: inline-flex;
+    padding: 5px 9px;
+    color: #d7caf4;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 9.5px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .slug a:hover {
+    color: #fff1c9;
+    background: rgba(255, 216, 111, 0.1);
+  }
+
+  #anatomy,
+  #strings,
+  #posture,
+  #hands,
+  #reading,
+  #glossary,
+  #quiz {
+    scroll-margin-top: calc(var(--header-h) + 82px);
+  }
+
+  .chapter-rail {
+    position: sticky;
+    top: var(--header-h);
+    z-index: 40;
+    background: color-mix(in srgb, var(--bg) 91%, transparent);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(16px);
+  }
+
+  .rail-inner {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-height: 52px;
+  }
+
+  .rail-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex: 0 0 auto;
+    color: var(--violet-700);
+    font-size: 9px;
+    font-weight: 850;
+  }
+
+  .rail-links {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    overflow-x: auto;
+    padding: 6px 0;
+    scrollbar-width: none;
+  }
+
+  .rail-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rail-links a {
+    flex: 0 0 auto;
+    padding: 5px 8px;
+    color: var(--muted);
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .rail-links a:hover {
+    color: var(--violet-700);
+    background: var(--violet-wash);
+  }
+
+  .rail-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    flex: 0 0 auto;
+    margin-left: auto;
+    color: var(--ink-soft);
+    font-size: 9px;
+    font-weight: 750;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .row-note {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 18px;
+  }
+
+  .row-note :global(.mascot-bubble) {
+    flex: 1;
+  }
+
+  .text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+    color: var(--violet-700);
+    font-size: 10px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .posture-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 11px;
+  }
+
+  .posture-card {
+    padding: 16px;
+    background: var(--surface);
+  }
+
+  .posture-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .posture-head span {
+    display: grid;
+    place-items: center;
+    width: 29px;
+    height: 29px;
+    color: var(--violet-700);
+    border-radius: 9px;
+    background: var(--violet-wash);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+  }
+
+  .posture-head h3 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 14px;
+  }
+
+  .posture-card > p {
+    margin: 10px 0 0;
+    color: var(--ink-soft);
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .posture-check {
+    margin-top: 9px;
+    padding: 7px 8px;
+    border-radius: 8px;
+    color: #0d6b52;
+    background: var(--mint-wash);
+    font-size: 9.5px;
+    line-height: 1.5;
+  }
+
+  html[data-theme="night"] .posture-check {
+    color: var(--mint-500);
+  }
+
+  .check-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 9.5px;
+    cursor: pointer;
+  }
+
+  .check-label input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--violet-600);
+  }
+
+  .check-label.is-checked {
+    color: var(--violet-700);
+  }
+
+  .posture-progress {
+    margin-top: 15px;
+    padding: 13px 15px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 14px;
+    background: var(--surface-2);
+  }
+
+  .posture-progress > div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--violet-700);
+    font-size: 9px;
+    font-weight: 800;
+  }
+
+  .posture-progress > div:first-child span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .posture-progress strong {
+    font-family: var(--font-mono);
+    font-size: 10px;
+  }
+
+  .posture-bar {
+    height: 7px;
+    margin-top: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--surface-3);
+  }
+
+  .posture-bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--mint-500), var(--violet-500));
+    transition: width 250ms var(--ease);
+  }
+
+  .posture-progress p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 9px;
+  }
+
+  .hands-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .hand-card {
+    padding: 19px;
+    background: var(--surface);
+  }
+
+  .hand-card h3 {
+    margin: 3px 0 5px;
+    color: var(--ink);
+    font-size: 25px;
+  }
+
+  .hand-card > p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.65;
+  }
+
+  .finger-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    margin-top: 13px;
+  }
+
+  .finger-grid > div {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    align-items: center;
+    gap: 2px 6px;
+    padding: 8px;
+    border-radius: 9px;
+    background: var(--surface-2);
+  }
+
+  .finger-grid b {
+    grid-row: 1 / 3;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    color: var(--violet-700);
+    border-radius: 7px;
+    background: var(--violet-wash);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  .finger-grid span {
+    color: var(--ink);
+    font-size: 9px;
+    font-weight: 750;
+  }
+
+  .finger-grid small {
+    color: var(--faint);
+    font-size: 7.5px;
+  }
+
+  .left-hand {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 7px;
+    height: 100px;
+    margin-top: 13px;
+    padding: 10px;
+    border-radius: 12px;
+    background: var(--sky-wash);
+  }
+
+  .left-hand span {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 62px;
+    color: var(--sky-700);
+    border: 1px solid rgba(74, 178, 220, 0.25);
+    border-radius: 12px 12px 16px 16px;
+    background: var(--surface);
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .left-hand span:nth-child(1) { height: 53px; }
+  .left-hand span:nth-child(2) { height: 65px; }
+  .left-hand span:nth-child(3) { height: 59px; }
+  .left-hand span:nth-child(4) { height: 47px; }
+
+  .mini-list {
+    margin: 12px 0 0;
+    padding-left: 1.1em;
+    color: var(--ink-soft);
+    font-size: 9.5px;
+    line-height: 1.7;
+  }
+
+  .stroke-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+    margin-top: 12px;
+  }
+
+  .stroke-grid div {
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: var(--surface);
+  }
+
+  .stroke-grid b {
+    display: block;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 9px;
+  }
+
+  .stroke-grid span {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 9.5px;
+    line-height: 1.55;
+  }
+
+  .reading-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .reading-card {
+    padding: 19px;
+    background: var(--surface);
+  }
+
+  .reading-card h3 {
+    margin: 3px 0 10px;
+    color: var(--ink);
+    font-size: 20px;
+  }
+
+  .note-values {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+
+  .note-values > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 9px 5px;
+    border-radius: 9px;
+    background: var(--surface-2);
+  }
+
+  .note {
+    position: relative;
+    display: block;
+    width: 26px;
+    height: 36px;
+    margin-bottom: 7px;
+  }
+
+  .note::before {
+    content: "";
+    position: absolute;
+    left: 1px;
+    bottom: 2px;
+    width: 17px;
+    height: 12px;
+    border: 2px solid var(--violet-700);
+    border-radius: 50%;
+    transform: rotate(-17deg);
+  }
+
+  .note::after {
+    content: "";
+    position: absolute;
+    right: 6px;
+    top: 2px;
+    width: 2px;
+    height: 26px;
+    border-radius: 2px;
+    background: var(--violet-700);
+  }
+
+  .note.whole::after { display: none; }
+  .note.quarter::before, .note.eighth::before { background: var(--violet-700); }
+  .note.eighth::after { box-shadow: 7px 3px 0 -0.2px var(--violet-700); height: 17px; }
+
+  .note-values strong {
+    color: var(--ink);
+    font-size: 9px;
+  }
+
+  .note-values small {
+    color: var(--faint);
+    font-size: 7.5px;
+  }
+
+  .reading-card > p {
+    margin: 12px 0 0;
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1.65;
+  }
+
+  .reading-card pre {
+    margin: 0;
+    padding: 12px;
+    overflow-x: auto;
+    border-radius: 9px;
+    background: #201631;
+    color: #ebdffd;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .tab-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 9px;
+    color: var(--muted);
+    font-size: 8.5px;
+  }
+
+  .tab-legend b {
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+  }
+
+  .two-folds {
+    display: grid;
+    gap: 10px;
+  }
+
+  .fold {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .fold summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 17px;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 800;
+    list-style: none;
+  }
+
+  .fold summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .fold summary span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .fold summary .icon {
+    margin-left: auto;
+    color: var(--faint);
+    transition: transform 150ms ease;
+  }
+
+  .fold[open] summary .icon {
+    transform: rotate(180deg);
+  }
+
+  .fold ul {
+    display: grid;
+    gap: 7px;
+    margin: 0;
+    padding: 0 17px 17px;
+    list-style: none;
+  }
+
+  .fold ul li {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    color: var(--ink-soft);
+    font-size: 9.5px;
+    line-height: 1.65;
+  }
+
+  .fold ul li .icon {
+    margin-top: 1px;
+    color: var(--mint-500);
+  }
+
+  .timeline-fr {
+    display: grid;
+    gap: 8px;
+    padding: 0 17px 17px;
+  }
+
+  .timeline-fr > div {
+    display: flex;
+    gap: 12px;
+    padding-bottom: 7px;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .timeline-fr > div > span {
+    flex: 0 0 65px;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+  }
+
+  .timeline-fr strong {
+    display: block;
+    color: var(--ink);
+    font-size: 10px;
+  }
+
+  .timeline-fr p {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 8.5px;
+    line-height: 1.6;
+  }
+
+  .quiz-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(26px, 5vw, 62px);
+    align-items: start;
+  }
+
+  .quiz-layout :global(.mascot-bubble) {
+    margin-top: 18px;
+  }
+
+  .faq-list {
+    display: grid;
+    gap: 7px;
+    max-width: 880px;
+  }
+
+  .faq-list details {
+    background: var(--surface);
+  }
+
+  .faq-list summary {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 13px 15px;
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 750;
+    list-style: none;
+  }
+
+  .faq-list summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-list summary span {
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+  }
+
+  .faq-list summary .icon {
+    margin-left: auto;
+    color: var(--faint);
+    transition: transform 150ms ease;
+  }
+
+  .faq-list details[open] summary .icon {
+    transform: rotate(180deg);
+  }
+
+  .faq-list details > p {
+    padding: 0 15px 15px 36px;
+    color: var(--ink-soft);
+    font-size: 10px;
+    line-height: 1.7;
+  }
+
+  .next-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: clamp(23px, 4vw, 34px);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .next-cta h2 {
+    margin-top: 10px;
+    font-size: clamp(22px, 3vw, 31px);
+  }
+
+  @media (max-width: 900px) {
+    .posture-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hands-grid,
+    .reading-grid,
+    .quiz-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .rail-top {
+      display: none;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .posture-grid,
+    .reading-grid,
+    .stroke-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .row-note {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .next-cta {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .rail-label {
+      display: none;
+    }
+
+    .note-values {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

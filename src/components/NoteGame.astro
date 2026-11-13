@@ -1,16 +1,58 @@
 ---
+import { NOTE_QUESTIONS, type NoteQuestion } from "../data/practice";
 import Icon from "./Icon.astro";
+
+interface Props {
+  questions?: NoteQuestion[];
+  lang?: "zh" | "fr";
+}
+
+const { questions = NOTE_QUESTIONS, lang = "zh" } = Astro.props;
+const isFr = lang === "fr";
+const t = isFr
+  ? {
+      kicker: "Chasse aux notes · Où se cache l'étoile ?",
+      title: "Sur quelle note se cache cette étoile ?",
+      lead: "Regarde la corde et la case, puis choisis la bonne note. Une erreur ? Momo te donnera un indice.",
+      round: "Manche",
+      board: "Carte du manche de guitare",
+      boardNote: "Petite carte · les chiffres sont les cases",
+      progress: "Question",
+      hint: "Indice : une case plus haut = un demi-ton plus haut.",
+      next: "Question suivante",
+      resultHigh: "Champion de la chasse aux notes !",
+      resultMid: "Tu as trouvé la plupart des étoiles.",
+      resultLow: "Encore une manche et tu iras plus vite.",
+      restart: "Rejouer",
+      noscript: "Le jeu a besoin de JavaScript. Tu peux quand même observer la carte du manche.",
+    }
+  : {
+      kicker: "Note hunt · 音符捉迷藏",
+      title: "这颗星星，住在哪个音上？",
+      lead: "看琴弦和品格的位置，选出正确的音名。答错也没关系，Momo 会给你提示。",
+      round: "本轮",
+      board: "吉他指板位置示意图",
+      boardNote: "指板小地图 · 数字是品格",
+      progress: "第",
+      hint: "提示：从空弦开始，每往高一个品，音就升高半音。",
+      next: "下一题",
+      resultHigh: "捉迷藏高手！",
+      resultMid: "已经找到大部分星星。",
+      resultLow: "再来一次，你会更快找到。",
+      restart: "再玩一轮",
+      noscript: "音符游戏需要 JavaScript。你仍然可以用上面的指板图和音名表练习。",
+    };
 ---
 
-<div class="note-game card" data-note-game id="note-game">
+<div class="note-game card" data-note-game data-lang={lang} data-questions={JSON.stringify(questions)} id="note-game">
   <div class="game-head">
     <div>
-      <span class="tool-kicker">Note hunt · 音符捉迷藏</span>
-      <h3>这颗星星，住在哪个音上？</h3>
-      <p>看琴弦和品格的位置，选出正确的音名。答错也没关系，Momo 会给你提示。</p>
+      <span class="tool-kicker">{t.kicker}</span>
+      <h3>{t.title}</h3>
+      <p>{t.lead}</p>
     </div>
     <div class="game-score">
-      <span>本轮</span>
+      <span>{t.round}</span>
       <strong><span data-game-score>0</span>/<span data-game-total>5</span></strong>
       <div class="score-stars" data-game-stars aria-hidden="true">☆ ☆ ☆ ☆ ☆</div>
     </div>
@@ -18,12 +60,12 @@ import Icon from "./Icon.astro";
 
   <div class="game-body">
     <div class="fretboard-wrap">
-      <div class="fretboard" data-fretboard role="img" aria-label="吉他指板位置示意图">
+      <div class="fretboard" data-fretboard role="img" aria-label={t.board}>
         <div class="fret-header"><span></span><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
         {
           [1, 2, 3, 4, 5, 6].map((stringNumber) => (
             <div class="fret-row">
-              <span class="string-label"><b>{stringNumber}</b> 弦</span>
+              <span class="string-label"><b>{stringNumber}</b> {isFr ? "c" : "弦"}</span>
               {[0, 1, 2, 3, 4, 5].map((fret) => (
                 <span class="fret-cell" data-string={stringNumber} data-fret={fret}></span>
               ))}
@@ -31,42 +73,44 @@ import Icon from "./Icon.astro";
           ))
         }
       </div>
-      <span class="fretboard-note">指板小地图 · 数字是品格</span>
+      <span class="fretboard-note">{t.boardNote}</span>
     </div>
 
     <div class="game-panel">
       <div class="game-progress">
-        <span data-game-progress>第 1 / 5 题</span>
+        <span data-game-progress>{isFr ? "Question 1 / 5" : "第 1 / 5 题"}</span>
         <div class="game-dots" data-game-dots></div>
       </div>
-      <p class="game-question" data-game-question>第 2 弦第 1 品是什么音？</p>
+      <p class="game-question" data-game-question>{isFr ? "Quelle note se cache ici ?" : "第 2 弦第 1 品是什么音？"}</p>
       <div class="game-options" data-game-options></div>
       <div class="game-feedback" data-game-feedback hidden aria-live="polite"></div>
       <div class="game-bottom">
-        <span class="game-hint"><Icon name="lightbulb" size={13} /> 提示：从空弦开始，每往高一个品，音就升高半音。</span>
-        <button class="btn btn-primary btn-sm" type="button" data-game-next hidden>下一题 <Icon name="arrow-right" size={13} /></button>
+        <span class="game-hint"><Icon name="lightbulb" size={13} /> {t.hint}</span>
+        <button class="btn btn-primary btn-sm" type="button" data-game-next hidden>{t.next} <Icon name="arrow-right" size={13} /></button>
       </div>
     </div>
   </div>
 
   <div class="game-result" data-game-result hidden>
     <span class="result-sparkle">✦</span>
-    <h4 data-game-result-title>捉迷藏高手！</h4>
+    <h4 data-game-result-title>{t.resultHigh}</h4>
     <p data-game-result-text></p>
-    <button class="btn btn-sun btn-sm" type="button" data-game-restart><Icon name="refresh" size={14} /> 再玩一轮</button>
+    <button class="btn btn-sun btn-sm" type="button" data-game-restart><Icon name="refresh" size={14} /> {t.restart}</button>
   </div>
 
-  <noscript><p class="game-noscript">音符游戏需要 JavaScript。你仍然可以用上面的指板图和音名表练习。</p></noscript>
+  <noscript><p class="game-noscript">{t.noscript}</p></noscript>
 </div>
 
 <script>
-  import { NOTE_QUESTIONS } from "../data/practice";
+  import type { NoteQuestion } from "../data/practice";
   import { playChime } from "../lib/audio";
   import { celebrate } from "../lib/celebrate";
   import { copyScope } from "../lib/scope";
 
   const root = document.querySelector<HTMLElement>("[data-note-game]")!;
   if (root) {
+    const allQuestions = JSON.parse(root.dataset.questions ?? "[]") as NoteQuestion[];
+    const isFr = root.dataset.lang === "fr";
     const questionEl = root.querySelector<HTMLElement>("[data-game-question]");
     const optionsEl = root.querySelector<HTMLElement>("[data-game-options]");
     const feedbackEl = root.querySelector<HTMLElement>("[data-game-feedback]");
@@ -82,7 +126,7 @@ import Icon from "./Icon.astro";
     const restartBtn = root.querySelector<HTMLButtonElement>("[data-game-restart]");
     const cells = Array.from(root.querySelectorAll<HTMLElement>("[data-string][data-fret]"));
     const roundLength = 5;
-    let questions = [] as typeof NOTE_QUESTIONS;
+    let questions: NoteQuestion[] = [];
     let index = 0;
     let score = 0;
     let answered = false;
@@ -120,12 +164,15 @@ import Icon from "./Icon.astro";
       answered = false;
       markTarget(question.stringNumber, question.fret);
       if (questionEl) {
-        questionEl.textContent =
-          question.fret === 0
+        questionEl.textContent = isFr
+          ? question.fret === 0
+            ? `Quelle est la note de la corde ${question.stringNumber} à vide ?`
+            : `Quelle est la note sur la corde ${question.stringNumber}, case ${question.fret} ?`
+          : question.fret === 0
             ? `第 ${question.stringNumber} 弦的空弦是什么音？`
             : `第 ${question.stringNumber} 弦第 ${question.fret} 品是什么音？`;
       }
-      if (progressEl) progressEl.textContent = `第 ${index + 1} / ${questions.length} 题`;
+      if (progressEl) progressEl.textContent = isFr ? `Question ${index + 1} / ${questions.length}` : `第 ${index + 1} / ${questions.length} 题`;
       if (totalEl) totalEl.textContent = String(questions.length);
       feedbackEl?.setAttribute("hidden", "");
       nextBtn?.setAttribute("hidden", "");
@@ -155,7 +202,7 @@ import Icon from "./Icon.astro";
           if (feedbackEl) {
             feedbackEl.hidden = false;
             feedbackEl.className = `game-feedback ${correct ? "is-correct" : "is-wrong"}`;
-            feedbackEl.innerHTML = `<strong>${correct ? "找到啦！" : "再想想，答案在这里。"}</strong><span>${question.hint}</span>`;
+            feedbackEl.innerHTML = `<strong>${correct ? (isFr ? "Trouvé !" : "找到啦！") : isFr ? "Réessaie, regarde l'indice." : "再想想，答案在这里。"}</strong><span>${question.hint}</span>`;
             copyScope(root, feedbackEl);
           }
           if (correct) playChime();
@@ -174,14 +221,14 @@ import Icon from "./Icon.astro";
         const sparkle = resultEl.querySelector<HTMLElement>(".result-sparkle");
         if (sparkle) sparkle.textContent = score >= 4 ? "✦ ✦ ✦" : "✦";
       }
-      if (resultTitle) resultTitle.textContent = score >= 4 ? "捉迷藏高手！" : score >= 2 ? "已经找到大部分星星。" : "再来一次，你会更快找到。";
-      if (resultText) resultText.textContent = `这一轮你答对了 ${score} / ${questions.length} 题。可以再玩一轮，题目会重新洗牌。`;
+      if (resultTitle) resultTitle.textContent = score >= 4 ? (isFr ? "Champion de la chasse aux notes !" : "捉迷藏高手！") : score >= 2 ? (isFr ? "Tu as trouvé la plupart des étoiles." : "已经找到大部分星星。") : isFr ? "Encore une manche et tu iras plus vite." : "再来一次，你会更快找到。";
+      if (resultText) resultText.textContent = isFr ? `Cette manche : ${score} bonne(s) réponse(s) sur ${questions.length}. Les questions seront mélangées la prochaine fois.` : `这一轮你答对了 ${score} / ${questions.length} 题。可以再玩一轮，题目会重新洗牌。`;
       playChime();
       celebrate(score >= 4 ? 34 : 16);
     }
 
     function reset(): void {
-      questions = shuffle(NOTE_QUESTIONS).slice(0, roundLength);
+      questions = shuffle(allQuestions).slice(0, roundLength);
       index = 0;
       score = 0;
       if (scoreEl) scoreEl.textContent = "0";

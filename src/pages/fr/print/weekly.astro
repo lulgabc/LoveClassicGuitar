@@ -1,0 +1,113 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Bat from "../../../components/Bat.astro";
+import Capybara from "../../../components/Capybara.astro";
+import Icon from "../../../components/Icon.astro";
+import { url } from "../../../lib/url";
+
+const days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+const prompts = ["Écouter / cordes à vide", "Un mini-objectif", "Écouter sans jouer", "2 mesures difficiles", "Improviser 4 mesures", "Jouer pour quelqu'un", "Regarder la semaine"];
+---
+
+<BaseLayout lang="fr" title="Fiche de pratique" description="Une fiche de pratique hebdomadaire à imprimer, colorier et accrocher près de la guitare." noindex>
+  <div class="print-page">
+    <div class="container toolbar">
+      <div>
+        <a class="back" href={url("/fr/practice/")}><Icon name="arrow-right" size={13} class="back-icon" /> Retour au studio</a>
+        <h1>Ma fiche d'étoiles</h1>
+        <p>À imprimer en A4. Colorie les étoiles, ajoute un autocollant ou écris une petite phrase.</p>
+      </div>
+      <button class="btn btn-primary" type="button" data-print><Icon name="printer" size={16} /> Imprimer la fiche</button>
+    </div>
+
+    <div class="container">
+      <article class="sheet">
+        <header class="sheet-head">
+          <div class="brand"><div class="mark"><Bat /></div><div><span>LOVE CLASSIC GUITAR</span><h2>Ma semaine de guitare</h2><p>Petits pas, grandes étoiles.</p></div></div>
+          <div class="meta"><span>Prénom : ____________________</span><span>Semaine du ____ / ____ au ____ / ____</span><span>Morceau ou objectif : ____________________</span></div>
+        </header>
+        <div class="days">
+          {days.map((day, index) => (
+            <div class="day">
+              <div class="day-label"><strong>{day}</strong><span>{prompts[index]}</span></div>
+              <div class="lines"><span>Ce que j'ai fait :</span><i></i><i></i></div>
+              <div class="stars" aria-label="Colorier ou coller des étoiles">☆　☆　☆</div>
+            </div>
+          ))}
+        </div>
+        <div class="lower">
+          <div class="box"><h3>Mon son préféré de la semaine</h3><i></i><i></i></div>
+          <div class="box"><h3>Ce que je veux essayer ensuite</h3><i></i><i></i></div>
+          <div class="box note"><h3>Un mot pour les adultes</h3><ul><li>Écouter jusqu'au bout.</li><li>Dire un détail précis.</li><li>Si ça fait mal, on s'arrête.</li></ul></div>
+        </div>
+        <footer class="sheet-foot"><div class="capy" aria-hidden="true"><Capybara /></div><p>La musique n'est pas une compétition. C'est une petite étoile à allumer chaque jour.<br /><span>— Love Classic Guitar · 2026</span></p><div class="sign">Signature : ____________</div></footer>
+      </article>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  document.querySelector("[data-print]")?.addEventListener("click", () => window.print());
+</script>
+
+<style>
+  .print-page { padding-block: 36px 65px; background: radial-gradient(circle at 85% 5%, rgba(255, 216, 111, 0.13), transparent 28%), var(--bg); }
+  .toolbar { display: flex; align-items: flex-end; justify-content: space-between; gap: 22px; margin-bottom: 20px; }
+  .back { display: inline-flex; align-items: center; gap: 4px; color: var(--violet-700); font-size: 9px; font-weight: 800; text-decoration: none; }
+  .back-icon { transform: rotate(180deg); }
+  .toolbar h1 { margin: 7px 0 3px; font-size: clamp(27px, 4vw, 39px); }
+  .toolbar p { margin: 0; color: var(--muted); font-size: 10px; }
+  .sheet { width: min(100%, 820px); margin-inline: auto; padding: 34px 40px 30px; color: #45362a; border: 1px solid #e3d5bf; border-radius: 6px; background: radial-gradient(circle at 95% 4%, rgba(255, 216, 111, 0.16), transparent 22%), #fffaf0; box-shadow: 10px 16px 0 rgba(118, 88, 48, 0.08), var(--shadow); }
+  .sheet-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding-bottom: 16px; border-bottom: 2px solid #d7c2a1; }
+  .brand { display: flex; align-items: flex-start; gap: 9px; }
+  .mark { width: 48px; margin-top: -7px; }
+  .brand span { color: #a8895a; font-family: var(--font-mono); font-size: 6px; font-weight: 800; letter-spacing: 0.1em; }
+  .brand h2 { margin: 2px 0 1px; color: #45362a; font-size: 24px; line-height: 1.2; }
+  .brand p { margin: 0; color: #a8895a; font-family: var(--font-mono); font-size: 7px; }
+  .meta { display: grid; gap: 6px; flex: 0 1 290px; padding-top: 5px; color: #69543e; font-size: 8px; }
+  .days { display: grid; border-top: 1px solid #e7d8c1; margin-top: 7px; }
+  .day { display: grid; grid-template-columns: 126px 1fr 95px; align-items: center; gap: 12px; min-height: 65px; padding: 6px 0; border-bottom: 1px solid #e7d8c1; }
+  .day-label strong { display: block; color: #5b442d; font-family: var(--font-display); font-size: 13px; }
+  .day-label span { display: block; margin-top: 2px; color: #a8895a; font-size: 7px; }
+  .lines span { display: block; margin-bottom: 5px; color: #998166; font-size: 7px; }
+  .lines i { display: block; height: 1px; margin-bottom: 8px; border-bottom: 1px dashed #d9c6ab; }
+  .stars { color: #c39d58; font-size: 14px; letter-spacing: 0.14em; text-align: right; white-space: nowrap; }
+  .lower { display: grid; grid-template-columns: 1fr 1fr 1.15fr; gap: 10px; margin-top: 15px; }
+  .box { min-height: 88px; padding: 10px; border: 1px solid #e3d5bf; border-radius: 4px; background: rgba(255, 255, 255, 0.4); }
+  .box h3 { margin: 0 0 5px; color: #66503b; font-family: var(--font-display); font-size: 9px; }
+  .box i { display: block; height: 1px; margin-bottom: 12px; border-bottom: 1px dashed #d9c6ab; }
+  .box.note ul { display: grid; gap: 4px; margin: 0; padding-left: 1.1em; color: #937959; font-size: 7.5px; line-height: 1.5; }
+  .sheet-foot { display: flex; align-items: flex-end; gap: 9px; margin-top: 17px; padding-top: 11px; border-top: 1px solid #d7c2a1; }
+  .capy { width: 65px; margin-bottom: -12px; opacity: 0.8; }
+  .sheet-foot p { flex: 1; margin: 0; color: #876e52; font-family: var(--font-display); font-size: 9px; line-height: 1.6; }
+  .sheet-foot p span { color: #b09166; font-family: var(--font-mono); font-size: 6.5px; }
+  .sign { color: #876e52; font-size: 8px; white-space: nowrap; }
+
+  @media (max-width: 760px) {
+    .toolbar { align-items: flex-start; flex-direction: column; }
+    .sheet { padding: 23px 18px; }
+    .sheet-head { flex-direction: column; }
+    .meta { width: 100%; flex-basis: auto; }
+    .day { grid-template-columns: 1fr auto; gap: 4px 10px; padding: 9px 0; }
+    .day-label { grid-column: 1 / -1; }
+    .day-label strong, .day-label span { display: inline; }
+    .day-label span { margin-left: 6px; }
+    .lower { grid-template-columns: 1fr; }
+    .sheet-foot { align-items: flex-start; flex-wrap: wrap; }
+    .sign { margin-left: 74px; }
+  }
+
+  @media print {
+    @page { size: A4 portrait; margin: 10mm; }
+    html, body { background: #fff !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .print-page { padding: 0 !important; background: #fff !important; }
+    .toolbar, .site-header, .site-footer, .scroll-progress, .skip-link { display: none !important; }
+    .container { width: 100% !important; max-width: none !important; margin: 0 !important; }
+    .sheet { width: 100% !important; max-width: none !important; margin: 0 !important; padding: 9mm 10mm !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background: #fffaf0 !important; }
+    .day { min-height: 82px; padding: 8px 0; }
+    .day-label strong { font-size: 15px; }
+    .box { min-height: 108px; padding: 12px; }
+    .sheet-head { padding-bottom: 19px; }
+    .sheet-foot { margin-top: 20px; }
+  }
+</style>

@@ -1,0 +1,162 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import RoadmapBoard from "../../components/RoadmapBoard.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import MascotBubble from "../../components/MascotBubble.astro";
+import Icon from "../../components/Icon.astro";
+import { STAGES_FR, TOTAL_QUESTS_FR, WATCH_TITLES_FR } from "../../data/fr/roadmap";
+import { url } from "../../lib/url";
+
+const week = [
+  { day: "Lun", title: "Démarrer doucement", body: "5 min de cordes à vide." },
+  { day: "Mar", title: "Un petit défi", body: "10 min d'un seul point." },
+  { day: "Mer", title: "Écouter", body: "Une pièce, sans guitare." },
+  { day: "Jeu", title: "Le morceau", body: "2 à 4 mesures lentes." },
+  { day: "Ven", title: "Inventer", body: "Quatre notes, un début et une fin." },
+  { day: "Sam", title: "Mini-concert", body: "Jouer pour quelqu'un." },
+  { day: "Dim", title: "Se reposer", body: "Regarder les étoiles allumées." },
+];
+---
+
+<BaseLayout
+  lang="fr"
+  title="Le parcours"
+  description="Un parcours de guitare classique pour une enfant de 7 ans : six étapes, 38 missions interactives, du premier son au petit concert de famille."
+>
+  <PageHero
+    kicker="Une aventure en six étapes"
+    title="D'un premier son<br />à un <em>petit concert</em>."
+    lead="Coche une mission quand tu l'as essayée. Rien ne se verrouille : reviens quand tu veux, répète ce que tu aimes."
+  >
+    <div class="slug">
+      <span><Icon name="map" size={12} /> 6 étapes</span>
+      <span><Icon name="check" size={12} /> {TOTAL_QUESTS_FR} missions</span>
+      <span><Icon name="clock" size={12} /> 10–15 min</span>
+      <span><Icon name="shield" size={12} /> sauvegardé sur cet appareil</span>
+    </div>
+  </PageHero>
+
+  <section class="section-tight">
+    <div class="container">
+      <RoadmapBoard stages={STAGES_FR} lang="fr" watchTitles={WATCH_TITLES_FR} printPath="/fr/print/weekly/" concertPath="/fr/concert/" />
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container">
+      <SectionHead kicker="Un rythme doux" title="Une semaine sans pression" lead="Ce n'est pas un planning à remplir. C'est une petite danse à adapter." />
+      <div class="week-strip">
+        {week.map((item) => (
+          <div class="week-item card">
+            <span>{item.day}</span>
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        ))}
+      </div>
+      <div class="roadmap-note">
+        <MascotBubble who="capi" title="Capi te rappelle" text="Si tu rates une semaine, rien n'est perdu. Tu reprends simplement avec une corde à vide." tone="sky" />
+        <a class="btn btn-ghost" href={url("/fr/parents/")}>Le guide des parents <Icon name="arrow-right" size={13} /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container roadmap-end">
+      <div><span class="eyebrow"><Icon name="sparkle" size={13} /> Une étoile suffit</span><h2>Tu n'as pas à tout allumer aujourd'hui.</h2></div>
+      <div class="btn-row"><a class="btn btn-primary" href={url("/fr/practice/")}>Aller au studio <Icon name="arrow-right" size={14} /></a><a class="btn btn-ghost" href={url("/fr/concert/")}>Écouter une pièce</a></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .slug {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .slug span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 9px;
+    color: #d7caf4;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+
+  .slug .icon { color: #ffd86f; }
+
+  .week-strip {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .week-item {
+    padding: 13px 10px;
+    box-shadow: none;
+    background: var(--surface);
+  }
+
+  .week-item > span {
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+  }
+
+  .week-item h3 {
+    margin: 8px 0 4px;
+    color: var(--ink);
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .week-item p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1.55;
+  }
+
+  .roadmap-note {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 14px;
+  }
+
+  .roadmap-note :global(.mascot-bubble) { flex: 1; }
+
+  .roadmap-end {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: clamp(22px, 4vw, 32px);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .roadmap-end h2 { margin-top: 10px; font-size: clamp(23px, 3vw, 31px); }
+
+  @media (max-width: 900px) {
+    .week-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .roadmap-note { align-items: flex-start; flex-direction: column; }
+    .roadmap-end { align-items: flex-start; flex-direction: column; }
+  }
+
+  @media (max-width: 580px) {
+    .week-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .week-item:last-child { grid-column: 1 / -1; }
+  }
+</style>

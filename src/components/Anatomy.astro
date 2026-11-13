@@ -1,8 +1,30 @@
 ---
-import { GUITAR_PARTS } from "../data/basics";
+import { GUITAR_PARTS, type GuitarPart } from "../data/basics";
 import Icon from "./Icon.astro";
 
-const first = GUITAR_PARTS[0];
+interface Props {
+  parts?: GuitarPart[];
+  lang?: "zh" | "fr";
+}
+
+const { parts = GUITAR_PARTS, lang = "zh" } = Astro.props;
+const isFr = lang === "fr";
+const ui = isFr
+  ? {
+      category: "Partie de la guitare",
+      hint: "Touche un chiffre sur la guitare",
+      tip: "Quand tu l'as trouvée, montre-la du doigt et redis son nom.",
+      prev: "Partie précédente",
+      next: "Partie suivante",
+    }
+  : {
+      category: "吉他部位",
+      hint: "点一点琴上的数字",
+      tip: "找到它以后，用手指轻轻指一指，再让家长说一遍名字。",
+      prev: "上一个部位",
+      next: "下一个部位",
+    };
+const first = parts[0];
 ---
 
 <div class="anatomy" data-anatomy>
@@ -130,7 +152,7 @@ const first = GUITAR_PARTS[0];
         </g>
       </svg>
 
-      {GUITAR_PARTS.map((part) => (
+      {parts.map((part) => (
         <button
           class="hotspot"
           type="button"
@@ -148,24 +170,24 @@ const first = GUITAR_PARTS[0];
         </button>
       ))}
     </div>
-    <span class="stage-hint"><Icon name="wand" size={13} /> 点一点琴上的数字</span>
+    <span class="stage-hint"><Icon name="wand" size={13} /> {ui.hint}</span>
   </div>
 
   <div class="part-panel card" data-part-panel aria-live="polite">
     <div class="panel-top">
       <span class="panel-number" data-panel-n>01</span>
-      <span class="panel-category"><Icon name="guitar" size={13} /> 吉他部位</span>
+      <span class="panel-category"><Icon name="guitar" size={13} /> {ui.category}</span>
     </div>
     <h3 data-panel-name>{first?.name}</h3>
     <p class="panel-en" data-panel-en>{first?.en}</p>
     <p class="panel-short" data-panel-short>{first?.short}</p>
     <p class="panel-detail" data-panel-detail>{first?.detail}</p>
     <div class="panel-controls">
-      <button type="button" data-part-prev aria-label="上一个部位"><Icon name="arrow-right" size={15} class="flip" /></button>
-      <span class="panel-count"><span data-panel-index>1</span> / {GUITAR_PARTS.length}</span>
-      <button type="button" data-part-next aria-label="下一个部位"><Icon name="arrow-right" size={15} /></button>
+      <button type="button" data-part-prev aria-label={ui.prev}><Icon name="arrow-right" size={15} class="flip" /></button>
+      <span class="panel-count"><span data-panel-index>1</span> / {parts.length}</span>
+      <button type="button" data-part-next aria-label={ui.next}><Icon name="arrow-right" size={15} /></button>
     </div>
-    <div class="panel-tip"><Icon name="lightbulb" size={14} /> 找到它以后，用手指轻轻指一指，再让家长说一遍名字。</div>
+    <div class="panel-tip"><Icon name="lightbulb" size={14} /> {ui.tip}</div>
   </div>
 </div>
 

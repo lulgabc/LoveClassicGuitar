@@ -1,0 +1,252 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import MascotBubble from "../../components/MascotBubble.astro";
+import Icon from "../../components/Icon.astro";
+import { BOOKS_FR, FR_KINDS, RESOURCES_FR } from "../../data/fr/library";
+import { url } from "../../lib/url";
+const bookCount = BOOKS_FR.length;
+---
+
+<BaseLayout
+  lang="fr"
+  title="Les ressources"
+  description="Cours de guitare gratuits, chaînes YouTube, partitions du domaine public, livres et examens : une sélection pour débuter sans se perdre."
+>
+  <PageHero
+    kicker="La bibliothèque"
+    title="Des portes,<br />pas une <em>montagne</em>."
+    lead="Quelques bons liens suffisent. Choisis une seule porte aujourd'hui, puis va jouer."
+  >
+    <div class="slug">
+      <span><Icon name="compass" size={12} /> {RESOURCES_FR.length} ressources</span>
+      <span><Icon name="book" size={12} /> {bookCount} livres</span>
+      <span><Icon name="shield" size={12} /> gratuit / payant indiqué</span>
+      <span><Icon name="external" size={12} /> liens externes</span>
+    </div>
+  </PageHero>
+
+  <section class="section" id="liens">
+    <div class="container">
+      <SectionHead kicker="01 · Les liens" title="Commence par <em>une seule</em> porte" lead="Filtre par type, cherche un mot, ou garde seulement le gratuit." />
+      <div class="library-toolbar">
+        <label class="search-box"><Icon name="search" size={17} /><span class="sr-only">Chercher une ressource</span><input type="search" placeholder="Cours, partition, chaîne…" data-fr-search /></label>
+        <label class="free-toggle"><input type="checkbox" data-fr-free /><span class="toggle-track"><span></span></span><span>Gratuit seulement</span></label>
+        <span class="result-count"><strong data-fr-count>{RESOURCES_FR.length}</strong> résultats</span>
+      </div>
+      <div class="kind-filters" role="group" aria-label="Filtrer par type">
+        {FR_KINDS.map((kind, index) => <button type="button" class:list={["kind-chip", { "is-active": index === 0 }]} data-fr-kind={kind} aria-pressed={index === 0 ? "true" : "false"}>{kind}</button>)}
+      </div>
+      <div class="resource-grid">
+        {RESOURCES_FR.map((resource) => (
+          <a
+            class="resource-card card card-hover"
+            href={resource.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-fr-resource
+            data-kind={resource.kind}
+            data-free={resource.price !== "Payant" ? "true" : "false"}
+            data-search={`${resource.name} ${resource.description} ${resource.tags.join(" ")} ${resource.level}`.toLowerCase()}
+          >
+            <div class="resource-top"><span class="kind-icon"><Icon name={resource.kind === "YouTube" ? "youtube" : resource.kind === "Partitions" ? "book" : resource.kind === "Examens" ? "trophy" : resource.kind === "Écoute" ? "headphones" : "compass"} size={18} /></span><span class:list={["pill", resource.price === "Payant" ? "pill-paid" : "pill-free"]}>{resource.price}</span></div>
+            <span class="resource-kind">{resource.kind} · {resource.lang}</span>
+            <h3>{resource.name}</h3>
+            <p>{resource.description}</p>
+            <div class="resource-tags">{resource.tags.map((tag) => <span>{tag}</span>)}</div>
+            {resource.note && <p class="resource-note"><Icon name="info" size={11} /> {resource.note}</p>}
+            <span class="resource-cta">Ouvrir <Icon name="external" size={11} /></span>
+          </a>
+        ))}
+      </div>
+      <p class="empty" data-fr-empty hidden>Aucun résultat. Essaie un mot plus court ou enlève le filtre.</p>
+      <div class="library-note">
+        <MascotBubble who="momo" title="Momo te dit" text="Une bibliothèque ne joue pas toute seule. Choisis un lien, puis va pincer une corde." tone="violet" />
+        <a class="btn btn-primary btn-sm" href={url("/fr/practice/")}>Aller au studio <Icon name="arrow-right" size={13} /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="livres">
+    <div class="container">
+      <SectionHead kicker="02 · Les livres" title="Un livre, <em>pas dix</em>" lead="Des méthodes pour les grands et des trésors du domaine public. Aucun lien d'affiliation." />
+      <div class="book-grid">
+        {BOOKS_FR.map((book) => (
+          <article class="book-card card">
+            <div class="book-top"><span class="book-label">LIVRE</span><span class={book.free ? "pill pill-free" : "pill pill-paid"}>{book.free ? "Libre" : "À acheter / emprunter"}</span></div>
+            <h3>{book.title}</h3>
+            <p class="book-author">{book.author} · {book.level}</p>
+            <p class="book-desc">{book.description}</p>
+            <p class="book-note"><Icon name="info" size={11} /> {book.note}</p>
+            {book.link ? <a class="book-link" href={book.link} target="_blank" rel="noopener noreferrer">Partition libre <Icon name="external" size={11} /></a> : <span class="book-where">Bibliothèque ou librairie spécialisée</span>}
+          </article>
+        ))}
+      </div>
+      <p class="copyright"><Icon name="shield" size={16} /> Les œuvres du domaine public sont libres, mais les éditions modernes, traductions et méthodes commerciales restent protégées. Pas de PDF pirate, s'il te plaît.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead kicker="Bien choisir" title="Quatre questions avant de cliquer" />
+      <div class="choose-grid">
+        <div><span>01</span><p>Est-ce que le professeur explique comment écouter le son ?</p></div>
+        <div><span>02</span><p>La vidéo montre-t-elle les mains de près et assez lentement ?</p></div>
+        <div><span>03</span><p>Y a-t-il une progression claire, ou seulement des vidéos isolées ?</p></div>
+        <div><span>04</span><p>Un adulte peut-il vérifier la posture et la taille de la guitare ?</p></div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-fr-resource]")?.closest("section");
+  if (root) {
+    const search = root.querySelector<HTMLInputElement>("[data-fr-search]");
+    const free = root.querySelector<HTMLInputElement>("[data-fr-free]");
+    const chips = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-fr-kind]"));
+    const items = Array.from(root.querySelectorAll<HTMLElement>("[data-fr-resource]"));
+    const count = root.querySelector<HTMLElement>("[data-fr-count]");
+    const empty = root.querySelector<HTMLElement>("[data-fr-empty]");
+    let kind = "Tous";
+
+    function apply(): void {
+      const query = (search?.value ?? "").trim().toLowerCase();
+      const onlyFree = free?.checked ?? false;
+      let visible = 0;
+      items.forEach((item) => {
+        const show = (kind === "Tous" || item.dataset.kind === kind) && (!onlyFree || item.dataset.free === "true") && (!query || (item.dataset.search ?? "").includes(query));
+        item.hidden = !show;
+        if (show) visible += 1;
+      });
+      if (count) count.textContent = String(visible);
+      if (empty) empty.hidden = visible !== 0;
+    }
+
+    chips.forEach((chip) => chip.addEventListener("click", () => {
+      kind = chip.dataset.frKind ?? "Tous";
+      chips.forEach((item) => {
+        const active = item === chip;
+        item.classList.toggle("is-active", active);
+        item.setAttribute("aria-pressed", String(active));
+      });
+      apply();
+    }));
+    search?.addEventListener("input", apply);
+    free?.addEventListener("change", apply);
+    apply();
+  }
+</script>
+
+<style>
+  .slug {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .slug span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 9px;
+    color: #d7caf4;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+
+  .slug .icon { color: #ffd86f; }
+
+  .library-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: 10px;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex: 1 1 280px;
+    min-width: 0;
+    min-height: 43px;
+    padding: 0 13px;
+    color: var(--muted);
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+  }
+
+  .search-box:focus-within { border-color: var(--violet-500); box-shadow: 0 0 0 3px var(--violet-wash); }
+  .search-box input { flex: 1; min-width: 0; min-height: 39px; padding: 0; color: var(--ink); border: 0; outline: 0; background: transparent; font-size: 12px; }
+  .search-box input::placeholder { color: var(--faint); }
+
+  .free-toggle { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 9px; font-weight: 700; cursor: pointer; }
+  .free-toggle input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  .toggle-track { position: relative; width: 31px; height: 18px; border-radius: 999px; background: var(--surface-3); transition: background 150ms ease; }
+  .toggle-track span { position: absolute; left: 2px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 3px rgba(35, 19, 80, 0.22); transition: transform 150ms ease; }
+  .free-toggle input:checked + .toggle-track { background: var(--mint-500); }
+  .free-toggle input:checked + .toggle-track span { transform: translateX(13px); }
+  .free-toggle input:focus-visible + .toggle-track { outline: 3px solid var(--sun-500); outline-offset: 2px; }
+  .result-count { margin-left: auto; color: var(--faint); font-family: var(--font-mono); font-size: 8.5px; }
+  .result-count strong { color: var(--violet-700); }
+
+  .kind-filters { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 15px; }
+  .kind-chip { min-height: 31px; padding: 5px 9px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-size: 9px; font-weight: 750; }
+  .kind-chip.is-active { color: #fff; border-color: #5b3fd4; background: #5b3fd4; }
+
+  .resource-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .resource-card { display: flex; flex-direction: column; padding: 16px; color: var(--ink); text-decoration: none; background: var(--surface); }
+  .resource-card:hover { color: var(--ink); }
+  .resource-top { display: flex; align-items: center; gap: 7px; }
+  .kind-icon { display: grid; place-items: center; width: 36px; height: 36px; color: var(--violet-700); border-radius: 12px; background: var(--violet-wash); }
+  .resource-top .pill { margin-left: auto; }
+  .resource-kind { margin-top: 10px; color: var(--violet-700); font-family: var(--font-mono); font-size: 7.5px; font-weight: 800; text-transform: uppercase; }
+  .resource-card h3 { margin: 3px 0 6px; color: var(--ink); font-size: 14px; line-height: 1.4; }
+  .resource-card > p { margin: 0; color: var(--muted); font-size: 9.5px; line-height: 1.6; }
+  .resource-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 8px; }
+  .resource-tags span { padding: 2px 5px; color: var(--faint); background: var(--surface-2); border-radius: 999px; font-size: 7px; }
+  .resource-note { display: flex; align-items: flex-start; gap: 3px; margin-top: 7px !important; color: var(--faint) !important; font-size: 7.5px !important; line-height: 1.5 !important; }
+  .resource-cta { display: inline-flex; align-items: center; gap: 3px; margin-top: auto; padding-top: 11px; color: var(--violet-700); font-size: 9px; font-weight: 850; }
+  .empty { padding: 25px 0; color: var(--muted); text-align: center; font-size: 11px; }
+  .library-note { display: flex; align-items: center; gap: 15px; margin-top: 15px; }
+  .library-note :global(.mascot-bubble) { flex: 1; }
+
+  .book-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .book-card { padding: 17px; background: var(--surface); }
+  .book-top { display: flex; align-items: center; gap: 7px; }
+  .book-label { color: var(--violet-700); font-family: var(--font-mono); font-size: 7px; font-weight: 800; letter-spacing: 0.08em; }
+  .book-top .pill { margin-left: auto; }
+  .book-card h3 { margin: 8px 0 2px; color: var(--ink); font-size: 15px; line-height: 1.4; }
+  .book-author { margin: 0; color: var(--violet-700); font-size: 8px; font-weight: 650; }
+  .book-desc { margin: 8px 0 0; color: var(--ink-soft); font-size: 9px; line-height: 1.65; }
+  .book-note { display: flex; align-items: flex-start; gap: 4px; margin: 7px 0 0; color: var(--faint); font-size: 7.5px; line-height: 1.5; }
+  .book-note .icon { margin-top: 1px; }
+  .book-link { display: inline-flex; align-items: center; gap: 3px; margin-top: 9px; color: var(--violet-700); font-size: 8.5px; font-weight: 850; text-decoration: none; }
+  .book-where { display: block; margin-top: 9px; color: var(--faint); font-size: 7.5px; }
+  .copyright { display: flex; align-items: flex-start; gap: 6px; margin-top: 14px; padding: 11px 13px; border-left: 3px solid var(--sun-500); border-radius: 0 10px 10px 0; color: var(--muted); background: var(--sun-wash); font-size: 8.5px; line-height: 1.55; }
+  .copyright .icon { margin-top: 1px; color: var(--sun-700); }
+
+  .choose-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .choose-grid > div { display: flex; align-items: flex-start; gap: 7px; padding: 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); }
+  .choose-grid > div > span { color: var(--violet-700); font-family: var(--font-mono); font-size: 8px; font-weight: 800; line-height: 1.7; }
+  .choose-grid p { margin: 0; color: var(--ink-soft); font-size: 9px; line-height: 1.6; }
+
+  @media (max-width: 1000px) {
+    .resource-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .choose-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 680px) {
+    .resource-grid, .book-grid, .choose-grid { grid-template-columns: 1fr; }
+    .library-note { align-items: flex-start; flex-direction: column; }
+    .result-count { margin-left: 0; }
+  }
+</style>

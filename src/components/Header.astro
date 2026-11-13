@@ -1,18 +1,59 @@
 ---
-import { NAV } from "../data/site";
+import { NAV, NAV_FR } from "../data/site";
+import { otherLanguagePath } from "../lib/i18n";
 import { stripBase, url } from "../lib/url";
 import Icon from "./Icon.astro";
 
-const current = stripBase(Astro.url.pathname).replace(/\/+$/, "") || "/";
+interface Props {
+  lang?: "zh" | "fr";
+}
+
+const { lang = "zh" } = Astro.props;
+const isFr = lang === "fr";
+const nav = isFr ? NAV_FR : NAV;
+const homePath = isFr ? "/fr/" : "/";
+const roadmapPath = isFr ? "/fr/roadmap/" : "/roadmap/";
+const normalize = (value: string) => value.replace(/\/+$/, "") || "/";
+const current = normalize(stripBase(Astro.url.pathname));
 const isActive = (href: string) => {
-  if (href === "/") return current === "/";
-  return current === href.replace(/\/$/, "") || current.startsWith(href.replace(/\/$/, "") + "/");
+  const target = normalize(href);
+  if (target === "/" || target === "/fr") return current === target;
+  return current === target || current.startsWith(`${target}/`);
 };
+const switchPath = url(otherLanguagePath(Astro.url.pathname));
+const strings = isFr
+  ? {
+      brand: "Guitare classique",
+      brandSub: "Love Classic Guitar",
+      navLabel: "Navigation principale",
+      stars: "Mes étoiles",
+      themeDay: "Passer en mode jour",
+      themeNight: "Passer en mode nuit",
+      themeTitle: "Changer jour / nuit",
+      menuOpen: "Ouvrir le menu",
+      menuClose: "Fermer le menu",
+      switchLabel: "Voir la version chinoise",
+      switchText: "中文",
+    }
+  : {
+      brand: "爱古典吉他",
+      brandSub: "Love Classic Guitar",
+      navLabel: "主导航",
+      stars: "我的星星",
+      themeDay: "切换到日间模式",
+      themeNight: "切换到夜晚模式",
+      themeTitle: "切换日间 / 夜晚",
+      menuOpen: "打开菜单",
+      menuClose: "关闭菜单",
+      switchLabel: "查看法语版",
+      switchText: "FR",
+    };
 ---
+
 
 <header class="site-header" data-header>
   <div class="header-inner container">
-    <a class="brand" href={url("/")}>
+    <a class="brand" href={url(homePath)}>
       <span class="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -33,15 +74,15 @@ const isActive = (href: string) => {
         </svg>
       </span>
       <span class="brand-copy">
-        <strong>爱古典吉他</strong>
-        <small>Love Classic Guitar</small>
+        <strong>{strings.brand}</strong>
+        <small>{strings.brandSub}</small>
       </span>
     </a>
 
-    <nav class="site-nav" id="site-nav" aria-label="主导航" data-nav>
+    <nav class="site-nav" id="site-nav" aria-label={strings.navLabel} data-nav>
       <ul>
         {
-          NAV.map((item) => (
+          nav.map((item) => (
             <li>
               <a href={url(item.href)} aria-current={isActive(item.href) ? "page" : undefined}>
                 {item.label}
@@ -49,16 +90,30 @@ const isActive = (href: string) => {
             </li>
           ))
         }
+        <li class="nav-lang">
+          <a href={switchPath} hreflang={isFr ? "zh-CN" : "fr"} lang={isFr ? "zh-CN" : "fr"}>{strings.switchText}</a>
+        </li>
       </ul>
     </nav>
 
     <div class="header-actions">
-      <a class="header-stars" href={url("/roadmap/")}>
+      <a class="header-stars" href={url(roadmapPath)}>
         <Icon name="star" size={16} />
-        <span class="header-stars-text">我的星星</span>
+        <span class="header-stars-text">{strings.stars}</span>
         <strong data-star-count>0</strong>
       </a>
-      <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换到夜晚模式" title="切换日间 / 夜晚">
+      <a class="lang-switch" href={switchPath} hreflang={isFr ? "zh-CN" : "fr"} lang={isFr ? "zh-CN" : "fr"}>
+        {strings.switchText}<span class="sr-only"> · {strings.switchLabel}</span>
+      </a>
+      <button
+        class="icon-button theme-toggle"
+        type="button"
+        data-theme-toggle
+        data-label-day={strings.themeDay}
+        data-label-night={strings.themeNight}
+        aria-label={strings.themeNight}
+        title={strings.themeTitle}
+      >
         <span class="theme-icon theme-icon-day"><Icon name="sun" size={19} /></span>
         <span class="theme-icon theme-icon-night"><Icon name="moon" size={19} /></span>
       </button>
@@ -68,7 +123,9 @@ const isActive = (href: string) => {
         data-nav-toggle
         aria-expanded="false"
         aria-controls="site-nav"
-        aria-label="打开菜单"
+        aria-label={strings.menuOpen}
+        data-label-open={strings.menuOpen}
+        data-label-close={strings.menuClose}
       >
         <span class="nav-toggle-open"><Icon name="menu" size={21} /></span>
         <span class="nav-toggle-close"><Icon name="close" size={21} /></span>
@@ -222,6 +279,36 @@ const isActive = (href: string) => {
     font-variant-numeric: tabular-nums;
   }
 
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 38px;
+    padding: 0 8px;
+    color: var(--ink-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+  }
+
+  .lang-switch:hover {
+    color: var(--violet-700);
+    background: var(--violet-wash);
+    transform: translateY(-1px);
+  }
+
+  .nav-lang {
+    display: none;
+  }
+
   .icon-button {
     display: inline-grid;
     place-items: center;
@@ -278,6 +365,23 @@ const isActive = (href: string) => {
   @media (max-width: 1040px) {
     .nav-toggle {
       display: inline-grid;
+    }
+
+    .header-actions {
+      margin-left: auto;
+    }
+
+    .header-actions .lang-switch {
+      display: none;
+    }
+
+    :global(html.js) .site-nav .nav-lang {
+      display: block;
+    }
+
+    :global(html.js) .site-nav .nav-lang a {
+      color: var(--violet-700);
+      background: var(--violet-wash);
     }
 
     :global(html.js) .site-nav {

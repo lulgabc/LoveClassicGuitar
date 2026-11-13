@@ -1,10 +1,67 @@
 ---
 import { SITE } from "../data/site";
+import { pathForLang } from "../lib/i18n";
 import { url } from "../lib/url";
 import Bat from "./Bat.astro";
 import Capybara from "./Capybara.astro";
 import Icon from "./Icon.astro";
+
+interface Props {
+  lang?: "zh" | "fr";
+}
+
+const { lang = "zh" } = Astro.props;
+const isFr = lang === "fr";
+const p = (path: string) => url(pathForLang(lang, path));
+const t = isFr
+  ? {
+      quote: "« La musique n'est pas une compétition. C'est une petite étoile à allumer chaque jour. »",
+      free: "Gratuit · sans publicité",
+      privacy: "Aucune donnée personnelle",
+      explore: "Explorer",
+      basics: "Découvrir la guitare",
+      roadmap: "Parcours en 6 étapes",
+      practice: "Studio de pratique",
+      concert: "Salle de concert",
+      library: "Ressources gratuites",
+      adults: "Pour les adultes",
+      parents: "Guide des parents",
+      teacher: "Trouver un professeur",
+      safety: "Confidentialité et écrans",
+      about: "À propos et droits",
+      repo: "Dépôt GitHub",
+      final: "Pour finir",
+      finalText:
+        "Un petit monde de guitare classique pour une musicienne de 7 ans. Pas de classement, pas de publicité, pas de pression. Si aujourd'hui tu veux juste écouter une chanson, c'est très bien aussi.",
+      updated: "Mise à jour",
+      rights: "Les vidéos et ressources externes appartiennent à leurs auteurs. Ce site propose des liens et des notes originales. YouTube est une marque de Google LLC.",
+      back: "Retour aux étoiles",
+    }
+  : {
+      quote: "“音乐不是比赛，是一颗每天都能点亮的小星星。”",
+      free: "免费 · 无广告",
+      privacy: "不收集个人信息",
+      explore: "一起探险",
+      basics: "吉他小百科",
+      roadmap: "6 站学习地图",
+      practice: "互动练习室",
+      concert: "星空音乐厅",
+      library: "免费资源宝库",
+      adults: "给大人",
+      parents: "陪伴指南",
+      teacher: "怎样找老师",
+      safety: "隐私与屏幕时间",
+      about: "关于本站与版权",
+      repo: "GitHub 仓库",
+      final: "写在最后",
+      finalText:
+        "这是为一位 7 岁小音乐家做的古典吉他学习小世界。没有排名、没有广告，也不催你快一点。如果今天的你只想听一首歌，那也很好。",
+      updated: "内容更新",
+      rights: "外部视频与资源版权归原作者；本站仅提供链接与学习笔记。YouTube 是 Google LLC 的商标。",
+      back: "回到星空",
+    };
 ---
+
 
 <footer class="site-footer">
   <div class="footer-stars" aria-hidden="true">
@@ -17,47 +74,42 @@ import Icon from "./Icon.astro";
         <div class="footer-bat"><Bat /></div>
         <div class="footer-capy"><Capybara /></div>
       </div>
-      <p class="footer-quote">“音乐不是比赛，是一颗每天都能点亮的小星星。”</p>
+      <p class="footer-quote">{t.quote}</p>
       <div class="footer-badges">
-        <span><Icon name="heart" size={13} /> 免费 · 无广告</span>
-        <span><Icon name="shield" size={13} /> 不收集个人信息</span>
+        <span><Icon name="heart" size={13} /> {t.free}</span>
+        <span><Icon name="shield" size={13} /> {t.privacy}</span>
       </div>
     </div>
 
     <div class="footer-col">
-      <h2>一起探险</h2>
-      <a href={url("/basics/")}>吉他小百科</a>
-      <a href={url("/roadmap/")}>6 站学习地图</a>
-      <a href={url("/practice/")}>互动练习室</a>
-      <a href={url("/concert/")}>星空音乐厅</a>
-      <a href={url("/library/")}>免费资源宝库</a>
+      <h2>{t.explore}</h2>
+      <a href={p("/basics/")}>{t.basics}</a>
+      <a href={p("/roadmap/")}>{t.roadmap}</a>
+      <a href={p("/practice/")}>{t.practice}</a>
+      <a href={p("/concert/")}>{t.concert}</a>
+      <a href={p("/library/")}>{t.library}</a>
     </div>
 
     <div class="footer-col">
-      <h2>给大人</h2>
-      <a href={url("/parents/")}>陪伴指南</a>
-      <a href={url("/parents/#teacher")}>怎样找老师</a>
-      <a href={url("/parents/#privacy")}>隐私与屏幕时间</a>
-      <a href={url("/about/")}>关于本站与版权</a>
-      <a href={SITE.repo} target="_blank" rel="noopener noreferrer">GitHub 仓库 <Icon name="external" size={12} /></a>
+      <h2>{t.adults}</h2>
+      <a href={p("/parents/")}>{t.parents}</a>
+      <a href={`${p("/parents/")}#teacher`}>{t.teacher}</a>
+      <a href={`${p("/parents/")}#privacy`}>{t.safety}</a>
+      <a href={p("/about/")}>{t.about}</a>
+      <a href={SITE.repo} target="_blank" rel="noopener noreferrer">{t.repo} <Icon name="external" size={12} /></a>
     </div>
 
     <div class="footer-col footer-note">
-      <h2>写在最后</h2>
-      <p>
-        这是为一位 7 岁小音乐家做的古典吉他学习小世界。没有排名、没有广告，也不催你快一点。
-        如果今天的你只想听一首歌，那也很好。
-      </p>
-      <p class="footer-updated">内容更新：{SITE.updated}</p>
+      <h2>{t.final}</h2>
+      <p>{t.finalText}</p>
+      <p class="footer-updated">{t.updated} : {SITE.updated}</p>
     </div>
   </div>
 
   <div class="container footer-bottom">
-    <p>© {new Date().getFullYear()} {SITE.nameZh} · Love Classic Guitar</p>
-    <p>
-      外部视频与资源版权归原作者；本站仅提供链接与学习笔记。YouTube 是 Google LLC 的商标。
-    </p>
-    <a class="back-top" href="#top">回到星空 <Icon name="arrow-up" size={14} /></a>
+    <p>© {new Date().getFullYear()} {isFr ? SITE.nameFr : SITE.nameZh} · Love Classic Guitar</p>
+    <p>{t.rights}</p>
+    <a class="back-top" href="#top">{t.back} <Icon name="arrow-up" size={14} /></a>
   </div>
 </footer>
 

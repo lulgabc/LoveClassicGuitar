@@ -35,7 +35,7 @@ for (const file of htmlFiles) {
       if (url.startsWith("https://lulgabc.github.io/LoveClassicGuitar")) continue;
       if (!external.has(url)) external.set(url, new Set());
       external.get(url).add(page);
-      const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+      const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube-nocookie\.com\/embed\/)([A-Za-z0-9_-]{6,})/);
       if (yt) {
         if (!youtubeVideos.has(yt[1])) youtubeVideos.set(yt[1], new Set());
         youtubeVideos.get(yt[1]).add(page);
@@ -128,7 +128,7 @@ console.log(`✓ ${ytResults.filter((result) => result.ok).length}/${ytResults.l
 const externalEntries = [...external.entries()];
 console.log(`\nChecking ${externalEntries.length} external URLs…`);
 const externalResults = await pool(externalEntries, 6, async ([url]) => {
-  if (url.includes("youtube.com/watch") || url.includes("youtu.be/")) {
+  if (url.includes("youtube.com/watch") || url.includes("youtu.be/") || url.includes("youtube-nocookie.com/embed/")) {
     return { url, status: 200, ok: true, note: "checked via oEmbed" };
   }
   const result = await checkUrl(url);

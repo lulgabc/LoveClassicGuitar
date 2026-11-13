@@ -1,18 +1,72 @@
 ---
-import { PRACTICE_PRESETS } from "../data/practice";
+import { PRACTICE_PRESETS, type PracticePreset } from "../data/practice";
 import Icon from "./Icon.astro";
+
+interface Props {
+  presets?: PracticePreset[];
+  lang?: "zh" | "fr";
+}
+
+const { presets = PRACTICE_PRESETS, lang = "zh" } = Astro.props;
+const isFr = lang === "fr";
+const defaultPreset = presets[1] ?? presets[0];
+const t = isFr
+  ? {
+      kicker: "Minuteur de pratique · Le petit horloge",
+      title: "Choisis une durée et commence doucement",
+      lead: "Pas besoin de tout faire. Quand ça sonne, on s'arrête et les étoiles se souviennent.",
+      chooseDuration: "Choisir la durée",
+      ready: "Prêt",
+      steps: "4 petites étapes",
+      start: "Commencer",
+      reset: "Réinitialiser",
+      skip: "Étape suivante",
+      sound: "Petit son doux",
+      route: "Le parcours du jour",
+      minutes: "min",
+      completeWord: "effectué",
+      completeKicker: "Séance terminée",
+      completeTitle: "La pratique d'aujourd'hui est finie !",
+      completeText: "Tu as offert un vrai moment aux six cordes. L'étoile est rangée : repose-toi ou joue un morceau plaisir.",
+      again: "Rejouer",
+      last7: "Les 7 derniers jours",
+      sessions: "séances enregistrées · seulement sur cet appareil",
+      days: ["D", "L", "M", "M", "J", "V", "S"],
+    }
+  : {
+      kicker: "Practice timer · 小小练习钟",
+      title: "选一个长度，开始今天的 15 分钟",
+      lead: "不用一次做完所有事。钟响了就休息，星星会记得你来过。",
+      chooseDuration: "选择练习时长",
+      ready: "准备开始",
+      steps: "4 个小步骤",
+      start: "开始",
+      reset: "重置计时器",
+      skip: "跳到下一步",
+      sound: "轻柔提示音",
+      route: "今天的路线",
+      minutes: "分钟",
+      completeWord: "完成",
+      completeKicker: "Practice complete",
+      completeTitle: "今天的练习完成了！",
+      completeText: "你刚刚为六根弦付出了真实的时间。星星已经收好，去休息一下，或者弹一首喜欢的曲子作为奖励。",
+      again: "再练一次",
+      last7: "最近 7 天",
+      sessions: "次练习记录 · 只保存在这台设备",
+      days: ["日", "一", "二", "三", "四", "五", "六"],
+    };
 ---
 
-<div class="practice-timer card" data-timer>
+<div class="practice-timer card" data-timer data-lang={lang} data-presets={JSON.stringify(presets)}>
   <div class="timer-head">
     <div>
-      <span class="timer-kicker">Practice timer · 小小练习钟</span>
-      <h3>选一个长度，开始今天的 15 分钟</h3>
-      <p>不用一次做完所有事。钟响了就休息，星星会记得你来过。</p>
+      <span class="timer-kicker">{t.kicker}</span>
+      <h3>{t.title}</h3>
+      <p>{t.lead}</p>
     </div>
-    <div class="preset-switch" role="group" aria-label="选择练习时长">
+    <div class="preset-switch" role="group" aria-label={t.chooseDuration}>
       {
-        PRACTICE_PRESETS.map((preset, index) => (
+        presets.map((preset, index) => (
           <button type="button" class:list={["preset-btn", { "is-active": index === 1 }]} data-preset={preset.minutes} aria-pressed={index === 1 ? "true" : "false"}>
             <strong>{preset.label}</strong>
             <span>{preset.sub}</span>
@@ -26,9 +80,9 @@ import Icon from "./Icon.astro";
     <div class="timer-clock-wrap">
       <div class="timer-clock" data-clock style="--progress:0">
         <div class="clock-inner">
-          <span class="clock-label" data-clock-label>准备开始</span>
-          <strong data-clock-time>15:00</strong>
-          <span class="clock-step" data-clock-step>共 4 个小步骤</span>
+          <span class="clock-label" data-clock-label>{t.ready}</span>
+          <strong data-clock-time>{String(defaultPreset?.minutes ?? 15).padStart(2, "0")}:00</strong>
+          <span class="clock-step" data-clock-step>{t.steps}</span>
         </div>
         <span class="clock-orbit orbit-a" aria-hidden="true"></span>
         <span class="clock-orbit orbit-b" aria-hidden="true"></span>
@@ -37,50 +91,50 @@ import Icon from "./Icon.astro";
 
       <div class="timer-controls">
         <button class="timer-main-btn" type="button" data-timer-start>
-          <Icon name="play" size={18} /> <span>开始</span>
+          <Icon name="play" size={18} /> <span>{t.start}</span>
         </button>
-        <button class="timer-icon-btn" type="button" data-timer-reset aria-label="重置计时器" title="重置">
+        <button class="timer-icon-btn" type="button" data-timer-reset aria-label={t.reset} title={t.reset}>
           <Icon name="refresh" size={17} />
         </button>
-        <button class="timer-icon-btn" type="button" data-timer-skip aria-label="跳到下一步" title="下一步">
+        <button class="timer-icon-btn" type="button" data-timer-skip aria-label={t.skip} title={t.skip}>
           <Icon name="chevron-right" size={18} />
         </button>
-        <span class="timer-sound"><Icon name="volume" size={14} /> 轻柔提示音</span>
+        <span class="timer-sound"><Icon name="volume" size={14} /> {t.sound}</span>
       </div>
       <p class="timer-live sr-only" aria-live="polite" data-timer-live></p>
     </div>
 
     <div class="timer-steps">
       <div class="timer-steps-head">
-        <span>今天的路线</span>
-        <span data-timer-total>15 分钟</span>
+        <span>{t.route}</span>
+        <span data-timer-total>{defaultPreset?.minutes ?? 15} {t.minutes}</span>
       </div>
       <ol data-timer-steps></ol>
-      <div class="timer-progress-text"><span data-timer-overall>0%</span> 完成</div>
+      <div class="timer-progress-text"><span data-timer-overall>0%</span> {t.completeWord}</div>
     </div>
   </div>
 
   <div class="timer-complete" data-timer-complete hidden>
     <div class="complete-star"><Icon name="star" size={27} /></div>
     <div>
-      <span class="complete-kicker">Practice complete</span>
-      <h4>今天的练习完成了！</h4>
-      <p>你刚刚为六根弦付出了真实的时间。星星已经收好，去休息一下，或者弹一首喜欢的曲子作为奖励。</p>
+      <span class="complete-kicker">{t.completeKicker}</span>
+      <h4>{t.completeTitle}</h4>
+      <p>{t.completeText}</p>
     </div>
-    <button class="btn btn-sun btn-sm" type="button" data-timer-again><Icon name="refresh" size={14} /> 再练一次</button>
+    <button class="btn btn-sun btn-sm" type="button" data-timer-again><Icon name="refresh" size={14} /> {t.again}</button>
   </div>
 
   <div class="timer-footer">
     <div class="timer-sessions">
-      <span class="sessions-label"><Icon name="star" size={13} /> 最近 7 天</span>
+      <span class="sessions-label"><Icon name="star" size={13} /> {t.last7}</span>
       <div class="sessions-days" data-sessions-days></div>
     </div>
-    <span class="sessions-total"><strong data-session-total>0</strong> 次练习记录 · 只保存在这台设备</span>
+    <span class="sessions-total"><strong data-session-total>0</strong> {t.sessions}</span>
   </div>
 </div>
 
 <script>
-  import { PRACTICE_PRESETS } from "../data/practice";
+  import type { PracticePreset } from "../data/practice";
   import { readProgress, addPracticeSession } from "../lib/progress";
   import { celebrate } from "../lib/celebrate";
   import { playChime } from "../lib/audio";
@@ -88,6 +142,25 @@ import Icon from "./Icon.astro";
 
   const root = document.querySelector<HTMLElement>("[data-timer]")!;
   if (root) {
+    const isFr = root.dataset.lang === "fr";
+    const presets = JSON.parse(root.dataset.presets ?? "[]") as PracticePreset[];
+    const txt = isFr
+      ? {
+          start: "Commencer", pause: "Pause", resume: "Continuer", restart: "Rejouer",
+          ready: "Prêt", running: "En cours", paused: "En pause", done: "Terminé !",
+          step: "Étape", next: "Étape suivante", completeLive: "Séance terminée. L'étoile est rangée.",
+          pausedLive: "Le minuteur est en pause.", started: "C'est parti", reset: "Le minuteur est réinitialisé.",
+          confirm: "La séance est en cours. Changer de durée et recommencer ?", minutes: "min",
+          days: ["D", "L", "M", "M", "J", "V", "S"],
+        }
+      : {
+          start: "开始", pause: "暂停", resume: "继续", restart: "重新开始",
+          ready: "准备开始", running: "正在练习", paused: "暂停中", done: "完成！",
+          step: "第", next: "下一步", completeLive: "练习完成，星星已经收好。",
+          pausedLive: "计时已暂停。", started: "开始", reset: "计时器已重置。",
+          confirm: "练习正在进行，要切换时长并重新开始吗？", minutes: "分钟",
+          days: ["日", "一", "二", "三", "四", "五", "六"],
+        };
     const clock = root.querySelector<HTMLElement>("[data-clock]");
     const clockTime = root.querySelector<HTMLElement>("[data-clock-time]");
     const clockLabel = root.querySelector<HTMLElement>("[data-clock-label]");
@@ -105,7 +178,7 @@ import Icon from "./Icon.astro";
     const daysEl = root.querySelector<HTMLElement>("[data-sessions-days]");
     const presetButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-preset]"));
 
-    let preset = PRACTICE_PRESETS[1]!;
+    let preset = presets[1] ?? presets[0]!;
     let stepIndex = 0;
     let remaining = preset.steps[0]!.minutes * 60;
     let totalSeconds = preset.steps.reduce((sum, step) => sum + step.minutes * 60, 0);
@@ -134,7 +207,7 @@ import Icon from "./Icon.astro";
         if (index < stepIndex || finished) item.classList.add("is-done");
         item.innerHTML = `
           <span class="step-index">${String(index + 1).padStart(2, "0")}</span>
-          <span class="step-copy"><strong>${step.title}</strong><small>${step.minutes} 分钟 · ${step.instruction}</small></span>
+          <span class="step-copy"><strong>${step.title}</strong><small>${step.minutes} ${txt.minutes} · ${step.instruction}</small></span>
           <span class="step-dot">${index < stepIndex || finished ? "✓" : step.minutes + "′"}</span>
         `;
         copyScope(root, item);
@@ -150,10 +223,10 @@ import Icon from "./Icon.astro";
       clock.style.setProperty("--progress", String(Math.max(0, Math.min(100, stepProgress * 100))));
       clock.classList.toggle("is-running", running);
       if (clockTime) clockTime.textContent = format(remaining);
-      if (clockLabel) clockLabel.textContent = finished ? "完成！" : running ? "正在练习" : stepIndex === 0 && remaining === stepSeconds ? "准备开始" : "暂停中";
-      if (clockStep) clockStep.textContent = finished ? "今天的小星星已点亮" : `第 ${stepIndex + 1} / ${preset.steps.length} 步 · ${preset.steps[stepIndex]?.title ?? ""}`;
+      if (clockLabel) clockLabel.textContent = finished ? txt.done : running ? txt.running : stepIndex === 0 && remaining === stepSeconds ? txt.ready : txt.paused;
+      if (clockStep) clockStep.textContent = finished ? (isFr ? "L'étoile du jour est allumée" : "今天的小星星已点亮") : isFr ? `Étape ${stepIndex + 1} / ${preset.steps.length} · ${preset.steps[stepIndex]?.title ?? ""}` : `第 ${stepIndex + 1} / ${preset.steps.length} 步 · ${preset.steps[stepIndex]?.title ?? ""}`;
       if (overallEl) overallEl.textContent = `${overall}%`;
-      if (totalEl) totalEl.textContent = `${preset.minutes} 分钟`;
+      if (totalEl) totalEl.textContent = `${preset.minutes} ${txt.minutes}`;
     }
 
     function stopInterval(): void {
@@ -191,7 +264,7 @@ import Icon from "./Icon.astro";
       remaining = preset.steps[stepIndex]!.minutes * 60;
       targetEnd = performance.now() + remaining * 1000;
       playChime();
-      liveEl && (liveEl.textContent = `下一步：${preset.steps[stepIndex]?.title}`);
+      liveEl && (liveEl.textContent = `${txt.next} : ${preset.steps[stepIndex]?.title}`);
       renderSteps();
       updateClock();
     }
@@ -212,10 +285,10 @@ import Icon from "./Icon.astro";
         celebrate(32);
         renderSessions();
       }
-      liveEl && (liveEl.textContent = "练习完成，星星已经收好。");
+      liveEl && (liveEl.textContent = txt.completeLive);
       if (startBtn) {
-        startBtn.innerHTML = `<span class="btn-icon"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2 6"/><path d="M20 4v7h-7"/></svg></span><span>重新开始</span>`;
-        startBtn.setAttribute("aria-label", "重新开始练习");
+        startBtn.innerHTML = `<span class="btn-icon"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2 6"/><path d="M20 4v7h-7"/></svg></span><span>${txt.restart}</span>`;
+        startBtn.setAttribute("aria-label", txt.restart);
         copyScope(root, startBtn);
       }
     }
@@ -231,20 +304,20 @@ import Icon from "./Icon.astro";
         remaining = Math.max(1, Math.ceil((targetEnd - performance.now()) / 1000));
         updateClock();
         if (startBtn) {
-          startBtn.innerHTML = `<span class="btn-icon"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6L19 12 8 5.2Z"/></svg></span><span>继续</span>`;
+          startBtn.innerHTML = `<span class="btn-icon"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6L19 12 8 5.2Z"/></svg></span><span>${txt.resume}</span>`;
           copyScope(root, startBtn);
         }
-        liveEl && (liveEl.textContent = "计时已暂停。");
+        liveEl && (liveEl.textContent = txt.pausedLive);
         return;
       }
       running = true;
       completePanel?.setAttribute("hidden", "");
       if (startBtn) {
-        startBtn.innerHTML = `<span class="btn-icon"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg></span><span>暂停</span>`;
+        startBtn.innerHTML = `<span class="btn-icon"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg></span><span>${txt.pause}</span>`;
         copyScope(root, startBtn);
       }
       startup();
-      liveEl && (liveEl.textContent = `开始：${preset.steps[stepIndex]?.title}`);
+      liveEl && (liveEl.textContent = `${txt.started} : ${preset.steps[stepIndex]?.title}`);
     }
 
     function startup(): void {
@@ -265,12 +338,12 @@ import Icon from "./Icon.astro";
       totalSeconds = preset.steps.reduce((sum, step) => sum + step.minutes * 60, 0);
       completePanel?.setAttribute("hidden", "");
       if (startBtn) {
-        startBtn.innerHTML = `<span class="btn-icon"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6L19 12 8 5.2Z"/></svg></span><span>开始</span>`;
+        startBtn.innerHTML = `<span class="btn-icon"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6L19 12 8 5.2Z"/></svg></span><span>${txt.start}</span>`;
         copyScope(root, startBtn);
       }
       updateClock();
       renderSteps();
-      liveEl && (liveEl.textContent = "计时器已重置。");
+      liveEl && (liveEl.textContent = txt.reset);
     }
 
     function skip(): void {
@@ -283,7 +356,7 @@ import Icon from "./Icon.astro";
     }
 
     function selectPreset(minutes: number): void {
-      const next = PRACTICE_PRESETS.find((item) => item.minutes === minutes);
+      const next = presets.find((item) => item.minutes === minutes);
       if (!next) return;
       preset = next;
       presetButtons.forEach((button) => {
@@ -304,7 +377,7 @@ import Icon from "./Icon.astro";
         return {
           date,
           key: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`,
-          label: ["日", "一", "二", "三", "四", "五", "六"][date.getDay()],
+          label: txt.days[date.getDay()],
         };
       });
       const set = new Set(progress.sessions.map((session) => session.date));
@@ -315,7 +388,7 @@ import Icon from "./Icon.astro";
         if (set.has(day.key)) el.classList.add("has-practice");
         el.innerHTML = `<small>${day.label}</small><b>${set.has(day.key) ? "★" : "·"}</b>`;
         copyScope(root, el);
-        el.title = set.has(day.key) ? `${day.key} 有练习` : day.key;
+        el.title = set.has(day.key) ? (isFr ? `Pratique le ${day.key}` : `${day.key} 有练习`) : day.key;
         daysEl.appendChild(el);
       });
     }
@@ -323,7 +396,7 @@ import Icon from "./Icon.astro";
     presetButtons.forEach((button) => {
       button.addEventListener("click", () => {
         if (running) {
-          const ok = window.confirm("练习正在进行，要切换时长并重新开始吗？");
+          const ok = window.confirm(txt.confirm);
           if (!ok) return;
         }
         selectPreset(Number(button.dataset.preset));

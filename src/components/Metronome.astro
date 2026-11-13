@@ -1,40 +1,78 @@
 ---
 import Bat from "./Bat.astro";
 import Icon from "./Icon.astro";
+
+interface Props {
+  lang?: "zh" | "fr";
+}
+
+const { lang = "zh" } = Astro.props;
+const isFr = lang === "fr";
+const t = isFr
+  ? {
+      kicker: "Métronome · Le cœur du rythme",
+      title: "Un rythme stable comme des pas",
+      lead: "Tape d'abord dans les mains, puis joue. 60 BPM, c'est un clic par seconde : lentement, on entend mieux.",
+      beats: "Par mesure",
+      beatOptions: ["2 temps", "3 temps", "4 temps"],
+      hint: "Le premier temps brille plus fort",
+      start: "Lancer le métronome",
+      stop: "Mettre en pause",
+      ready: "Prêt ?",
+      running: "Suis les points : 1, 2, 3, 4",
+      paused: "Écoute le rythme dans ta tête.",
+      legendFirst: "1er temps",
+      legendOther: "Autres temps",
+    }
+  : {
+      kicker: "Metronome · 节拍器",
+      title: "让拍子像脚步一样稳",
+      lead: "先跟着点拍手，再上琴。60 BPM 就是每秒一下，慢一点，反而更容易听清。",
+      beats: "每小节",
+      beatOptions: ["2 拍", "3 拍", "4 拍"],
+      hint: "第一拍会亮得更大",
+      start: "开始数拍",
+      stop: "暂停数拍",
+      ready: "准备好了吗？",
+      running: "跟着亮起来的点，数 1、2、3、4",
+      paused: "停一停，听听刚才的拍子还在心里吗？",
+      legendFirst: "第 1 拍",
+      legendOther: "其他拍",
+    };
 ---
 
-<div class="metronome card" data-metronome>
+<div class="metronome card" data-metronome data-lang={lang}>
   <div class="metro-copy">
-    <span class="tool-kicker">Metronome · 节拍器</span>
-    <h3>让拍子像脚步一样稳</h3>
-    <p>先跟着点拍手，再上琴。60 BPM 就是每秒一下，慢一点，反而更容易听清。</p>
-    <div class="metro-presets" role="group" aria-label="速度预设">
-      <button type="button" data-bpm="60" class="is-active">60<small>散步</small></button>
-      <button type="button" data-bpm="72">72<small>走路</small></button>
-      <button type="button" data-bpm="88">88<small>小跑</small></button>
-      <button type="button" data-bpm="100">100<small>跳舞</small></button>
+    <span class="tool-kicker">{t.kicker}</span>
+    <h3>{t.title}</h3>
+    <p>{t.lead}</p>
+    <div class="metro-presets" role="group" aria-label={isFr ? "Vitesses prédéfinies" : "速度预设"}>
+      <button type="button" data-bpm="60" class="is-active">60<small>{isFr ? "Marche" : "散步"}</small></button>
+      <button type="button" data-bpm="72">72<small>{isFr ? "Balade" : "走路"}</small></button>
+      <button type="button" data-bpm="88">88<small>{isFr ? "Petit trot" : "小跑"}</small></button>
+      <button type="button" data-bpm="100">100<small>{isFr ? "Danse" : "跳舞"}</small></button>
     </div>
     <div class="metro-controls">
       <div class="bpm-display">
         <strong data-bpm-display>60</strong><span>BPM</span>
       </div>
       <label class="bpm-slider">
-        <span class="sr-only">调整速度</span>
+        <span class="sr-only">{isFr ? "Régler la vitesse" : "调整速度"}</span>
         <input type="range" min="40" max="120" step="1" value="60" data-bpm-range />
       </label>
     </div>
     <div class="metro-options">
-      <label>每小节
-        <select data-beats aria-label="每小节拍数">
-          <option value="2">2 拍</option>
-          <option value="3">3 拍</option>
-          <option value="4" selected>4 拍</option>
+      <label>{t.beats}
+        <select data-beats aria-label={t.beats}>
+          <option value="2">{t.beatOptions[0]}</option>
+          <option value="3">{t.beatOptions[1]}</option>
+          <option value="4" selected>{t.beatOptions[2]}</option>
         </select>
       </label>
-      <span class="metro-hint"><Icon name="lightbulb" size={13} /> 第一拍会亮得更大</span>
+      <span class="metro-hint"><Icon name="lightbulb" size={13} /> {t.hint}</span>
     </div>
     <button class="metro-toggle" type="button" data-metro-toggle aria-pressed="false">
-      <span class="toggle-icon" data-metro-icon>▶</span><span data-metro-label>开始数拍</span>
+      <span class="toggle-icon" data-metro-icon>▶</span><span data-metro-label>{t.start}</span>
     </button>
   </div>
 
@@ -49,11 +87,11 @@ import Icon from "./Icon.astro";
         <span></span>
       </div>
       <div class="metro-count" data-metro-count>1</div>
-      <span class="metro-caption" data-metro-caption>准备好了吗？</span>
+      <span class="metro-caption" data-metro-caption>{t.ready}</span>
     </div>
     <div class="metro-legend">
-      <span><span class="legend-dot legend-strong"></span> 第 1 拍</span>
-      <span><span class="legend-dot"></span> 其他拍</span>
+      <span><span class="legend-dot legend-strong"></span> {t.legendFirst}</span>
+      <span><span class="legend-dot"></span> {t.legendOther}</span>
     </div>
   </div>
 </div>
@@ -74,6 +112,11 @@ import Icon from "./Icon.astro";
     const stage = root.querySelector<HTMLElement>("[data-metro-stage]");
     const toggleIcon = root.querySelector<HTMLElement>("[data-metro-icon]");
     const toggleLabel = root.querySelector<HTMLElement>("[data-metro-label]");
+    const isFr = root.dataset.lang === "fr";
+    const labelStart = isFr ? "Lancer le métronome" : "开始数拍";
+    const labelStop = isFr ? "Mettre en pause" : "暂停数拍";
+    const runningText = isFr ? "Suis les points : 1, 2, 3, 4" : "跟着亮起来的点，数 1、2、3、4";
+    const pausedText = isFr ? "Écoute le rythme dans ta tête." : "停一停，听听刚才的拍子还在心里吗？";
 
     let bpm = 60;
     let beats = 4;
@@ -125,11 +168,11 @@ import Icon from "./Icon.astro";
       nextTick = performance.now() + 80;
       if (toggle) {
         if (toggleIcon) toggleIcon.textContent = "Ⅱ";
-        if (toggleLabel) toggleLabel.textContent = "暂停数拍";
+        if (toggleLabel) toggleLabel.textContent = labelStop;
         toggle.classList.add("is-running");
         toggle.setAttribute("aria-pressed", "true");
       }
-      if (caption) caption.textContent = "跟着亮起来的点，数 1、2、3、4";
+      if (caption) caption.textContent = runningText;
       if (stage) stage.classList.add("is-running");
       raf = window.requestAnimationFrame(tick);
     }
@@ -139,11 +182,11 @@ import Icon from "./Icon.astro";
       window.cancelAnimationFrame(raf);
       if (toggle) {
         if (toggleIcon) toggleIcon.textContent = "▶";
-        if (toggleLabel) toggleLabel.textContent = "开始数拍";
+        if (toggleLabel) toggleLabel.textContent = labelStart;
         toggle.classList.remove("is-running");
         toggle.setAttribute("aria-pressed", "false");
       }
-      if (caption) caption.textContent = "停一停，听听刚才的拍子还在心里吗？";
+      if (caption) caption.textContent = pausedText;
       if (stage) stage.classList.remove("is-running");
     }
 

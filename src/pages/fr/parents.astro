@@ -1,0 +1,295 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import MascotBubble from "../../components/MascotBubble.astro";
+import Icon from "../../components/Icon.astro";
+import { url } from "../../lib/url";
+
+const vitals = [
+  { value: "10–15", unit: "min", text: "Une séance confortable" },
+  { value: "3–5", unit: "fois", text: "Par semaine, c'est déjà bien" },
+  { value: "1", unit: "point", text: "Une seule correction à la fois" },
+  { value: "0", unit: "comparaison", text: "On se compare à soi d'hier" },
+];
+const motivation = [
+  { title: "La règle des deux minutes", body: "Quand elle n'a pas envie, on s'assoit seulement deux minutes. Elle peut s'arrêter après." },
+  { title: "Laisser choisir", body: "« On commence par les cordes ou par le morceau ? » Choisir réduit souvent le conflit." },
+  { title: "Écouter, chanter, dessiner", body: "Un jour sans guitare peut être un jour de musique. Une pièce, un dessin, un rythme dans les mains." },
+  { title: "Inviter un public", body: "Une peluche, un grand-parent au téléphone : jouer pour quelqu'un donne un but tendre." },
+  { title: "Ne pas monnayer", body: "Éviter « tu joues, puis tu auras un bonbon ». La musique ne devrait pas devenir un paiement." },
+  { title: "Vérifier le corps", body: "Fatigue, faim, guitare trop grande, cordes trop hautes : parfois ce n'est pas un manque de motivation." },
+];
+const milestones = [
+  { when: "1er mois", text: "S'installer, pincer les cordes à vide, suivre 60 BPM et connaître les six notes." },
+  { when: "2–3 mois", text: "Trouver quelques notes sur les trois premières cordes et jouer une mélodie courte." },
+  { when: "4–6 mois", text: "Séparer pouce et doigts, jouer 8 à 16 mesures, jouer devant un petit public." },
+  { when: "7–9 mois", text: "Mémoriser, faire des nuances, écouter la mélodie et la basse, offrir un mini-concert." },
+];
+const faqs = [
+  { q: "7 ans, est-ce trop tôt ou trop tard ?", a: "7 ans est un âge courant. Ce qui compte : tenir assis 10 minutes, écouter une consigne et avoir une guitare adaptée. Chaque enfant a son rythme." },
+  { q: "Faut-il jouer tous les jours ?", a: "Non. Trois à cinq séances de 10–15 minutes par semaine suffisent souvent. La régularité compte plus que la durée d'un marathon." },
+  { q: "Peut-on apprendre avec des vidéos ?", a: "Les vidéos complètent bien, mais un professeur peut voir la taille de la guitare, la posture et les petits gestes que la caméra ne montre pas." },
+  { q: "Et si elle veut arrêter ?", a: "Distinguer « pas envie aujourd'hui » de « pas heureuse depuis des semaines ». Pour le premier, alléger. Pour le second, écouter, vérifier le professeur, l'instrument et la pression." },
+];
+---
+
+<BaseLayout
+  lang="fr"
+  title="Le guide des parents"
+  description="Un guide parental sans pression pour accompagner une enfant de 7 ans : choisir la guitare, trouver un professeur, pratiquer 15 minutes, gérer les écrans et protéger les oreilles."
+>
+  <PageHero
+    kicker="Pour les adultes · Aux parents"
+    title="Pas besoin de jouer<br />pour <em>accompagner</em>."
+    lead="Accorder la guitare, laisser quinze minutes, écouter sans interrompre. Le reste appartient au professeur, au temps et à l'enfant."
+  >
+    <div class="slug">
+      <a href="#instrument">L'instrument</a>
+      <a href="#prof">Le professeur</a>
+      <a href="#maison">À la maison</a>
+      <a href="#ecrans">Écrans et oreilles</a>
+      <a href="#reperes">Repères</a>
+    </div>
+  </PageHero>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="vitals">
+        {vitals.map((entry) => <div class="vital card"><strong>{entry.value}<small>{entry.unit}</small></strong><span>{entry.text}</span></div>)}
+      </div>
+      <div class="manifesto"><span>“</span><p>Accompagner, ce n'est pas surveiller. C'est rester dans la pièce quand la musique est fragile.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="instrument">
+    <div class="container">
+      <SectionHead kicker="01 · L'instrument" title="Une guitare <em>à sa taille</em>" lead="Une guitare trop grande abîme la posture et décourage. L'âge seul ne suffit pas." />
+      <div class="info-grid">
+        <article class="info-card card">
+          <h3>Les bons signes</h3>
+          <ul>
+            <li>La tête de la guitare arrive vers les yeux ou les épaules.</li>
+            <li>La main gauche atteint la 1re case sans tendre le bras.</li>
+            <li>Les cordes en nylon sont confortables et l'action n'est pas trop haute.</li>
+            <li>Le corps de la guitare ne cache pas le visage.</li>
+          </ul>
+        </article>
+        <article class="info-card card">
+          <h3>Repères très approximatifs</h3>
+          <div class="sizes"><div><b>1/2</b><span>5–8 ans</span></div><div><b>3/4</b><span>8–11 ans</span></div><div><b>4/4</b><span>11 ans +</span></div></div>
+          <p>Toujours essayer la guitare assise. Le professeur ou le luthier a le dernier mot.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="prof">
+    <div class="container">
+      <SectionHead kicker="02 · Le professeur" title="Quelqu'un qui <em>regarde les détails</em>" lead="On ne cherche pas la personne la plus spectaculaire, mais celle qui voit votre enfant et explique clairement." />
+      <div class="details-grid">
+        <details class="fold card" open>
+          <summary>Les questions à poser <Icon name="chevron-down" size={16} /></summary>
+          <ol>
+            <li>Enseignez-vous vraiment la guitare classique et les jeunes enfants ?</li>
+            <li>Vérifiez-vous la taille de la guitare et la posture dès le début ?</li>
+            <li>Comment réagissez-vous si un enfant a mal ou se décourage ?</li>
+            <li>Quel matériel conseillez-vous, et pourquoi ?</li>
+            <li>Pouvons-nous avoir un résumé clair de la pratique de la semaine ?</li>
+            <li>Comment voyez-vous les examens, les concerts et le plaisir ?</li>
+          </ol>
+        </details>
+        <details class="fold card">
+          <summary>Les signaux d'alerte <Icon name="chevron-down" size={16} /></summary>
+          <ul>
+            <li>On demande de supporter une douleur nette ou un engourdissement.</li>
+            <li>Seuls le classement, l'examen ou le concours comptent.</li>
+            <li>Les questions des parents sont mal accueillies.</li>
+            <li>On pousse à acheter beaucoup de matériel dès la première leçon.</li>
+          </ul>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="maison">
+    <div class="container">
+      <SectionHead kicker="03 · À la maison" title="Quinze minutes, <em>quatre moments</em>" lead="Une routine simple vaut mieux qu'une longue séance rare." />
+      <div class="routine">
+        <div><b>2</b><span>min</span><p><strong>Respirer</strong> et écouter les cordes à vide.</p></div>
+        <div><b>4</b><span>min</span><p><strong>Un mini-objectif</strong> technique, sans se presser.</p></div>
+        <div><b>6</b><span>min</span><p><strong>Le morceau</strong> en petits bouts, lentement.</p></div>
+        <div><b>3</b><span>min</span><p><strong>Écouter</strong> une pièce ou improviser.</p></div>
+      </div>
+      <div class="say-grid">
+        <div><span>À éviter</span><p>« Tu t'es encore trompé. »</p><p>« Tu devrais être plus loin. »</p><p>« Encore dix fois. »</p></div>
+        <div><span>À essayer</span><p>« On regarde quelle mesure bloque ? »</p><p>« Le son grave est plus stable aujourd'hui. »</p><p>« Encore trois fois juste, puis on s'arrête. »</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container">
+      <SectionHead kicker="04 · Les jours sans envie" title="Écouter avant de <em>demander</em>" lead="« Je ne veux pas » peut vouloir dire fatiguée, difficile, ou besoin d'un peu de contrôle." />
+      <div class="motivation-grid">
+        {motivation.map((item, index) => <article class="motivation-card card"><span>{String(index + 1).padStart(2, "0")}</span><h3>{item.title}</h3><p>{item.body}</p></article>)}
+      </div>
+      <MascotBubble who="capi" title="Le mot de Capi" text="Une pause n'efface pas les progrès. La musique reste là, même quand on ferme la boîte quelques jours." tone="sun" />
+    </div>
+  </section>
+
+  <section class="section" id="ecrans">
+    <div class="container">
+      <SectionHead kicker="05 · Écrans, oreilles, confidentialité" title="Le cadre qui protège" lead="Ce site n'a pas de compte, de publicité ni de suivi. Le prénom et les progrès restent sur l'appareil." />
+      <div class="safety-grid">
+        <article class="safety-card card"><Icon name="shield" size={21} /><h3>Données locales</h3><p>Pas de compte, pas de cookies publicitaires. Les progrès sont dans le stockage local du navigateur et peuvent être effacés.</p></article>
+        <article class="safety-card card"><Icon name="volume" size={21} /><h3>Oreilles</h3><p>Volume confortable, pas d'écoute prolongée. Une pause toutes les 20–30 minutes. En cas de douleur ou de sifflement, on arrête.</p></article>
+        <article class="safety-card card"><Icon name="youtube" size={21} /><h3>YouTube</h3><p>Les vidéos passent par youtube-nocookie.com et se chargent dès que le lecteur arrive à l'écran. Un adulte peut vérifier le volume, les recommandations et les publicités.</p></article>
+        <article class="safety-card card"><Icon name="heart" size={21} /><h3>Partage</h3><p>On ne publie pas le visage, l'école ou l'adresse d'un enfant sans réflexion et sans son accord.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="reperes">
+    <div class="container">
+      <SectionHead kicker="06 · Des repères, pas des délais" title="Ça ressemble à <em>quoi, progresser</em> ?" lead="Les dates sont indicatives. Les vrais signes sont plus discrets." />
+      <div class="milestones">
+        {milestones.map((item) => <div class="milestone"><span>{item.when}</span><p>{item.text}</p></div>)}
+      </div>
+      <div class="signs">
+        <h3>Six signes qui comptent</h3>
+        <p>Elle continue après une erreur. Elle dit « écoute ça ». Elle entend une basse ou une nuance. Elle s'installe seule. Elle a une pièce qu'elle aime. Elle sourit encore après la séance.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead kicker="Questions fréquentes" title="Les questions <em>utiles</em>" />
+      <div class="faq">
+        {faqs.map((faq, index) => <details open={index === 0}><summary><span>{String(index + 1).padStart(2, "0")}</span>{faq.q}<Icon name="chevron-down" size={15} /></summary><p>{faq.a}</p></details>)}
+      </div>
+      <p class="medical"><Icon name="info" size={13} /> Ce guide est général et ne remplace pas un professeur, un médecin ou un psychologue. En cas de douleur persistante, de trouble de l'audition ou d'anxiété importante, consultez un professionnel.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container parent-bottom">
+      <div><span class="eyebrow"><Icon name="printer" size={13} /> Une fiche pour la semaine</span><h2>Imprimer, colorier, accrocher.</h2></div>
+      <div class="btn-row"><a class="btn btn-primary" href={url("/fr/print/weekly/")}>Ouvrir la fiche <Icon name="arrow-right" size={14} /></a><a class="btn btn-ghost" href={url("/fr/roadmap/")}>Voir le parcours</a></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .slug {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .slug a {
+    display: inline-flex;
+    padding: 5px 9px;
+    color: #d7caf4;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 9.5px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .slug a:hover { color: #fff1c9; background: rgba(255, 216, 111, 0.1); }
+
+  .vitals { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .vital { display: flex; align-items: center; gap: 9px; padding: 12px; box-shadow: none; }
+  .vital strong { color: var(--violet-700); font-family: var(--font-display); font-size: 20px; line-height: 1; }
+  .vital strong small { margin-left: 2px; color: var(--faint); font-family: var(--font-body); font-size: 7px; }
+  .vital span { color: var(--muted); font-size: 8px; line-height: 1.4; }
+
+  .manifesto { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 13px 17px; border-radius: 13px; background: var(--sun-wash); }
+  .manifesto > span { color: var(--sun-700); font-family: Georgia, serif; font-size: 32px; line-height: 0.8; opacity: 0.7; }
+  .manifesto p { margin: 0; color: var(--ink); font-family: var(--font-display); font-size: 12.5px; font-weight: 800; line-height: 1.6; }
+
+  .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .info-card { padding: 18px; background: var(--surface); }
+  .info-card h3 { margin: 0 0 9px; color: var(--ink); font-size: 17px; }
+  .info-card ul { display: grid; gap: 6px; margin: 0; padding-left: 1.1em; color: var(--ink-soft); font-size: 10px; line-height: 1.65; }
+
+  .sizes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .sizes div { padding: 9px; border-radius: 9px; background: var(--surface-2); text-align: center; }
+  .sizes b { display: block; color: var(--violet-700); font-family: var(--font-display); font-size: 21px; line-height: 1; }
+  .sizes span { display: block; margin-top: 3px; color: var(--muted); font-size: 7.5px; }
+  .info-card > p { margin: 10px 0 0; color: var(--faint); font-size: 8px; line-height: 1.55; }
+
+  .details-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .fold { padding: 0; overflow: hidden; background: var(--surface); }
+  .fold summary { display: flex; align-items: center; gap: 8px; padding: 15px 17px; color: var(--ink); font-size: 13px; font-weight: 800; list-style: none; }
+  .fold summary::-webkit-details-marker { display: none; }
+  .fold summary .icon { margin-left: auto; color: var(--faint); transition: transform 150ms ease; }
+  .fold[open] summary .icon { transform: rotate(180deg); }
+  .fold ol, .fold ul { display: grid; gap: 6px; margin: 0; padding: 0 17px 17px 2em; color: var(--ink-soft); font-size: 9.5px; line-height: 1.6; }
+  .fold li::marker { color: var(--violet-600); }
+
+  .routine { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .routine > div { padding: 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); }
+  .routine b { color: var(--violet-700); font-family: var(--font-display); font-size: 28px; line-height: 1; }
+  .routine > div > span { margin-left: 2px; color: var(--faint); font-size: 8px; }
+  .routine p { margin: 8px 0 0; color: var(--muted); font-size: 9px; line-height: 1.55; }
+  .routine strong { color: var(--ink); }
+
+  .say-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+  .say-grid > div { padding: 14px 16px; border-radius: 12px; background: var(--surface); }
+  .say-grid > div:first-child { background: var(--coral-wash); }
+  .say-grid > div:last-child { background: var(--mint-wash); }
+  .say-grid span { color: var(--ink); font-family: var(--font-mono); font-size: 8px; font-weight: 800; text-transform: uppercase; }
+  .say-grid p { margin: 7px 0 0; color: var(--ink-soft); font-size: 9px; line-height: 1.55; }
+
+  .motivation-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 13px; }
+  .motivation-card { padding: 14px; background: var(--surface); }
+  .motivation-card > span { color: var(--violet-700); font-family: var(--font-display); font-size: 20px; font-weight: 900; }
+  .motivation-card h3 { margin: 7px 0 3px; color: var(--ink); font-size: 11.5px; }
+  .motivation-card p { margin: 0; color: var(--muted); font-size: 8.5px; line-height: 1.6; }
+
+  .safety-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .safety-card { padding: 15px; background: var(--surface); }
+  .safety-card > .icon { color: var(--violet-700); }
+  .safety-card h3 { margin: 8px 0 3px; color: var(--ink); font-size: 11.5px; }
+  .safety-card p { margin: 0; color: var(--muted); font-size: 8.5px; line-height: 1.6; }
+
+  .milestones { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .milestone { padding: 13px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); }
+  .milestone span { color: var(--violet-700); font-family: var(--font-mono); font-size: 8px; font-weight: 800; }
+  .milestone p { margin: 5px 0 0; color: var(--muted); font-size: 8.5px; line-height: 1.6; }
+  .signs { margin-top: 12px; padding: 15px 17px; border-radius: 12px; background: var(--sun-wash); }
+  .signs h3 { margin: 0 0 4px; color: var(--ink); font-size: 12px; }
+  .signs p { margin: 0; color: var(--ink-soft); font-size: 9px; line-height: 1.65; }
+
+  .faq { display: grid; gap: 6px; max-width: 850px; }
+  .faq details { background: var(--surface); }
+  .faq summary { display: flex; align-items: center; gap: 8px; padding: 12px 14px; color: var(--ink); font-size: 11.5px; font-weight: 750; list-style: none; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary span { color: var(--violet-700); font-family: var(--font-mono); font-size: 7.5px; }
+  .faq summary .icon { margin-left: auto; color: var(--faint); transition: transform 150ms ease; }
+  .faq details[open] summary .icon { transform: rotate(180deg); }
+  .faq details > p { margin: 0; padding: 0 14px 14px 34px; color: var(--ink-soft); font-size: 9px; line-height: 1.65; }
+  .medical { display: flex; align-items: flex-start; gap: 5px; max-width: 780px; margin-top: 13px; color: var(--faint); font-size: 8px; line-height: 1.55; }
+  .medical .icon { margin-top: 1px; }
+
+  .parent-bottom { display: flex; align-items: center; justify-content: space-between; gap: 23px; padding: clamp(22px, 4vw, 32px); border: 1.5px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow); }
+  .parent-bottom h2 { margin-top: 9px; font-size: clamp(22px, 3vw, 31px); }
+
+  @media (max-width: 950px) {
+    .vitals, .safety-grid, .milestones { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .motivation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .details-grid, .info-grid { grid-template-columns: 1fr; }
+    .routine { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 650px) {
+    .vitals, .motivation-grid, .safety-grid, .milestones, .routine, .say-grid { grid-template-columns: 1fr; }
+    .parent-bottom { align-items: flex-start; flex-direction: column; }
+  }
+</style>

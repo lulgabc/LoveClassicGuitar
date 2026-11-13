@@ -1,13 +1,61 @@
 ---
 import Icon from "./Icon.astro";
+
+interface Props {
+  lang?: "zh" | "fr";
+}
+
+const { lang = "zh" } = Astro.props;
+const isFr = lang === "fr";
+const t = isFr
+  ? {
+      kicker: "Oreille curieuse · Le petit lutin du son",
+      title: "Écoute : la deuxième note est plus haute ou plus basse ?",
+      lead: "Pas besoin de lire la musique. D'abord l'oreille, les noms viendront plus tard.",
+      score: "Score",
+      hint: "Touche « Écouter deux notes »",
+      play: "Écouter deux notes",
+      playLabel: "Touche pour jouer",
+      again: "Réécouter",
+      higher: "La deuxième est plus haute",
+      lower: "La deuxième est plus basse",
+      higherSub: "Le son monte",
+      lowerSub: "Le son descend",
+      tip: "Si tu ne sais pas, fredonne les deux notes.",
+      next: "Suivant",
+      resultTitle: "Ton oreille s'allume !",
+      resultTitleHigh: "Petite oreille, grandes étoiles !",
+      rest: "Rejouer",
+      noscript: "Le jeu a besoin de JavaScript et du son.",
+    }
+  : {
+      kicker: "Ear sprite · 耳朵小精灵",
+      title: "听一听：第二个音是更高，还是更低？",
+      lead: "不用看谱，也不用知道音名。先让耳朵玩游戏，它会慢慢变灵敏。",
+      score: "得分",
+      hint: "先点“听两个音”",
+      play: "听两个音",
+      playLabel: "点击播放",
+      again: "再听一次",
+      higher: "第二个更高",
+      lower: "第二个更低",
+      higherSub: "听起来往上走",
+      lowerSub: "听起来往下走",
+      tip: "如果听不出来，可以哼一下两个音。",
+      next: "下一个",
+      resultTitle: "耳朵开始发亮了！",
+      resultTitleHigh: "小耳朵，亮晶晶！",
+      rest: "再听一轮",
+      noscript: "耳朵游戏需要 JavaScript 和声音。你仍然可以听音乐厅的曲子来练耳朵。",
+    };
 ---
 
-<div class="ear-game card" data-ear-game>
+<div class="ear-game card" data-ear-game data-lang={lang}>
   <div class="ear-head">
     <div>
-      <span class="tool-kicker">Ear sprite · 耳朵小精灵</span>
-      <h3>听一听：第二个音是更高，还是更低？</h3>
-      <p>不用看谱，也不用知道音名。先让耳朵玩游戏，它会慢慢变灵敏。</p>
+      <span class="tool-kicker">{t.kicker}</span>
+      <h3>{t.title}</h3>
+      <p>{t.lead}</p>
     </div>
     <span class="ear-score"><Icon name="star" size={13} /> <strong data-ear-score>0</strong> / 5</span>
   </div>
@@ -24,36 +72,36 @@ import Icon from "./Icon.astro";
 
     <div class="ear-panel">
       <div class="ear-progress">
-        <span data-ear-progress>第 1 / 5 题</span>
-        <span class="ear-hint">先点“听两个音”</span>
+        <span data-ear-progress>{isFr ? "Question 1 / 5" : "第 1 / 5 题"}</span>
+        <span class="ear-hint">{t.hint}</span>
       </div>
       <button class="ear-play" type="button" data-ear-play>
         <span class="ear-play-icon"><Icon name="play" size={19} /></span>
-        <span><strong>听两个音</strong><small data-ear-play-label>点击播放</small></span>
+        <span><strong>{t.play}</strong><small data-ear-play-label>{t.playLabel}</small></span>
         <span class="ear-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
       </button>
 
       <div class="ear-options">
-        <button type="button" data-ear-answer="higher" disabled><span>↗</span><strong>第二个更高</strong><small>听起来往上走</small></button>
-        <button type="button" data-ear-answer="lower" disabled><span>↘</span><strong>第二个更低</strong><small>听起来往下走</small></button>
+        <button type="button" data-ear-answer="higher" disabled><span>↗</span><strong>{t.higher}</strong><small>{t.higherSub}</small></button>
+        <button type="button" data-ear-answer="lower" disabled><span>↘</span><strong>{t.lower}</strong><small>{t.lowerSub}</small></button>
       </div>
 
       <div class="ear-feedback" data-ear-feedback hidden aria-live="polite"></div>
       <div class="ear-bottom">
-        <span class="ear-tip"><Icon name="ear" size={13} /> 如果听不出来，可以哼一下两个音。</span>
-        <button class="btn btn-primary btn-sm" type="button" data-ear-next hidden>下一个 <Icon name="arrow-right" size={13} /></button>
+        <span class="ear-tip"><Icon name="ear" size={13} /> {t.tip}</span>
+        <button class="btn btn-primary btn-sm" type="button" data-ear-next hidden>{t.next} <Icon name="arrow-right" size={13} /></button>
       </div>
     </div>
   </div>
 
   <div class="ear-result" data-ear-result hidden>
     <span class="result-sparkle">✦</span>
-    <h4 data-ear-result-title>耳朵开始发亮了！</h4>
+    <h4 data-ear-result-title>{t.resultTitle}</h4>
     <p data-ear-result-text></p>
-    <button class="btn btn-sun btn-sm" type="button" data-ear-restart><Icon name="refresh" size={14} /> 再听一轮</button>
+    <button class="btn btn-sun btn-sm" type="button" data-ear-restart><Icon name="refresh" size={14} /> {t.rest}</button>
   </div>
 
-  <noscript><p class="ear-noscript">耳朵游戏需要 JavaScript 和声音。你仍然可以听音乐厅的曲子来练耳朵。</p></noscript>
+  <noscript><p class="ear-noscript">{t.noscript}</p></noscript>
 </div>
 
 <script>
@@ -64,6 +112,7 @@ import Icon from "./Icon.astro";
 
   const root = document.querySelector<HTMLElement>("[data-ear-game]")!;
   if (root) {
+    const isFr = root.dataset.lang === "fr";
     const playBtn = root.querySelector<HTMLButtonElement>("[data-ear-play]");
     const playLabel = root.querySelector<HTMLElement>("[data-ear-play-label]");
     const options = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-ear-answer]"));
@@ -105,7 +154,7 @@ import Icon from "./Icon.astro";
       });
       feedback?.setAttribute("hidden", "");
       nextBtn?.setAttribute("hidden", "");
-      if (playLabel) playLabel.textContent = "点击播放";
+      if (playLabel) playLabel.textContent = isFr ? "Touche pour jouer" : "点击播放";
       makePair();
     }
 
@@ -113,14 +162,14 @@ import Icon from "./Icon.astro";
       if (answered) return;
       heard = true;
       options.forEach((option) => (option.disabled = false));
-      if (playLabel) playLabel.textContent = "再听一次";
+      if (playLabel) playLabel.textContent = isFr ? "Réécouter" : "再听一次";
       playBtn?.classList.add("is-playing");
       playPair(midiToFreq(current.first), midiToFreq(current.second), 0.8);
       window.setTimeout(() => playBtn?.classList.remove("is-playing"), 1500);
     }
 
     function renderProgress(): void {
-      if (progress) progress.textContent = `第 ${index + 1} / ${roundLength} 题`;
+      if (progress) progress.textContent = isFr ? `Question ${index + 1} / ${roundLength}` : `第 ${index + 1} / ${roundLength} 题`;
     }
 
     function answer(choice: string): void {
@@ -139,7 +188,9 @@ import Icon from "./Icon.astro";
       if (feedback) {
         feedback.hidden = false;
         feedback.className = `ear-feedback ${isCorrect ? "is-correct" : "is-wrong"}`;
-        feedback.innerHTML = `<strong>${isCorrect ? "答对啦！" : "再听一次就会更清楚。"}</strong><span>第二个音比第一个音${current.higher ? "更高" : "更低"}。${current.higher ? "像小鸟往上飞。" : "像小球往下滚。"}</span>`;
+        feedback.innerHTML = isFr
+          ? `<strong>${isCorrect ? "Bonne oreille !" : "Réécoute, ce sera plus clair."}</strong><span>${current.higher ? "La deuxième note est plus haute, comme un oiseau qui monte." : "La deuxième note est plus basse, comme une balle qui roule."}</span>`
+          : `<strong>${isCorrect ? "答对啦！" : "再听一次就会更清楚。"}</strong><span>第二个音比第一个音${current.higher ? "更高" : "更低"}。${current.higher ? "像小鸟往上飞。" : "像小球往下滚。"}</span>`;
         copyScope(root, feedback);
       }
       if (isCorrect) playChime();
@@ -151,8 +202,14 @@ import Icon from "./Icon.astro";
       body?.setAttribute("hidden", "");
       head?.setAttribute("hidden", "");
       if (result) result.hidden = false;
-      if (resultTitle) resultTitle.textContent = score >= 4 ? "小耳朵，亮晶晶！" : "耳朵开始发亮了！";
-      if (resultText) resultText.textContent = `这一轮你答对了 ${score} / ${roundLength} 题。每天听两分钟，耳朵会越来越会分辨方向。`;
+      if (resultTitle)
+        resultTitle.textContent = score >= 4
+          ? isFr ? "Petite oreille, grandes étoiles !" : "小耳朵，亮晶晶！"
+          : isFr ? "Ton oreille s'allume !" : "耳朵开始发亮了！";
+      if (resultText)
+        resultText.textContent = isFr
+          ? `Cette manche : ${score} / ${roundLength}. Deux minutes d'écoute par jour aident vraiment l'oreille.`
+          : `这一轮你答对了 ${score} / ${roundLength} 题。每天听两分钟，耳朵会越来越会分辨方向。`;
       playChime();
       celebrate(score >= 4 ? 30 : 14);
     }

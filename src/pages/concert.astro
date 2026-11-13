@@ -2,16 +2,12 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
 import SectionHead from "../components/SectionHead.astro";
-import YouTubePanel from "../components/YouTubePanel.astro";
-import PerformanceCard from "../components/PerformanceCard.astro";
-import MasterCard from "../components/MasterCard.astro";
+import Jukebox from "../components/Jukebox.astro";
 import MascotBubble from "../components/MascotBubble.astro";
 import Icon from "../components/Icon.astro";
 import { COMPOSERS, CONCERT_ETIQUETTE, LISTENING_GAMES, MASTERS, PERFORMANCES } from "../data/concert";
 import { url } from "../lib/url";
 
-const featured = PERFORMANCES[0];
-const moods = ["全部", "安静", "激动", "跳舞", "故事", "梦幻"] as const;
 const gameIcons: Record<string, "book" | "ear" | "sun" | "compass" | "wand" | "refresh"> = {
   story: "book",
   radar: "ear",
@@ -20,108 +16,54 @@ const gameIcons: Record<string, "book" | "ear" | "sun" | "compass" | "wand" | "r
   draw: "wand",
   repeat: "refresh",
 };
+const shortGames = LISTENING_GAMES.slice(0, 4);
 ---
 
 <BaseLayout
   title="音乐厅"
-  description="给孩子的古典吉他音乐厅：精选 Ana Vidović、Pepe Romero、杨雪霏等演奏家的免费 YouTube 演出，附听前小任务、演奏家故事和作曲家小档案。"
+  description="给孩子的古典吉他音乐厅：页面内直接播放 Ana Vidović、Pepe Romero、杨雪霏等演奏家的精选曲目，附简短听音任务和演奏家小档案。"
 >
   <PageHero
     kicker="Listening room · 星空音乐厅"
-    title="让耳朵，<br />先去<em>旅行</em>。"
-    lead="不用正襟危坐，也不用懂乐理。闭上眼睛，听一个音从响到消失；或者想象一座西班牙城堡。音乐允许你用自己的方式进入。"
+    title="点一下，<br />让音乐<em>直接开始</em>。"
+    lead="不用跳转，也不用先读一大段介绍。选一首，按下播放，让耳朵先去旅行。"
   >
     <div class="slug">
-      <span><Icon name="headphones" size={12} /> 10 首精选演奏</span>
+      <span><Icon name="play" size={12} /> 页面内直接播放</span>
+      <span><Icon name="headphones" size={12} /> 10 首精选</span>
       <span><Icon name="users" size={12} /> 10 位演奏家</span>
-      <span><Icon name="book" size={12} /> 8 位作曲家</span>
-      <span><Icon name="youtube" size={12} /> 免费 YouTube 外链</span>
+      <span><Icon name="youtube" size={12} /> YouTube 嵌入</span>
     </div>
   </PageHero>
 
   <section class="section">
     <div class="container">
-      <div class="featured-layout">
-        <div>
-          <div class="featured-kicker"><Icon name="sparkle" size={14} /> 今晚的推荐</div>
-          <YouTubePanel performance={featured} />
-        </div>
-        <aside class="listen-before card">
-          <span class="listen-before-kicker">Listen first, know later</span>
-          <h2>听之前，先猜一猜</h2>
-          <p class="listen-before-lead">不知道曲名也没关系。先把耳朵打开，再慢慢知道它叫什么。</p>
-          <ol class="before-questions">
-            <li><span>01</span><p>这首曲子让你想到什么颜色？</p></li>
-            <li><span>02</span><p>低音像什么东西在走路？</p></li>
-            <li><span>03</span><p>如果给这首曲子画一幅画，你会画什么？</p></li>
-          </ol>
-          <div class="listen-before-note">
-            <Icon name="volume" size={15} />
-            <p>音量调到像日常说话一样舒服。每听 20–30 分钟，让耳朵休息一下。</p>
-          </div>
-          <a class="btn btn-primary btn-sm" href="#listen">去听更多 <Icon name="arrow-right" size={13} /></a>
-        </aside>
-      </div>
-      <div class="featured-caption">
-        <span><Icon name="headphones" size={14} /> {featured.title} · {featured.performer}</span>
-        <p>点击播放后才会加载 YouTube 视频，我们不追踪你的观看记录。</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section-wash" id="listen">
-    <div class="container">
       <div class="section-head-row">
         <SectionHead
-          kicker="The listening list"
-          title="挑一种心情，<em>听一首</em>"
-          lead="安静、激动、想跳舞、想听故事……音乐不只需要“听懂”，也可以只是陪你待一会儿。"
+          kicker="Écouter maintenant"
+          title="今晚的<em>曲目单</em>"
+          lead="播放器会在页面里直接打开。点曲目切换，Momo 会在下面告诉你“可以听什么”。"
         />
+        <a class="btn btn-ghost" href="#masters">认识演奏家 <Icon name="chevron-down" size={14} /></a>
       </div>
-
-      <div class="mood-filter" role="group" aria-label="按心情筛选曲目">
-        {
-          moods.map((mood, index) => (
-            <button type="button" class:list={["mood-chip", { "is-active": index === 0 }]} data-mood={mood} aria-pressed={index === 0 ? "true" : "false"}>
-              {mood === "全部" ? "全部曲目" : mood}
-            </button>
-          ))
-        }
-        <span class="mood-count"><strong data-mood-count>{PERFORMANCES.length}</strong> 首曲子</span>
-      </div>
-
-      <div class="performance-grid" data-performance-grid>
-        {
-          PERFORMANCES.map((performance) => (
-            <div class="performance-filter-item" data-moods={performance.mood.join("|")}>
-              <PerformanceCard performance={performance} />
-            </div>
-          ))
-        }
-      </div>
-      <p class="mood-empty" data-mood-empty hidden>这个心情暂时没有曲目，换一个试试？</p>
-
-      <div class="concert-parent-note">
-        <Icon name="shield" size={17} />
-        <p><strong>给家长：</strong>所有曲目通过 YouTube 外链或点击后加载的隐私增强播放器打开。YouTube 可能显示广告或推荐内容，建议家长先预览，并与孩子一起听。</p>
-      </div>
+      <Jukebox items={PERFORMANCES} lang="zh" />
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section-wash">
     <div class="container">
       <div class="section-head-row">
         <SectionHead
-          kicker="How to listen"
-          title="听音乐，也可以<em>像玩游戏</em>"
-          lead="不用每次分析曲式。挑一个听法，听两分钟，就已经在做很棒的耳朵训练。"
+          kicker="Petites missions d'écoute"
+          title="听音乐，也可以像<em>玩游戏</em>"
+          lead="不用分析曲式。挑一个听法，听两分钟，就已经在做很棒的耳朵训练。"
         />
         <button class="btn btn-sun btn-sm" type="button" data-pick-game><Icon name="wand" size={15} /> 抽一张听法卡</button>
       </div>
       <p class="picked-game" data-picked-game aria-live="polite">今天可以试试：先听整体，再只听低音。</p>
       <div class="listening-games">
         {
-          LISTENING_GAMES.map((game, index) => (
+          shortGames.map((game, index) => (
             <article class="listening-game card" data-listening-game={game.title}>
               <span class="game-number">{String(index + 1).padStart(2, "0")}</span>
               <span class="game-icon"><Icon name={gameIcons[game.icon] ?? "ear"} size={21} /></span>
@@ -134,85 +76,78 @@ const gameIcons: Record<string, "book" | "ear" | "sun" | "compass" | "wand" | "r
     </div>
   </section>
 
-  <section class="section section-wash" id="masters">
+  <section class="section" id="masters">
     <div class="container">
       <SectionHead
-        kicker="Meet the masters"
+        kicker="Les guitaristes"
         title="他们的手指，<em>在讲什么故事？</em>"
-        lead="这些演奏家来自不同国家、不同年代。听他们弹琴，也顺便认识一点他们的故事。"
+        lead="点开一个人，读一小段故事；也可以直接去听他的演奏。"
       />
-      <div class="masters-grid">
-        {MASTERS.map((master) => <MasterCard master={master} />)}
-      </div>
-      <div class="masters-note">
-        <MascotBubble who="momo" text="你不需要成为他们。你可以成为第一个“你自己”。" tone="pink" />
-        <a class="btn btn-ghost" href="#listen">回到曲目单 <Icon name="arrow-up" size={13} /></a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <SectionHead
-        kicker="Composer corner"
-        title="写曲子的人，<em>也藏在音乐里</em>"
-        lead="当你知道作曲家生活在什么年代、喜欢什么声音，再听同一首曲子，感觉会不一样。"
-      />
-      <div class="composer-grid">
+      <div class="artist-grid">
         {
-          COMPOSERS.map((composer, index) => (
-            <article class="composer-card">
-              <span class="composer-index">{String(index + 1).padStart(2, "0")}</span>
-              <div class="composer-head"><h3>{composer.name}</h3><span>{composer.years} · {composer.country}</span></div>
-              <p>{composer.fact}</p>
-              <div class="composer-listen"><Icon name="headphones" size={13} /> 可以听：{composer.listening}</div>
+          MASTERS.map((master) => (
+            <article class="artist-card card">
+              <div class="artist-top">
+                <span class:list={["artist-avatar", `artist-${master.color}`]}>{master.initials}</span>
+                <span class="artist-country">{master.country}</span>
+              </div>
+              <h3>{master.zhName}</h3>
+              <p class="artist-en">{master.name}</p>
+              <p class="artist-keyword">“{master.keyword}”</p>
+              <details>
+                <summary>点开小故事 <Icon name="chevron-down" size={14} /></summary>
+                <p>{master.bio}</p>
+                <p class="artist-fun"><Icon name="sparkle" size={12} /> {master.funFact}</p>
+              </details>
+              <a class="artist-listen" href={`https://www.youtube.com/watch?v=${master.videoId}`} target="_blank" rel="noopener noreferrer">
+                <Icon name="headphones" size={13} /> 去听：{master.piece}
+              </a>
             </article>
           ))
         }
+      </div>
+      <div class="masters-note">
+        <MascotBubble who="capi" text="你不需要成为他们。你可以成为第一个“你自己”。" tone="pink" />
+        <a class="btn btn-ghost" href="#top">回到播放器 <Icon name="arrow-up" size={13} /></a>
       </div>
     </div>
   </section>
 
   <section class="section section-wash">
-    <div class="container etiquette-layout">
-      <div>
-        <SectionHead
-          kicker="Concert manners"
-          title="去听真正的音乐会，<em>也不用紧张</em>"
-          lead="音乐厅不是严肃的考场。只要记得几件小事，小朋友也可以舒服地享受现场。"
-        />
-        <div class="etiquette-list">
-          {CONCERT_ETIQUETTE.map((tip, index) => <div class="etiquette-item"><span>{String(index + 1).padStart(2, "0")}</span><p>{tip}</p></div>)}
-        </div>
-      </div>
-      <aside class="ticket-card">
-        <div class="ticket-top">
-          <span>LOVE CLASSIC GUITAR</span>
-          <span>ADMIT ONE</span>
-        </div>
-        <div class="ticket-main">
-          <span class="ticket-kicker">A tiny concert invitation</span>
-          <h3>我的第一场<br />星空音乐会</h3>
-          <div class="ticket-info">
-            <span>时间：___________</span>
-            <span>地点：___________</span>
-            <span>曲目：___________</span>
-            <span>观众：___________</span>
+    <div class="container">
+      <div class="fold-grid">
+        <details class="fold-card card">
+          <summary><span><Icon name="book" size={18} /> 作曲家小档案</span><span class="fold-hint">8 位 · 点开</span><Icon name="chevron-down" size={17} /></summary>
+          <div class="composer-grid">
+            {
+              COMPOSERS.map((composer) => (
+                <article class="composer-card">
+                  <div class="composer-head"><h3>{composer.name}</h3><span>{composer.years} · {composer.country}</span></div>
+                  <p>{composer.fact}</p>
+                  <div class="composer-listen"><Icon name="headphones" size={13} /> {composer.listening}</div>
+                </article>
+              ))
+            }
           </div>
-          <div class="ticket-stamp">慢慢来</div>
-        </div>
-        <div class="ticket-bottom">
-          <span>No. 001</span>
-          <span>✦</span>
-          <span>Made with love</span>
-        </div>
-      </aside>
+        </details>
+
+        <details class="fold-card card">
+          <summary><span><Icon name="heart" size={18} /> 去听真正的音乐会</span><span class="fold-hint">6 个小礼仪</span><Icon name="chevron-down" size={17} /></summary>
+          <div class="etiquette-list">
+            {CONCERT_ETIQUETTE.map((tip, index) => <div class="etiquette-item"><span>{String(index + 1).padStart(2, "0")}</span><p>{tip}</p></div>)}
+          </div>
+        </details>
+      </div>
+      <div class="concert-parent-note">
+        <Icon name="shield" size={17} />
+        <p><strong>给家长：</strong>视频通过 YouTube 隐私增强播放器直接嵌入。YouTube 可能显示广告或推荐内容，建议先预览并与孩子一起听。音量以舒服为准。</p>
+      </div>
     </div>
   </section>
 
   <section class="section-tight">
     <div class="container concert-bottom">
-      <div><span class="eyebrow"><Icon name="guitar" size={13} /> 看完之后</span><h2>现在，轮到你的手指<br />去讲一个故事了。</h2></div>
+      <div><span class="eyebrow"><Icon name="guitar" size={13} /> 听完之后</span><h2>现在，轮到你的手指<br />去讲一个故事了。</h2></div>
       <div class="btn-row">
         <a class="btn btn-primary" href={url("/practice/")}>去练习室 <Icon name="arrow-right" size={14} /></a>
         <a class="btn btn-ghost" href={url("/library/")}>找免费曲谱</a>
@@ -222,33 +157,6 @@ const gameIcons: Record<string, "book" | "ear" | "sun" | "compass" | "wand" | "r
 </BaseLayout>
 
 <script>
-  // Mood filter
-  const filterButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-mood]"));
-  const items = Array.from(document.querySelectorAll<HTMLElement>(".performance-filter-item"));
-  const countEl = document.querySelector<HTMLElement>("[data-mood-count]");
-  const emptyEl = document.querySelector<HTMLElement>("[data-mood-empty]");
-
-  filterButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const mood = button.dataset.mood ?? "全部";
-      filterButtons.forEach((item) => {
-        const active = item === button;
-        item.classList.toggle("is-active", active);
-        item.setAttribute("aria-pressed", String(active));
-      });
-      let visible = 0;
-      items.forEach((item) => {
-        const moods = (item.dataset.moods ?? "").split("|");
-        const show = mood === "全部" || moods.includes(mood);
-        item.hidden = !show;
-        if (show) visible += 1;
-      });
-      if (countEl) countEl.textContent = String(visible);
-      if (emptyEl) emptyEl.hidden = visible !== 0;
-    });
-  });
-
-  // Random listening game
   const games = Array.from(document.querySelectorAll<HTMLElement>("[data-listening-game]"));
   const pickButton = document.querySelector<HTMLButtonElement>("[data-pick-game]");
   const picked = document.querySelector<HTMLElement>("[data-picked-game]");
@@ -301,203 +209,356 @@ const gameIcons: Record<string, "book" | "ear" | "sun" | "compass" | "wand" | "r
     color: #ffd86f;
   }
 
-  .featured-layout {
+  .listening-games {
     display: grid;
-    min-width: 0;
-    grid-template-columns: minmax(0, 1.5fr) minmax(270px, 0.5fr);
-    gap: 22px;
-    align-items: stretch;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 11px;
   }
 
-  .featured-layout > * {
-    min-width: 0;
-  }
-
-  .featured-kicker {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    margin-bottom: 10px;
-    color: var(--sun-700);
-    font-size: 9px;
-    font-weight: 900;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .listen-before {
-    display: flex;
-    flex-direction: column;
-    padding: 24px;
-    background:
-      radial-gradient(circle at 90% 0%, rgba(255, 216, 111, 0.2), transparent 27%),
-      var(--surface);
-  }
-
-  .listen-before-kicker {
+  .picked-game {
+    margin: -20px 0 18px;
     color: var(--violet-700);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .listening-game {
+    position: relative;
+    padding: 16px;
+    transition: transform 180ms var(--ease), border-color 180ms ease, background 180ms ease;
+  }
+
+  .listening-game.is-picked {
+    border-color: var(--sun-500);
+    background: var(--sun-wash);
+    transform: translateY(-3px);
+  }
+
+  .game-number {
+    position: absolute;
+    right: 12px;
+    top: 11px;
+    color: var(--faint);
     font-family: var(--font-mono);
     font-size: 8px;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
   }
 
-  .listen-before h2 {
-    margin: 5px 0 5px;
+  .game-icon {
+    display: grid;
+    place-items: center;
+    width: 35px;
+    height: 35px;
+    margin-bottom: 10px;
+    color: var(--violet-700);
+    border-radius: 11px;
+    background: var(--violet-wash);
+  }
+
+  .listening-game h3 {
+    margin: 0 0 4px;
     color: var(--ink);
-    font-size: clamp(24px, 2.7vw, 31px);
+    font-size: 14px;
   }
 
-  .listen-before-lead {
+  .listening-game p {
     margin: 0;
     color: var(--muted);
-    font-size: 12.5px;
-    line-height: 1.7;
-  }
-
-  .before-questions {
-    display: grid;
-    gap: 9px;
-    margin: 17px 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .before-questions li {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .before-questions li span {
-    color: var(--violet-600);
-    font-family: var(--font-mono);
-    font-size: 8px;
-    font-weight: 800;
-    line-height: 1.8;
-  }
-
-  .before-questions p {
-    margin: 0;
-    color: var(--ink-soft);
-    font-size: 12.5px;
+    font-size: 10.5px;
     line-height: 1.65;
   }
 
-  .listen-before-note {
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
-    margin-top: auto;
-    padding: 10px 11px;
-    border-radius: 11px;
-    background: var(--sun-wash);
-    color: var(--muted);
-    font-size: 10.5px;
-    line-height: 1.6;
+  .artist-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
   }
 
-  .listen-before-note .icon {
+  .artist-card {
+    display: flex;
+    flex-direction: column;
+    padding: 14px;
+    background: var(--surface);
+  }
+
+  .artist-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .artist-avatar {
+    display: grid;
+    place-items: center;
+    width: 47px;
+    height: 47px;
+    color: #fff;
+    border-radius: 15px;
+    background: linear-gradient(145deg, #8b72ff, #4b2ab4);
+    box-shadow: 0 4px 0 rgba(83, 51, 186, 0.2);
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 900;
+    transform: rotate(-3deg);
+  }
+
+  .artist-sky { background: linear-gradient(145deg, #67d0fa, #216fa8); color: #08243a; }
+  .artist-pink { background: linear-gradient(145deg, #ff9fda, #b43c83); }
+  .artist-mint { background: linear-gradient(145deg, #7be9c4, #218a72); color: #052e27; }
+  .artist-sun { background: linear-gradient(145deg, #ffe28d, #d18a2f); color: #40280b; }
+  .artist-coral { background: linear-gradient(145deg, #ff9d90, #bf4b4b); }
+
+  .artist-country {
+    padding: 3px 7px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    background: var(--surface-2);
+    font-size: 8px;
+    white-space: nowrap;
+  }
+
+  .artist-card h3 {
+    margin: 11px 0 1px;
+    color: var(--ink);
+    font-size: 17px;
+    line-height: 1.35;
+  }
+
+  .artist-en {
+    margin: 0;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 7.5px;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .artist-keyword {
+    margin: 6px 0 0;
+    color: var(--violet-700);
+    font-size: 10.5px;
+    font-weight: 800;
+    line-height: 1.5;
+  }
+
+  .artist-card details {
+    margin-top: 8px;
+    border: 0;
+    border-top: 1px dashed var(--line);
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .artist-card summary {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    min-height: 26px;
+    padding: 7px 0 2px;
+    color: var(--muted);
+    font-size: 8.5px;
+    font-weight: 750;
+    list-style: none;
+  }
+
+  .artist-card summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .artist-card summary .icon {
+    margin-left: auto;
+    transition: transform 150ms ease;
+  }
+
+  .artist-card details[open] summary .icon {
+    transform: rotate(180deg);
+  }
+
+  .artist-card details p {
+    margin: 7px 0 0;
+    color: var(--ink-soft);
+    font-size: 9px;
+    line-height: 1.65;
+  }
+
+  .artist-fun {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    color: var(--muted) !important;
+  }
+
+  .artist-fun .icon {
     margin-top: 1px;
     color: var(--sun-700);
   }
 
-  .listen-before-note p {
-    margin: 0;
+  .artist-listen {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    min-height: 26px;
+    margin-top: auto;
+    padding-top: 9px;
+    color: var(--violet-700);
+    font-size: 8.5px;
+    font-weight: 800;
+    line-height: 1.45;
+    text-decoration: none;
   }
 
-  .listen-before > .btn {
-    align-self: flex-start;
-    margin-top: 13px;
+  .artist-listen:hover {
+    color: var(--violet-800);
   }
 
-  .featured-caption {
+  .masters-note {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-    margin-top: 9px;
-    color: var(--faint);
-    font-size: 10px;
+    gap: 16px;
+    margin-top: 15px;
   }
 
-  .featured-caption span {
+  .masters-note :global(.mascot-bubble) {
+    flex: 1;
+  }
+
+  .fold-grid {
+    display: grid;
+    gap: 10px;
+  }
+
+  .fold-card {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .fold-card summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 18px;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 800;
+    list-style: none;
+  }
+
+  .fold-card summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .fold-card summary > span:first-child {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    color: var(--muted);
+    gap: 7px;
   }
 
-  .featured-caption p {
-    margin: 0;
-    text-align: right;
+  .fold-card summary > .icon {
+    margin-left: auto;
+    color: var(--faint);
+    transition: transform 150ms ease;
   }
 
-  .mood-filter {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-bottom: 17px;
+  .fold-card[open] summary > .icon {
+    transform: rotate(180deg);
   }
 
-  .mood-chip {
-    min-height: 34px;
-    padding: 6px 11px;
-    color: var(--ink-soft);
+  .fold-hint {
+    margin-left: auto;
+    color: var(--faint);
+    font-size: 8px;
+    font-weight: 650;
+  }
+
+  .composer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    padding: 0 18px 18px;
+  }
+
+  .composer-card {
+    padding: 11px;
     border: 1px solid var(--line);
-    border-radius: 999px;
-    background: var(--surface);
-    font-size: 11px;
-    font-weight: 750;
-    transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
-  }
-
-  .mood-chip:hover {
+    border-radius: 11px;
     background: var(--surface-2);
   }
 
-  .mood-chip.is-active {
-    color: #fff;
-    border-color: #5b3fd4;
-    background: #5b3fd4;
+  .composer-head h3 {
+    margin: 0 0 1px;
+    color: var(--ink);
+    font-size: 12px;
   }
 
-  .mood-count {
-    margin-left: auto;
+  .composer-head span {
     color: var(--faint);
     font-family: var(--font-mono);
-    font-size: 8.5px;
+    font-size: 7px;
   }
 
-  .mood-count strong {
-    color: var(--violet-700);
-  }
-
-  .performance-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
-  }
-
-  .mood-empty {
-    padding: 28px 0;
-    text-align: center;
+  .composer-card > p {
+    margin: 7px 0 0;
     color: var(--muted);
-    font-size: 12px;
+    font-size: 9px;
+    line-height: 1.6;
+  }
+
+  .composer-listen {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    margin-top: 7px;
+    padding-top: 6px;
+    border-top: 1px dashed var(--line);
+    color: var(--sun-700);
+    font-size: 7.5px;
+    line-height: 1.5;
+  }
+
+  .etiquette-list {
+    display: grid;
+    gap: 2px;
+    padding: 0 18px 18px;
+  }
+
+  .etiquette-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 7px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .etiquette-item:last-child {
+    border-bottom: 0;
+  }
+
+  .etiquette-item span {
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 1.7;
+  }
+
+  .etiquette-item p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 11px;
+    line-height: 1.65;
   }
 
   .concert-parent-note {
     display: flex;
     align-items: flex-start;
     gap: 8px;
-    margin-top: 17px;
+    margin-top: 15px;
     padding: 11px 13px;
     border: 1px dashed var(--line-strong);
     border-radius: 11px;
     color: var(--muted);
-    font-size: 10.5px;
+    font-size: 10px;
     line-height: 1.6;
   }
 
@@ -512,262 +573,6 @@ const gameIcons: Record<string, "book" | "ear" | "sun" | "compass" | "wand" | "r
 
   .concert-parent-note strong {
     color: var(--ink-soft);
-  }
-
-  .listening-games {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 11px;
-  }
-
-  .picked-game {
-    margin: -20px 0 18px;
-    color: var(--violet-700);
-    font-size: 12.5px;
-    font-weight: 700;
-  }
-
-  .listening-game {
-    position: relative;
-    padding: 17px;
-    transition: transform 180ms var(--ease), border-color 180ms ease, background 180ms ease;
-  }
-
-  .listening-game.is-picked {
-    border-color: var(--sun-500);
-    background: var(--sun-wash);
-    transform: translateY(-3px);
-  }
-
-  .game-number {
-    position: absolute;
-    right: 13px;
-    top: 12px;
-    color: var(--faint);
-    font-family: var(--font-mono);
-    font-size: 8px;
-  }
-
-  .game-icon {
-    display: grid;
-    place-items: center;
-    width: 36px;
-    height: 36px;
-    margin-bottom: 11px;
-    color: var(--violet-700);
-    border-radius: 12px;
-    background: var(--violet-wash);
-  }
-
-  .listening-game h3 {
-    margin: 0 0 5px;
-    color: var(--ink);
-    font-size: 15px;
-  }
-
-  .listening-game p {
-    margin: 0;
-    color: var(--muted);
-    font-size: 11.5px;
-    line-height: 1.65;
-  }
-
-  .masters-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 13px;
-  }
-
-  .masters-note {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 18px;
-  }
-
-  .masters-note :global(.mascot-bubble) {
-    flex: 1;
-  }
-
-  .composer-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 9px;
-  }
-
-  .composer-card {
-    padding: 14px;
-    border: 1px solid var(--line);
-    border-radius: 13px;
-    background: var(--surface);
-  }
-
-  .composer-index {
-    color: var(--violet-700);
-    font-family: var(--font-mono);
-    font-size: 8px;
-    font-weight: 800;
-  }
-
-  .composer-head h3 {
-    margin: 6px 0 1px;
-    color: var(--ink);
-    font-size: 14.5px;
-    line-height: 1.4;
-  }
-
-  .composer-head span {
-    color: var(--faint);
-    font-family: var(--font-mono);
-    font-size: 7px;
-  }
-
-  .composer-card > p {
-    margin: 8px 0 0;
-    color: var(--muted);
-    font-size: 11px;
-    line-height: 1.65;
-  }
-
-  .composer-listen {
-    display: flex;
-    align-items: flex-start;
-    gap: 4px;
-    margin-top: 8px;
-    padding-top: 7px;
-    border-top: 1px dashed var(--line);
-    color: var(--sun-700);
-    font-size: 9.5px;
-    line-height: 1.5;
-  }
-
-  .etiquette-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
-    gap: clamp(28px, 5vw, 70px);
-    align-items: center;
-  }
-
-  .etiquette-list {
-    display: grid;
-    gap: 7px;
-  }
-
-  .etiquette-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 9px;
-    padding: 8px 0;
-    border-bottom: 1px dashed var(--line);
-  }
-
-  .etiquette-item span {
-    color: var(--violet-600);
-    font-family: var(--font-mono);
-    font-size: 8px;
-    font-weight: 800;
-    line-height: 1.7;
-  }
-
-  .etiquette-item p {
-    margin: 0;
-    color: var(--ink-soft);
-    font-size: 12.5px;
-    line-height: 1.65;
-  }
-
-  .ticket-card {
-    position: relative;
-    overflow: hidden;
-    color: #f9f0ff;
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
-    border-radius: 18px;
-    background:
-      radial-gradient(circle at 88% 12%, rgba(255, 216, 111, 0.18), transparent 24%),
-      linear-gradient(145deg, #392277, #1b1043);
-    box-shadow: var(--shadow-lg);
-    transform: rotate(1.3deg);
-  }
-
-  .ticket-card::before,
-  .ticket-card::after {
-    content: "";
-    position: absolute;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--bg);
-  }
-
-  .ticket-card::before {
-    left: -11px;
-    top: 51%;
-  }
-
-  .ticket-card::after {
-    right: -11px;
-    top: 51%;
-  }
-
-  .ticket-top,
-  .ticket-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 11px 16px;
-    color: rgba(255, 255, 255, 0.58);
-    font-family: var(--font-mono);
-    font-size: 7.5px;
-    letter-spacing: 0.06em;
-  }
-
-  .ticket-top {
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-  }
-
-  .ticket-bottom {
-    border-top: 1px dashed rgba(255, 255, 255, 0.2);
-  }
-
-  .ticket-main {
-    position: relative;
-    padding: 23px 20px 25px;
-  }
-
-  .ticket-kicker {
-    color: #ffd86f;
-    font-family: var(--font-mono);
-    font-size: 7.5px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .ticket-main h3 {
-    margin: 7px 0 19px;
-    color: #fff9eb;
-    font-size: clamp(26px, 3.2vw, 38px);
-    line-height: 1.2;
-  }
-
-  .ticket-info {
-    display: grid;
-    gap: 9px;
-    color: rgba(255, 255, 255, 0.63);
-    font-size: 9px;
-  }
-
-  .ticket-stamp {
-    position: absolute;
-    right: 17px;
-    bottom: 19px;
-    padding: 4px 7px;
-    color: #ffd86f;
-    border: 1px solid rgba(255, 216, 111, 0.5);
-    border-radius: 4px;
-    font-family: var(--font-display);
-    font-size: 10px;
-    transform: rotate(-8deg);
   }
 
   .concert-bottom {
@@ -789,82 +594,40 @@ const gameIcons: Record<string, "book" | "ear" | "sun" | "compass" | "wand" | "r
     font-size: clamp(24px, 3vw, 32px);
   }
 
-  @media (max-width: 1050px) {
-    .performance-grid,
-    .masters-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .composer-grid {
+  @media (max-width: 1100px) {
+    .artist-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  @media (max-width: 900px) {
-    .featured-layout,
-    .etiquette-layout {
-      grid-template-columns: 1fr;
-    }
-
-    .listen-before {
-      max-width: 560px;
-    }
-
-    .ticket-card {
-      max-width: 450px;
-      transform: none;
     }
 
     .listening-games {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+  }
+
+  @media (max-width: 850px) {
+    .artist-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 
     .composer-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
-  @media (max-width: 700px) {
-    .performance-grid,
-    .masters-grid,
+  @media (max-width: 640px) {
     .listening-games,
+    .artist-grid,
     .composer-grid {
       grid-template-columns: 1fr;
     }
 
-    .featured-caption {
-      align-items: flex-start;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .featured-caption p {
-      text-align: left;
-    }
-
-    .masters-note {
-      align-items: flex-start;
-      flex-direction: column;
-    }
-
+    .masters-note,
     .concert-bottom {
       align-items: flex-start;
       flex-direction: column;
     }
-  }
 
-  @media (max-width: 520px) {
-    .mood-count {
-      width: 100%;
-      margin-left: 0;
-    }
-
-    .picked-game {
-      margin-top: -13px;
-    }
-
-    .ticket-card::before,
-    .ticket-card::after {
+    .fold-hint {
       display: none;
     }
   }

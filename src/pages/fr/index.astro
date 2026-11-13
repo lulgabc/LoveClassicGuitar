@@ -1,0 +1,675 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeroScene from "../../components/HeroScene.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import Jukebox from "../../components/Jukebox.astro";
+import MascotBubble from "../../components/MascotBubble.astro";
+import Icon from "../../components/Icon.astro";
+import { HERO_CHIPS_FR } from "../../data/site";
+import { STAGES_FR, TOTAL_QUESTS_FR } from "../../data/fr/roadmap";
+import { PERFORMANCES_FR } from "../../data/fr/concert";
+import { RESOURCES_FR } from "../../data/fr/library";
+import { url } from "../../lib/url";
+
+const homeTracks = PERFORMANCES_FR.slice(0, 4);
+const quickLinks = [
+  { icon: "book" as const, eyebrow: "Découvrir", title: "La guitare", text: "L'instrument, les six cordes et le premier son.", href: "/fr/basics/", color: "sky" },
+  { icon: "timer" as const, eyebrow: "Pratiquer", title: "15 minutes", text: "Un minuteur, un métronome et deux petits jeux.", href: "/fr/practice/", color: "violet" },
+  { icon: "headphones" as const, eyebrow: "Écouter", title: "La salle de concert", text: "De la musique à écouter directement dans la page.", href: "/fr/concert/", color: "pink" },
+];
+const previewResources = RESOURCES_FR.filter((resource) => resource.featured).slice(0, 3);
+---
+
+<BaseLayout
+  lang="fr"
+  description="Un monde de guitare classique pour une enfant de 7 ans : bases illustrées, parcours interactif, exercices, musique à écouter dans la page et ressources gratuites."
+>
+  <section class="fr-hero">
+    <div class="hero-stars" aria-hidden="true"></div>
+    <div class="container fr-hero-grid">
+      <div class="fr-hero-copy">
+        <span class="eyebrow"><Icon name="sparkle" size={14} /> Le studio des étoiles · pour une musicienne de 7 ans</span>
+        <h1>Six cordes<br />pour aller <span>jusqu'aux étoiles</span>.</h1>
+        <p class="hero-lead">Avec Momo la petite chauve-souris et Capi le capybara, apprends à ton rythme. Pas de classement, pas de pression : juste des étoiles à allumer.</p>
+        <div class="btn-row">
+          <a class="btn btn-sun btn-lg" href={url("/fr/roadmap/")}><Icon name="map" size={18} /> Commencer le parcours</a>
+          <a class="btn hero-ghost btn-lg" href={url("/fr/practice/")}><Icon name="play" size={16} /> Essayer 15 min</a>
+        </div>
+        <div class="hero-chips">
+          {HERO_CHIPS_FR.map((chip) => <span><Icon name="star" size={11} /> {chip}</span>)}
+        </div>
+      </div>
+      <div class="fr-hero-visual">
+        <HeroScene lang="fr" />
+      </div>
+    </div>
+    <div class="container">
+      <div class="fr-stats">
+        <div><strong>6</strong><span>étapes</span></div>
+        <div><strong>{TOTAL_QUESTS_FR}</strong><span>missions</span></div>
+        <div><strong>30+</strong><span>vidéos et cours</span></div>
+        <div><strong>10</strong><span>guitaristes</span></div>
+        <a href={url("/fr/parents/")}><Icon name="heart" size={17} /> Aux parents <Icon name="arrow-right" size={14} /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead kicker="Aujourd'hui" title="On fait <em>quoi</em> ?" lead="Un petit choix, et la musique peut commencer." />
+      <div class="quick-grid">
+        {
+          quickLinks.map((link) => (
+            <a class:list={["quick-card", "card", "card-hover", `quick-${link.color}`]} href={url(link.href)}>
+              <span class="quick-icon"><Icon name={link.icon} size={23} /></span>
+              <span class="quick-eyebrow">{link.eyebrow}</span>
+              <h3>{link.title}</h3>
+              <p>{link.text}</p>
+              <span class="quick-arrow">C'est parti <Icon name="arrow-right" size={14} /></span>
+            </a>
+          ))
+        }
+      </div>
+      <div class="challenge">
+        <span class="challenge-star"><Icon name="sparkle" size={20} /></span>
+        <div><span>Le défi de Momo</span><p data-fr-challenge aria-live="polite">Un seul petit objectif, c'est déjà une belle séance.</p></div>
+        <button type="button" data-fr-challenge-refresh><Icon name="refresh" size={15} /> Un autre</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container">
+      <div class="section-head-row">
+        <SectionHead kicker="Le parcours" title="Six étapes, <em>un pas à la fois</em>" lead="De la première corde à vide au petit concert de famille. Les étapes restent ouvertes : on peut revenir." />
+        <a class="btn btn-secondary" href={url("/fr/roadmap/")}>Ouvrir la carte <Icon name="arrow-right" size={14} /></a>
+      </div>
+      <div class="fr-progress card">
+        <div><span><Icon name="star" size={15} /> Ma progression</span><strong data-fr-progress-label>On commence par écouter une corde.</strong></div>
+        <div class="fr-progress-bar"><span data-fr-progress-bar style="width:0%"></span></div>
+        <span class="fr-progress-count"><strong data-fr-progress-count>0</strong> / {TOTAL_QUESTS_FR}</span>
+      </div>
+      <div class="stage-strip">
+        {
+          STAGES_FR.map((stage) => (
+            <a class:list={["fr-stage", `fr-stage-${stage.color}`]} href={url(`/fr/roadmap/#${stage.id}`)}>
+              <span>{stage.n === 0 ? "✦" : stage.n}</span>
+              <strong>{stage.title}</strong>
+              <small>{stage.weeks}</small>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container why-grid">
+      <div class="why-intro">
+        <SectionHead kicker="Pourquoi la guitare" title="Une guitare, <em>tout un monde</em>" lead="À la fois mélodie, basse et percussions. Et surtout, une voix qui peut être très douce." />
+        <MascotBubble who="capi" title="Capi te dit" text="Pas besoin de devenir une virtuose. Tu peux commencer par un seul son." tone="sun" />
+      </div>
+      <div class="why-mini-grid">
+        <article class="why-mini card"><Icon name="music" size={22} /><h3>Un petit orchestre</h3><p>La mélodie, la basse et les accords se rencontrent sous les mêmes doigts.</p></article>
+        <article class="why-mini card"><Icon name="wand" size={22} /><h3>Une palette de couleurs</h3><p>Près de la rosace ou près du chevalet, le même son change de lumière.</p></article>
+        <article class="why-mini card"><Icon name="compass" size={22} /><h3>Cinq siècles d'histoires</h3><p>De Bach à l'Espagne et au Brésil, il y a toujours une nouvelle pièce à découvrir.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container">
+      <div class="section-head-row">
+        <SectionHead kicker="Le studio" title="Quinze minutes, <em>et c'est tout</em>" lead="Une petite séance suffit. Le minuteur te guide, le métronome tient le rythme." />
+        <a class="btn btn-primary" href={url("/fr/practice/")}><Icon name="timer" size={15} /> Ouvrir le studio</a>
+      </div>
+      <div class="session-card card">
+        <div class="session-ring"><strong>15</strong><span>minutes</span></div>
+        <div class="session-steps">
+          <div><b>01</b><strong>Respirer</strong><span>2 min · écouter les cordes à vide</span></div>
+          <div><b>02</b><strong>Un mini-objectif</strong><span>4 min · un seul point technique</span></div>
+          <div><b>03</b><strong>Le morceau</strong><span>6 min · lentement, en petits morceaux</span></div>
+          <div><b>04</b><strong>Écouter</strong><span>3 min · une pièce ou une improvisation</span></div>
+        </div>
+        <div class="session-mascot" aria-hidden="true">✦</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head-row">
+        <SectionHead kicker="Écouter maintenant" title="Une pièce, <em>directement ici</em>" lead="Choisis une étoile et appuie sur play. Le lecteur reste dans la page." />
+        <a class="btn btn-secondary" href={url("/fr/concert/")}>Toute la salle de concert <Icon name="arrow-right" size={14} /></a>
+      </div>
+      <Jukebox items={homeTracks} lang="fr" compact />
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container">
+      <SectionHead kicker="Ressources" title="Trois portes pour commencer" lead="Un cours, des partitions, une oreille. Le reste peut attendre." />
+      <div class="resource-mini-grid">
+        {
+          previewResources.map((resource) => (
+            <a class="resource-mini card card-hover" href={resource.url} target="_blank" rel="noopener noreferrer">
+              <span class="resource-kind">{resource.kind} · {resource.price}</span>
+              <h3>{resource.name}</h3>
+              <p>{resource.description}</p>
+              <span>Ouvrir <Icon name="external" size={12} /></span>
+            </a>
+          ))
+        }
+      </div>
+      <div class="home-links">
+        <a href={url("/fr/basics/")}>Découvrir les bases <Icon name="arrow-right" size={12} /></a>
+        <a href={url("/fr/library/")}>Toutes les ressources <Icon name="arrow-right" size={12} /></a>
+        <a href={url("/fr/parents/")}>Le guide des parents <Icon name="arrow-right" size={12} /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container parent-callout">
+      <div>
+        <span class="eyebrow"><Icon name="heart" size={13} /> Aux parents</span>
+        <h2>Pas besoin de connaître la guitare.<br />Il suffit d'écouter.</h2>
+        <p>Accordez avec elle, laissez 15 minutes, puis dites simplement : « merci de m'avoir joué ça ».</p>
+      </div>
+      <a class="btn btn-primary" href={url("/fr/parents/")}>Lire le guide <Icon name="arrow-right" size={14} /></a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { readProgress } from "../../lib/progress";
+  import { PRACTICE_TIPS_FR } from "../../data/fr/practice";
+  import { TOTAL_QUESTS_FR } from "../../data/fr/roadmap";
+
+  const challenges = PRACTICE_TIPS_FR;
+  const challenge = document.querySelector<HTMLElement>("[data-fr-challenge]");
+  const refresh = document.querySelector<HTMLButtonElement>("[data-fr-challenge-refresh]");
+  let index = new Date().getDate() % challenges.length;
+  if (challenge) challenge.textContent = challenges[index] ?? "";
+  refresh?.addEventListener("click", () => {
+    index = (index + 1) % challenges.length;
+    if (challenge) {
+      challenge.textContent = challenges[index] ?? "";
+      challenge.animate([{ opacity: 0, transform: "translateY(4px)" }, { opacity: 1, transform: "translateY(0)" }], { duration: 260, easing: "ease-out" });
+    }
+  });
+
+  function updateProgress(): void {
+    const done = Math.min(readProgress().quests.length, TOTAL_QUESTS_FR);
+    const percent = TOTAL_QUESTS_FR ? Math.round((done / TOTAL_QUESTS_FR) * 100) : 0;
+    const bar = document.querySelector<HTMLElement>("[data-fr-progress-bar]");
+    const count = document.querySelector<HTMLElement>("[data-fr-progress-count]");
+    const label = document.querySelector<HTMLElement>("[data-fr-progress-label]");
+    if (bar) bar.style.width = `${percent}%`;
+    if (count) count.textContent = String(done);
+    if (label) label.textContent = done === 0 ? "On commence par écouter une corde." : done >= TOTAL_QUESTS_FR ? "Toutes les étoiles sont allumées." : `Tu as déjà allumé ${done} étoiles.`;
+  }
+  updateProgress();
+  window.addEventListener("lcg:progress-change", updateProgress);
+</script>
+
+<style>
+  .fr-hero {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(34px, 4.8vw, 58px) 0 clamp(26px, 4vw, 42px);
+    color: #f8f1ff;
+    background:
+      radial-gradient(circle at 82% 18%, rgba(255, 216, 111, 0.13), transparent 25%),
+      radial-gradient(circle at 8% 0%, rgba(116, 87, 242, 0.48), transparent 35%),
+      radial-gradient(circle at 88% 90%, rgba(93, 202, 250, 0.16), transparent 32%),
+      linear-gradient(135deg, #24165c 0%, #180f43 55%, #100b2b 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  .hero-stars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(1.3px 1.3px at 7% 20%, rgba(255, 246, 205, 0.8), transparent),
+      radial-gradient(1px 1px at 41% 12%, rgba(206, 237, 255, 0.75), transparent),
+      radial-gradient(1px 1px at 63% 35%, rgba(255, 246, 205, 0.55), transparent),
+      radial-gradient(1.4px 1.4px at 92% 44%, rgba(255, 246, 205, 0.65), transparent);
+    opacity: 0.65;
+  }
+
+  .fr-hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(390px, 0.95fr);
+    align-items: center;
+    gap: clamp(24px, 4vw, 54px);
+  }
+
+  .fr-hero-copy {
+    min-width: 0;
+    max-width: 680px;
+    padding-block: 18px;
+  }
+
+  .fr-hero-copy .eyebrow {
+    color: #e3d9ff;
+    border-color: rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.08);
+    text-transform: none;
+    letter-spacing: 0.03em;
+  }
+
+  .fr-hero-copy .eyebrow .icon { color: #ffd86f; }
+
+  .fr-hero h1 {
+    margin: 18px 0 0;
+    color: #fffaf0;
+    font-size: clamp(44px, 5.8vw, 74px);
+    line-height: 1.09;
+    letter-spacing: -0.045em;
+  }
+
+  .fr-hero h1 span {
+    display: inline-block;
+    color: #ffdc80;
+    background: linear-gradient(180deg, transparent 68%, rgba(255, 220, 128, 0.24) 68%);
+  }
+
+  .hero-lead {
+    max-width: 580px;
+    margin-top: 20px;
+    color: #cfc3ed;
+    font-size: clamp(15px, 1.6vw, 17.5px);
+    line-height: 1.8;
+  }
+
+  .fr-hero .btn-row { margin-top: 24px; }
+
+  .hero-ghost {
+    color: #fff7ea;
+    border-color: rgba(255, 255, 255, 0.24);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .hero-ghost:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .hero-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 19px;
+  }
+
+  .hero-chips span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    color: rgba(243, 236, 255, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.045);
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .hero-chips .icon { color: #ffd86f; }
+
+  .fr-hero-visual {
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .fr-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(180px, 1.3fr);
+    gap: 1px;
+    margin-top: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .fr-stats > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 72px;
+    padding: 12px 15px;
+    background: rgba(15, 9, 42, 0.17);
+  }
+
+  .fr-stats strong {
+    color: #fff7e3;
+    font-family: var(--font-display);
+    font-size: 24px;
+    line-height: 1.1;
+  }
+
+  .fr-stats span {
+    margin-top: 2px;
+    color: #a99acb;
+    font-size: 9px;
+  }
+
+  .fr-stats a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 15px;
+    color: #d8cafc;
+    background: rgba(116, 87, 242, 0.18);
+    font-size: 10.5px;
+    font-weight: 750;
+    text-decoration: none;
+  }
+
+  .fr-stats a .icon:first-child { color: #ffd86f; }
+  .fr-stats a .icon:last-child { margin-left: auto; }
+
+  .quick-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 13px;
+  }
+
+  .quick-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 198px;
+    padding: 20px;
+    overflow: hidden;
+    color: var(--ink);
+    text-decoration: none;
+    background: var(--surface);
+  }
+
+  .quick-card::before {
+    content: "";
+    position: absolute;
+    right: -45px;
+    top: -55px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: var(--quick-soft);
+  }
+
+  .quick-icon {
+    display: grid;
+    place-items: center;
+    width: 45px;
+    height: 45px;
+    margin-bottom: 18px;
+    color: var(--quick-ink);
+    border-radius: 15px;
+    background: var(--quick-bg);
+    box-shadow: 0 3px 0 var(--quick-shadow);
+    transform: rotate(-3deg);
+  }
+
+  .quick-eyebrow {
+    color: var(--quick-ink);
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .quick-card h3 {
+    margin: 3px 0 5px;
+    color: var(--ink);
+    font-size: 22px;
+  }
+
+  .quick-card p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .quick-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: auto;
+    padding-top: 12px;
+    color: var(--quick-ink);
+    font-size: 10.5px;
+    font-weight: 850;
+  }
+
+  .quick-sky { --quick-ink: var(--sky-700); --quick-bg: var(--sky-wash); --quick-soft: var(--sky-wash); --quick-shadow: rgba(65, 165, 205, 0.16); }
+  .quick-violet { --quick-ink: var(--violet-700); --quick-bg: var(--violet-wash); --quick-soft: var(--violet-wash); --quick-shadow: rgba(102, 74, 215, 0.16); }
+  .quick-pink { --quick-ink: #a33470; --quick-bg: var(--pink-wash); --quick-soft: var(--pink-wash); --quick-shadow: rgba(196, 79, 145, 0.16); }
+
+  html[data-theme="night"] .quick-pink { --quick-ink: var(--pink-500); }
+
+  .challenge {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-top: 14px;
+    padding: 11px 14px;
+    border: 1.5px dashed var(--line-strong);
+    border-radius: 14px;
+    background: var(--surface-2);
+  }
+
+  .challenge-star {
+    display: grid;
+    place-items: center;
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+    color: #704c0a;
+    border-radius: 12px;
+    background: var(--sun-500);
+    transform: rotate(-4deg);
+  }
+
+  .challenge div { flex: 1; min-width: 0; }
+  .challenge div > span { color: var(--sun-700); font-size: 8.5px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; }
+  .challenge p { margin: 2px 0 0; color: var(--ink); font-size: 12px; line-height: 1.5; }
+
+  .challenge button {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+    padding: 6px 9px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: 8.5px;
+    font-weight: 800;
+  }
+
+  .fr-progress {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    margin-bottom: 22px;
+    border-radius: 15px;
+    background: var(--surface);
+  }
+
+  .fr-progress > div:first-child { flex: 1; min-width: 0; }
+  .fr-progress > div:first-child > span { display: flex; align-items: center; gap: 5px; color: var(--sun-700); font-size: 8.5px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; }
+  .fr-progress strong { display: block; margin-top: 2px; color: var(--ink); font-size: 10.5px; line-height: 1.5; }
+
+  .fr-progress-bar {
+    flex: 0 0 min(30%, 250px);
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--surface-3);
+  }
+
+  .fr-progress-bar span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--pink-500), var(--violet-500), var(--sky-500)); transition: width 500ms var(--ease); }
+  .fr-progress-count { flex: 0 0 auto; color: var(--muted); font-family: var(--font-mono); font-size: 9px; }
+  .fr-progress-count strong { color: var(--violet-700); font-size: 12px; }
+
+  .stage-strip {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .fr-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 125px;
+    padding: 12px 8px;
+    text-align: center;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: var(--stage-soft);
+    text-decoration: none;
+    transition: transform 160ms var(--ease), border-color 160ms ease;
+  }
+
+  .fr-stage:hover { transform: translateY(-3px); border-color: var(--stage-ink); }
+  .fr-stage > span { display: grid; place-items: center; width: 35px; height: 35px; margin-bottom: 9px; color: var(--stage-ink); border-radius: 12px; background: var(--stage-bg); font-family: var(--font-display); font-size: 15px; font-weight: 900; }
+  .fr-stage strong { color: var(--ink); font-size: 10px; line-height: 1.35; }
+  .fr-stage small { margin-top: 2px; color: var(--faint); font-size: 8px; }
+
+  .fr-stage-violet { --stage-bg: var(--violet-wash); --stage-soft: var(--violet-wash); --stage-ink: var(--violet-700); }
+  .fr-stage-sky { --stage-bg: var(--sky-wash); --stage-soft: var(--sky-wash); --stage-ink: var(--sky-700); }
+  .fr-stage-mint { --stage-bg: var(--mint-wash); --stage-soft: var(--mint-wash); --stage-ink: #14735b; }
+  .fr-stage-pink { --stage-bg: var(--pink-wash); --stage-soft: var(--pink-wash); --stage-ink: #a33470; }
+  .fr-stage-sun { --stage-bg: var(--sun-wash); --stage-soft: var(--sun-wash); --stage-ink: var(--sun-700); }
+  .fr-stage-coral { --stage-bg: rgba(255, 139, 123, 0.1); --stage-soft: rgba(255, 139, 123, 0.1); --stage-ink: #a44538; }
+
+  html[data-theme="night"] .fr-stage-mint { --stage-ink: var(--mint-500); }
+  html[data-theme="night"] .fr-stage-pink { --stage-ink: var(--pink-500); }
+  html[data-theme="night"] .fr-stage-coral { --stage-ink: var(--coral-500); }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(25px, 5vw, 70px);
+    align-items: center;
+  }
+
+  .why-mini-grid { display: grid; gap: 9px; }
+  .why-mini { padding: 15px 17px; background: var(--surface); }
+  .why-mini > .icon { color: var(--violet-700); }
+  .why-mini h3 { margin: 8px 0 3px; color: var(--ink); font-size: 14px; }
+  .why-mini p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
+
+  .session-card {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr) 35px;
+    align-items: center;
+    gap: 25px;
+    padding: 20px;
+    background: var(--surface);
+  }
+
+  .session-ring {
+    display: grid;
+    place-items: center;
+    width: 127px;
+    height: 127px;
+    border: 8px solid var(--violet-wash-2);
+    border-radius: 50%;
+    background: var(--surface-2);
+    text-align: center;
+  }
+
+  .session-ring strong { color: var(--violet-700); font-family: var(--font-display); font-size: 32px; line-height: 1; }
+  .session-ring span { color: var(--faint); font-size: 8px; font-weight: 750; letter-spacing: 0.05em; text-transform: uppercase; }
+  .session-steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 18px; }
+  .session-steps > div { display: grid; grid-template-columns: 21px 1fr; gap: 1px 5px; }
+  .session-steps b { color: var(--violet-700); font-family: var(--font-mono); font-size: 8px; line-height: 1.7; }
+  .session-steps strong { color: var(--ink); font-size: 10.5px; }
+  .session-steps span { color: var(--faint); font-size: 8.5px; line-height: 1.4; }
+  .session-mascot { color: var(--sun-700); font-size: 25px; }
+  .session-mascot { animation: twinkle 4s ease-in-out infinite; }
+
+  .resource-mini-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .resource-mini { display: flex; flex-direction: column; padding: 18px; color: var(--ink); text-decoration: none; background: var(--surface); }
+  .resource-kind { color: var(--violet-700); font-family: var(--font-mono); font-size: 8px; font-weight: 800; text-transform: uppercase; }
+  .resource-mini h3 { margin: 5px 0 6px; color: var(--ink); font-size: 15px; line-height: 1.4; }
+  .resource-mini p { margin: 0 0 15px; color: var(--muted); font-size: 10px; line-height: 1.6; }
+  .resource-mini > span:last-child { display: inline-flex; align-items: center; gap: 4px; margin-top: auto; color: var(--violet-700); font-size: 9px; font-weight: 800; }
+
+  .home-links { display: flex; flex-wrap: wrap; gap: 10px 20px; margin-top: 15px; }
+  .home-links a { display: inline-flex; align-items: center; gap: 4px; color: var(--ink-soft); font-size: 10px; font-weight: 750; text-decoration: none; }
+  .home-links a:hover { color: var(--violet-700); }
+
+  .parent-callout {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: clamp(23px, 4vw, 34px);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: radial-gradient(circle at 90% 10%, rgba(255, 216, 111, 0.2), transparent 25%), var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .parent-callout h2 { margin-top: 10px; font-size: clamp(22px, 3vw, 31px); }
+  .parent-callout p { margin: 8px 0 0; max-width: 620px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+
+  @keyframes twinkle { 0%, 100% { opacity: 0.4; transform: scale(0.8) rotate(0); } 50% { opacity: 1; transform: scale(1.1) rotate(15deg); } }
+
+  @media (max-width: 1100px) {
+    .fr-hero-grid { grid-template-columns: minmax(0, 1fr) minmax(330px, 0.9fr); }
+    .fr-hero h1 { font-size: clamp(40px, 5.2vw, 62px); }
+    .fr-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .fr-stats > a { grid-column: 1 / -1; min-height: 45px; }
+  }
+
+  @media (max-width: 900px) {
+    .fr-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .fr-hero-copy { text-align: center; margin-inline: auto; padding-bottom: 0; }
+    .fr-hero-copy .eyebrow { margin-inline: auto; }
+    .fr-hero h1 { font-size: clamp(38px, 10vw, 55px); }
+    .hero-lead { margin-inline: auto; }
+    .fr-hero .btn-row, .hero-chips { justify-content: center; }
+    .fr-hero-visual { margin-top: 10px; }
+    .quick-grid, .resource-mini-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .quick-card:last-child, .resource-mini-grid > :last-child { grid-column: 1 / -1; }
+    .stage-strip { display: flex; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x mandatory; }
+    .fr-stage { flex: 0 0 120px; scroll-snap-align: start; }
+    .why-grid, .session-card { grid-template-columns: minmax(0, 1fr); }
+    .why-intro { max-width: 620px; }
+    .session-ring { margin-inline: auto; }
+    .session-card { gap: 16px; }
+    .session-mascot { display: none; }
+  }
+
+  @media (max-width: 620px) {
+    .quick-grid, .resource-mini-grid { grid-template-columns: 1fr; }
+    .quick-card:last-child, .resource-mini-grid > :last-child { grid-column: auto; }
+    .fr-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .fr-stats a { grid-column: 1 / -1; }
+    .fr-progress { flex-wrap: wrap; }
+    .fr-progress-bar { flex-basis: 100%; order: 3; }
+    .fr-progress-count { margin-left: auto; }
+    .session-steps { grid-template-columns: 1fr; }
+    .parent-callout { align-items: flex-start; flex-direction: column; }
+    .home-links { flex-direction: column; }
+    .challenge { align-items: flex-start; flex-wrap: wrap; }
+    .challenge div { flex-basis: calc(100% - 50px); }
+    .challenge button { margin-left: 47px; }
+  }
+</style>

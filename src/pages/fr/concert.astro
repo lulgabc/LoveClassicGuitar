@@ -1,0 +1,219 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import Jukebox from "../../components/Jukebox.astro";
+import MascotBubble from "../../components/MascotBubble.astro";
+import Icon from "../../components/Icon.astro";
+import { ARTISTS_FR, COMPOSERS_FR, ETIQUETTE_FR, LISTENING_GAMES_FR, PERFORMANCES_FR } from "../../data/fr/concert";
+import { url } from "../../lib/url";
+---
+
+<BaseLayout
+  lang="fr"
+  title="La salle de concert"
+  description="Une salle de concert pour enfants : des pièces de guitare classique à écouter directement dans la page, des missions d'écoute et des portraits de guitaristes."
+>
+  <PageHero
+    kicker="Salle de concert · Sous les étoiles"
+    title="Un clic, et<br />la musique <em>commence</em>."
+    lead="Pas besoin de changer de page. Choisis une pièce, appuie sur play, et laisse tes oreilles voyager."
+  >
+    <div class="slug">
+      <span><Icon name="play" size={12} /> lecture dans la page</span>
+      <span><Icon name="headphones" size={12} /> 8 pièces</span>
+      <span><Icon name="users" size={12} /> 8 guitaristes</span>
+      <span><Icon name="youtube" size={12} /> YouTube intégré</span>
+    </div>
+  </PageHero>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head-row">
+        <SectionHead kicker="Écouter maintenant" title="Le programme de ce soir" lead="Le lecteur est déjà là. Clique sur une pièce pour changer de morceau." />
+        <a class="btn btn-ghost" href="#artists">Les guitaristes <Icon name="chevron-down" size={14} /></a>
+      </div>
+      <Jukebox items={PERFORMANCES_FR} lang="fr" />
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container">
+      <SectionHead kicker="Missions d'écoute" title="Écouter, c'est déjà <em>jouer</em>" lead="Pas de théorie. Choisis une mission et écoute deux minutes." />
+      <div class="missions">
+        {LISTENING_GAMES_FR.map((game, index) => (
+          <article class="mission card">
+            <span class="mission-num">{String(index + 1).padStart(2, "0")}</span>
+            <span class="mission-icon"><Icon name={game.icon} size={20} /></span>
+            <h3>{game.title}</h3>
+            <p>{game.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="artists">
+    <div class="container">
+      <SectionHead kicker="Les guitaristes" title="Leurs doigts racontent <em>une histoire</em>" lead="Ouvre un portrait si tu veux en savoir plus, ou écoute simplement la pièce proposée." />
+      <div class="artist-grid">
+        {ARTISTS_FR.map((artist) => (
+          <article class="artist-card card">
+            <div class="artist-top">
+              <span class:list={["artist-avatar", `artist-${artist.color}`]}>{artist.initials}</span>
+              <span class="artist-country">{artist.country}</span>
+            </div>
+            <h3>{artist.name}</h3>
+            <p class="artist-keyword">« {artist.keyword} »</p>
+            <details>
+              <summary>Le petit portrait <Icon name="chevron-down" size={14} /></summary>
+              <p>{artist.bio}</p>
+              <p class="artist-fun"><Icon name="sparkle" size={12} /> {artist.fun}</p>
+            </details>
+            <a class="artist-listen" href={`https://www.youtube.com/watch?v=${artist.videoId}`} target="_blank" rel="noopener noreferrer"><Icon name="headphones" size={13} /> {artist.piece}</a>
+          </article>
+        ))}
+      </div>
+      <div class="artist-note">
+        <MascotBubble who="momo" title="Momo te dit" text="Tu n'as pas besoin de ressembler à ces guitaristes. Tu peux devenir la première version de toi-même." tone="pink" />
+        <a class="btn btn-ghost" href="#top">Retour au lecteur <Icon name="arrow-up" size={13} /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container folds">
+      <details class="fold card">
+        <summary><span><Icon name="book" size={18} /> Les compositeurs</span><span class="fold-hint">8 portraits</span><Icon name="chevron-down" size={17} /></summary>
+        <div class="composer-grid">
+          {COMPOSERS_FR.map((composer) => (
+            <article class="composer-card">
+              <h3>{composer.name}</h3>
+              <span>{composer.years} · {composer.country}</span>
+              <p>{composer.fact}</p>
+              <small><Icon name="headphones" size={12} /> {composer.listening}</small>
+            </article>
+          ))}
+        </div>
+      </details>
+      <details class="fold card">
+        <summary><span><Icon name="heart" size={18} /> Au vrai concert</span><span class="fold-hint">6 conseils</span><Icon name="chevron-down" size={17} /></summary>
+        <div class="etiquette">
+          {ETIQUETTE_FR.map((tip, index) => <p><b>{String(index + 1).padStart(2, "0")}</b> {tip}</p>)}
+        </div>
+      </details>
+    </div>
+    <p class="privacy-note container"><Icon name="shield" size={15} /> Le lecteur utilise YouTube en mode confidentialité renforcée. Un adulte peut vérifier le volume et les réglages. YouTube peut afficher des recommandations ou des publicités.</p>
+  </section>
+
+  <section class="section-tight">
+    <div class="container concert-bottom">
+      <div><span class="eyebrow"><Icon name="guitar" size={13} /> Après l'écoute</span><h2>À ton tour de raconter<br />une histoire.</h2></div>
+      <div class="btn-row"><a class="btn btn-primary" href={url("/fr/practice/")}>Aller au studio <Icon name="arrow-right" size={14} /></a><a class="btn btn-ghost" href={url("/fr/library/")}>Trouver des partitions</a></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .slug {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .slug span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 9px;
+    color: #d7caf4;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+
+  .slug .icon { color: #ffd86f; }
+
+  .missions {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .mission {
+    position: relative;
+    padding: 15px;
+    background: var(--surface);
+  }
+
+  .mission-num { position: absolute; right: 11px; top: 10px; color: var(--faint); font-family: var(--font-mono); font-size: 8px; }
+  .mission-icon { display: grid; place-items: center; width: 34px; height: 34px; margin-bottom: 10px; color: var(--violet-700); border-radius: 11px; background: var(--violet-wash); }
+  .mission h3 { margin: 0 0 4px; color: var(--ink); font-size: 13px; }
+  .mission p { margin: 0; color: var(--muted); font-size: 9.5px; line-height: 1.6; }
+
+  .artist-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
+  .artist-card { display: flex; flex-direction: column; padding: 14px; background: var(--surface); }
+  .artist-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 7px; }
+  .artist-avatar { display: grid; place-items: center; width: 45px; height: 45px; color: #fff; border-radius: 14px; background: linear-gradient(145deg, #8b72ff, #4b2ab4); font-family: var(--font-display); font-size: 15px; font-weight: 900; transform: rotate(-3deg); }
+  .artist-sky { color: #08243a; background: linear-gradient(145deg, #67d0fa, #216fa8); }
+  .artist-pink { background: linear-gradient(145deg, #ff9fda, #b43c83); }
+  .artist-mint { color: #052e27; background: linear-gradient(145deg, #7be9c4, #218a72); }
+  .artist-sun { color: #40280b; background: linear-gradient(145deg, #ffe28d, #d18a2f); }
+  .artist-coral { background: linear-gradient(145deg, #ff9d90, #bf4b4b); }
+  .artist-country { padding: 3px 6px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--surface-2); font-size: 7.5px; white-space: nowrap; }
+  .artist-card h3 { margin: 10px 0 2px; color: var(--ink); font-size: 15px; }
+  .artist-keyword { margin: 0; color: var(--violet-700); font-size: 9.5px; font-weight: 800; line-height: 1.5; }
+  .artist-card details { margin-top: 7px; border: 0; border-top: 1px dashed var(--line); background: transparent; }
+  .artist-card summary { display: flex; align-items: center; gap: 3px; min-height: 26px; padding: 7px 0 2px; color: var(--muted); font-size: 8px; font-weight: 750; list-style: none; }
+  .artist-card summary::-webkit-details-marker { display: none; }
+  .artist-card summary .icon { margin-left: auto; transition: transform 150ms ease; }
+  .artist-card details[open] summary .icon { transform: rotate(180deg); }
+  .artist-card details p { margin: 7px 0 0; color: var(--ink-soft); font-size: 8.5px; line-height: 1.6; }
+  .artist-fun { display: flex; align-items: flex-start; gap: 4px; color: var(--muted) !important; }
+  .artist-fun .icon { margin-top: 1px; color: var(--sun-700); }
+  .artist-listen { min-height: 26px; margin-top: auto; padding-top: 9px; color: var(--violet-700); font-size: 8.5px; font-weight: 800; text-decoration: none; }
+  .artist-note { display: flex; align-items: center; gap: 15px; margin-top: 14px; }
+  .artist-note :global(.mascot-bubble) { flex: 1; }
+
+  .folds { display: grid; gap: 9px; }
+  .fold { padding: 0; overflow: hidden; background: var(--surface); }
+  .fold summary { display: flex; align-items: center; gap: 8px; padding: 15px 17px; color: var(--ink); font-size: 13px; font-weight: 800; list-style: none; }
+  .fold summary::-webkit-details-marker { display: none; }
+  .fold summary > span:first-child { display: inline-flex; align-items: center; gap: 6px; }
+  .fold summary > .icon { margin-left: auto; color: var(--faint); transition: transform 150ms ease; }
+  .fold[open] summary > .icon { transform: rotate(180deg); }
+  .fold-hint { margin-left: auto; color: var(--faint); font-size: 8px; }
+  .composer-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; padding: 0 17px 17px; }
+  .composer-card { padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); }
+  .composer-card h3 { margin: 0; color: var(--ink); font-size: 11px; }
+  .composer-card > span { color: var(--faint); font-family: var(--font-mono); font-size: 6.5px; }
+  .composer-card p { margin: 6px 0 0; color: var(--muted); font-size: 8px; line-height: 1.55; }
+  .composer-card small { display: flex; align-items: flex-start; gap: 3px; margin-top: 6px; padding-top: 5px; border-top: 1px dashed var(--line); color: var(--sun-700); font-size: 7px; line-height: 1.4; }
+  .etiquette { display: grid; gap: 5px; padding: 0 17px 17px; }
+  .etiquette p { display: flex; align-items: flex-start; gap: 8px; margin: 0; padding: 7px 0; border-bottom: 1px dashed var(--line); color: var(--ink-soft); font-size: 9.5px; line-height: 1.55; }
+  .etiquette p:last-child { border-bottom: 0; }
+  .etiquette b { color: var(--violet-700); font-family: var(--font-mono); font-size: 7px; }
+  .privacy-note { display: flex; align-items: flex-start; gap: 5px; margin-top: 13px; color: var(--faint); font-size: 8.5px; line-height: 1.55; }
+  .privacy-note .icon { margin-top: 1px; color: var(--violet-700); }
+  .concert-bottom { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: clamp(22px, 4vw, 32px); border: 1.5px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow); }
+  .concert-bottom h2 { margin-top: 10px; font-size: clamp(23px, 3vw, 31px); }
+
+  @media (max-width: 1100px) {
+    .artist-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .missions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 850px) {
+    .artist-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .composer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 600px) {
+    .missions, .artist-grid, .composer-grid { grid-template-columns: 1fr; }
+    .artist-note, .concert-bottom { align-items: flex-start; flex-direction: column; }
+    .fold-hint { display: none; }
+  }
+</style>

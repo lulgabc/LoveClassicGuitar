@@ -740,7 +740,7 @@ html[data-theme="night"] .pill-paid {
 }
 
 html.js .reveal {
-  opacity: 0;
+  opacity: 1;
   transform: translateY(18px);
 }
 

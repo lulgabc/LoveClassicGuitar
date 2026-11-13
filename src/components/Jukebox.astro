@@ -1,0 +1,598 @@
+---
+import Icon from "./Icon.astro";
+
+type JukeboxItem = {
+  id: string;
+  title: string;
+  composer: string;
+  performer: string;
+  youtubeId: string;
+  duration: string;
+  story?: string;
+  listenFor?: string;
+  color?: string;
+};
+
+interface Props {
+  items: JukeboxItem[];
+  lang?: "zh" | "fr";
+  compact?: boolean;
+}
+
+const { items, lang = "zh", compact = false } = Astro.props;
+const isFr = lang === "fr";
+const first = items[0];
+const initialSrc = first
+  ? `https://www.youtube-nocookie.com/embed/${first.youtubeId}?rel=0&modestbranding=1&playsinline=1`
+  : "";
+const ui = isFr
+  ? {
+      player: "Lecteur intégré",
+      current: "En écoute",
+      prev: "Morceau précédent",
+      next: "Morceau suivant",
+      playlist: "Choisir un morceau",
+      listen: "À écouter",
+      privacy: "Lecteur YouTube intégré. Le volume et les réglages restent sous la responsabilité de l'adulte.",
+      empty: "Aucun morceau pour le moment.",
+      open: "Ouvrir sur YouTube",
+    }
+  : {
+      player: "嵌入式播放器",
+      current: "正在播放",
+      prev: "上一首",
+      next: "下一首",
+      playlist: "选择曲目",
+      listen: "听什么",
+      privacy: "视频直接嵌入自 YouTube。音量和观看设置请由家长确认。",
+      empty: "暂时没有曲目。",
+      open: "在 YouTube 打开",
+    };
+const firstLink = first ? `https://www.youtube.com/watch?v=${first.youtubeId}` : "#";
+---
+
+{
+  items.length ? (
+    <div class:list={["jukebox", "card", { "is-compact": compact }]} data-jukebox data-lang={lang}>
+      <div class="jukebox-main">
+        <div class="jukebox-screen">
+          <div class="screen-placeholder" aria-hidden="true">
+            <Icon name="music" size={30} />
+          </div>
+          <iframe
+            src={initialSrc}
+            title={first ? `${first.title} — ${first.performer}` : ui.player}
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+        <div class="now-playing">
+          <span class="now-icon"><Icon name="headphones" size={18} /></span>
+          <div class="now-copy" aria-live="polite">
+            <span class="now-label">{ui.current} · <span data-jukebox-number>01</span> / {String(items.length).padStart(2, "0")}</span>
+            <strong data-jukebox-title>{first?.title}</strong>
+            <small data-jukebox-meta>{first?.composer} · {first?.performer}</small>
+          </div>
+          <div class="now-controls">
+            <button type="button" data-jukebox-prev aria-label={ui.prev}><Icon name="chevron-right" size={16} class="flip" /></button>
+            <button type="button" data-jukebox-next aria-label={ui.next}><Icon name="chevron-right" size={16} /></button>
+          </div>
+        </div>
+
+        {first?.listenFor && (
+          <div class="listen-bar" data-jukebox-listen-wrap>
+            <span><Icon name="ear" size={15} /> {ui.listen}</span>
+            <p data-jukebox-listen>{first.listenFor}</p>
+          </div>
+        )}
+      </div>
+
+      <div class="jukebox-side">
+        <div class="jukebox-side-head">
+          <span class="mini-kicker">{ui.player}</span>
+          <h3>{ui.playlist}</h3>
+        </div>
+        <ol class="track-list" aria-label={ui.playlist}>
+          {items.map((item, index) => (
+            <li>
+              <button
+                type="button"
+                class:list={["track-button", { "is-active": index === 0 }]}
+                data-jukebox-track
+                data-youtube-id={item.youtubeId}
+                data-title={item.title}
+                data-meta={`${item.composer} · ${item.performer}`}
+                data-listen={item.listenFor ?? ""}
+                aria-pressed={index === 0 ? "true" : "false"}
+              >
+                <span class="track-num">{String(index + 1).padStart(2, "0")}</span>
+                <span class="track-copy">
+                  <strong>{item.title}</strong>
+                  <small>{item.performer}</small>
+                </span>
+                <span class="track-duration">{item.duration}</span>
+                <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
+              </button>
+            </li>
+          ))}
+        </ol>
+        <p class="jukebox-privacy"><Icon name="info" size={13} /> {ui.privacy}</p>
+        <a class="jukebox-open" href={firstLink} target="_blank" rel="noopener noreferrer">{ui.open} <Icon name="external" size={12} /></a>
+      </div>
+    </div>
+  ) : (
+    <p class="jukebox-empty">{ui.empty}</p>
+  )
+}
+
+<noscript>
+  <a class="jukebox-fallback" href={firstLink} target="_blank" rel="noopener noreferrer">{ui.open}</a>
+</noscript>
+
+<script>
+  const roots = Array.from(document.querySelectorAll<HTMLElement>("[data-jukebox]"));
+
+  roots.forEach((root) => {
+    const frame = root.querySelector<HTMLIFrameElement>("iframe");
+    const titleEl = root.querySelector<HTMLElement>("[data-jukebox-title]");
+    const metaEl = root.querySelector<HTMLElement>("[data-jukebox-meta]");
+    const numberEl = root.querySelector<HTMLElement>("[data-jukebox-number]");
+    const listenEl = root.querySelector<HTMLElement>("[data-jukebox-listen]");
+    const listenWrap = root.querySelector<HTMLElement>("[data-jukebox-listen-wrap]");
+    const prev = root.querySelector<HTMLButtonElement>("[data-jukebox-prev]");
+    const next = root.querySelector<HTMLButtonElement>("[data-jukebox-next]");
+    const trackButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-jukebox-track]"));
+    const isFr = root.dataset.lang === "fr";
+    let index = 0;
+
+    const embedUrl = (id: string, autoplay: boolean) =>
+      `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?rel=0&modestbranding=1&playsinline=1${
+        autoplay ? "&autoplay=1" : ""
+      }`;
+
+    function select(nextIndex: number, autoplay = true): void {
+      if (!trackButtons.length) return;
+      index = (nextIndex + trackButtons.length) % trackButtons.length;
+      const button = trackButtons[index];
+      if (!button) return;
+      const id = button.dataset.youtubeId ?? "";
+      const title = button.dataset.title ?? "";
+      const meta = button.dataset.meta ?? "";
+      const listen = button.dataset.listen ?? "";
+      if (frame) frame.src = embedUrl(id, autoplay);
+      if (titleEl) titleEl.textContent = title;
+      if (metaEl) metaEl.textContent = meta;
+      if (numberEl) numberEl.textContent = String(index + 1).padStart(2, "0");
+      if (listenEl) listenEl.textContent = listen;
+      if (listenWrap) listenWrap.hidden = !listen;
+      trackButtons.forEach((item, itemIndex) => {
+        const active = itemIndex === index;
+        item.classList.toggle("is-active", active);
+        item.setAttribute("aria-pressed", String(active));
+      });
+      frame?.setAttribute("title", title || (isFr ? "Lecteur vidéo intégré" : "嵌入式视频播放器"));
+    }
+
+    trackButtons.forEach((button, buttonIndex) => {
+      button.addEventListener("click", () => select(buttonIndex));
+    });
+    prev?.addEventListener("click", () => select(index - 1));
+    next?.addEventListener("click", () => select(index + 1));
+  });
+</script>
+
+<style>
+  .jukebox {
+    display: grid;
+    grid-template-columns: minmax(0, 1.38fr) minmax(275px, 0.62fr);
+    gap: 0;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .jukebox-main {
+    min-width: 0;
+    padding: 14px;
+    background:
+      radial-gradient(circle at 88% 8%, rgba(255, 216, 111, 0.16), transparent 24%),
+      linear-gradient(145deg, #2b1a67, #140d36 74%);
+    color: #fff9ee;
+  }
+
+  .jukebox-screen {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+    background: #0d0922;
+    box-shadow: 0 12px 28px rgba(6, 3, 18, 0.28);
+  }
+
+  .jukebox-screen iframe {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .screen-placeholder {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: grid;
+    place-items: center;
+    color: rgba(255, 255, 255, 0.2);
+    background:
+      radial-gradient(circle at 68% 26%, rgba(255, 216, 111, 0.12), transparent 22%),
+      radial-gradient(circle at 25% 75%, rgba(93, 202, 250, 0.12), transparent 28%);
+  }
+
+  .now-playing {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 2px 5px;
+  }
+
+  .now-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    color: #ffd86f;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .now-copy {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .now-label {
+    display: block;
+    color: #a99acb;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .now-copy strong {
+    display: block;
+    overflow: hidden;
+    margin-top: 1px;
+    color: #fff6e5;
+    font-family: var(--font-display);
+    font-size: 16px;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .now-copy small {
+    display: block;
+    overflow: hidden;
+    margin-top: 1px;
+    color: #b9a8de;
+    font-size: 9px;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .now-controls {
+    display: flex;
+    gap: 5px;
+    flex: 0 0 auto;
+  }
+
+  .now-controls button {
+    display: grid;
+    place-items: center;
+    width: 31px;
+    height: 31px;
+    padding: 0;
+    color: #e3d7ff;
+    border: 1px solid rgba(255, 255, 255, 0.17);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .now-controls button:hover {
+    color: #3e2a0d;
+    border-color: #ffd86f;
+    background: #ffd86f;
+  }
+
+  .now-controls :global(.flip) {
+    transform: rotate(180deg);
+  }
+
+  .listen-bar {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 4px;
+    padding: 9px 10px;
+    border: 1px solid rgba(255, 216, 111, 0.18);
+    border-radius: 10px;
+    background: rgba(255, 216, 111, 0.08);
+    color: #d5c7f0;
+    font-size: 9px;
+    line-height: 1.55;
+  }
+
+  .listen-bar > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+    color: #ffd86f;
+    font-weight: 850;
+    white-space: nowrap;
+  }
+
+  .listen-bar p {
+    margin: 0;
+  }
+
+  .jukebox-side {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 18px;
+    background: var(--surface);
+  }
+
+  .mini-kicker {
+    display: block;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .jukebox-side h3 {
+    margin: 3px 0 11px;
+    color: var(--ink);
+    font-size: 20px;
+  }
+
+  .track-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .track-list li {
+    min-width: 0;
+  }
+
+  .track-button {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 7px 8px;
+    color: var(--ink);
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    text-align: left;
+    transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+  }
+
+  .track-button:hover {
+    border-color: var(--line);
+    background: var(--surface-2);
+    transform: translateX(2px);
+  }
+
+  .track-button.is-active {
+    border-color: var(--violet-300);
+    background: var(--violet-wash);
+  }
+
+  .track-num {
+    flex: 0 0 18px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 700;
+  }
+
+  .track-button.is-active .track-num {
+    color: var(--violet-700);
+  }
+
+  .track-copy {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .track-copy strong {
+    display: block;
+    overflow: hidden;
+    color: var(--ink);
+    font-size: 10.5px;
+    font-weight: 750;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .track-copy small {
+    display: block;
+    overflow: hidden;
+    margin-top: 1px;
+    color: var(--faint);
+    font-size: 8px;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .track-duration {
+    flex: 0 0 auto;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 7.5px;
+  }
+
+  .eq {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    flex: 0 0 13px;
+    height: 13px;
+    opacity: 0;
+  }
+
+  .track-button.is-active .eq {
+    opacity: 1;
+  }
+
+  .eq i {
+    display: block;
+    width: 2px;
+    border-radius: 99px;
+    background: var(--violet-600);
+    animation: eq 0.75s ease-in-out infinite alternate;
+  }
+
+  .eq i:nth-child(1) { height: 5px; animation-delay: -0.2s; }
+  .eq i:nth-child(2) { height: 10px; animation-delay: -0.45s; }
+  .eq i:nth-child(3) { height: 7px; animation-delay: -0.1s; }
+
+  .jukebox-privacy {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    margin: 13px 0 0;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+    color: var(--faint);
+    font-size: 8px;
+    line-height: 1.55;
+  }
+
+  .jukebox-privacy .icon {
+    margin-top: 1px;
+  }
+
+  .jukebox-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    width: fit-content;
+    margin-top: 10px;
+    color: var(--violet-700);
+    font-size: 9px;
+    font-weight: 850;
+    text-decoration: none;
+  }
+
+  .jukebox-open:hover {
+    color: var(--violet-800);
+  }
+
+  .jukebox-empty {
+    padding: 20px;
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius);
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .jukebox-fallback {
+    display: inline-flex;
+    margin: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    color: #fff;
+    background: var(--violet-600);
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  @keyframes eq {
+    from { transform: scaleY(0.45); }
+    to { transform: scaleY(1); }
+  }
+
+  @media (max-width: 900px) {
+    .jukebox {
+      grid-template-columns: 1fr;
+    }
+
+    .jukebox-side {
+      padding-top: 15px;
+    }
+
+    .track-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .jukebox-privacy,
+    .jukebox-open {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .jukebox-main {
+      padding: 10px;
+    }
+
+    .jukebox-screen {
+      border-radius: 12px;
+    }
+
+    .now-playing {
+      align-items: flex-start;
+    }
+
+    .now-copy strong {
+      white-space: normal;
+    }
+
+    .now-controls {
+      flex-direction: column;
+    }
+
+    .listen-bar {
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .track-list {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .eq i {
+      animation: none;
+    }
+  }
+</style>

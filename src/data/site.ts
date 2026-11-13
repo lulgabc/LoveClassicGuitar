@@ -1,9 +1,13 @@
 export const SITE = {
   name: "Love Classic Guitar",
   nameZh: "爱古典吉他",
+  nameFr: "Guitare classique",
   tagline: "小音乐家的星空练习室",
+  taglineFr: "Le studio des étoiles",
   description:
     "给 7 岁小音乐家的古典吉他启蒙世界：有趣的基础知识、6 站学习地图、免费课程、名曲音乐厅、互动练习工具和家长指南。",
+  descriptionFr:
+    "Un monde de guitare classique pour une enfant de 7 ans : bases illustrées, parcours en 6 étapes, cours gratuits, salle de concert avec lecteur intégré, outils interactifs et guide parents.",
   url: "https://lulgabc.github.io/LoveClassicGuitar",
   repo: "https://github.com/lulgabc/LoveClassicGuitar",
   author: "lulgabc",
@@ -20,4 +24,15 @@ export const NAV = [
   { href: "/parents/", label: "给爸妈", short: "爸妈" },
 ] as const;
 
+export const NAV_FR = [
+  { href: "/fr/", label: "Accueil", short: "Accueil" },
+  { href: "/fr/basics/", label: "Découvrir", short: "Découvrir" },
+  { href: "/fr/roadmap/", label: "Parcours", short: "Parcours" },
+  { href: "/fr/practice/", label: "Pratique", short: "Pratique" },
+  { href: "/fr/concert/", label: "Écouter", short: "Écouter" },
+  { href: "/fr/library/", label: "Ressources", short: "Ressources" },
+  { href: "/fr/parents/", label: "Parents", short: "Parents" },
+] as const;
+
 export const HERO_CHIPS = ["零基础", "每天 10–15 分钟", "免费资源", "可打印练习卡"];
+export const HERO_CHIPS_FR = ["Débutant", "10–15 min par jour", "Ressources gratuites", "Fiche à imprimer"];

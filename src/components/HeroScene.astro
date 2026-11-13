@@ -20,16 +20,29 @@ const stars = [
   { left: 48, top: 55, size: 3, delay: 0.2 },
 ];
 
-const tips = [
-  "今天也从一根空弦开始，好吗？",
-  "慢一点没关系，星星会等你。",
-  "弹错不是迷路，是发现了一条新小路。",
-  "先听声音，再让手指出发。",
-  "今天想听哪一首？我陪你去音乐厅。",
-];
+interface Props {
+  lang?: "zh" | "fr";
+}
+const { lang = "zh" } = Astro.props;
+const isFr = lang === "fr";
+const tips = isFr
+  ? [
+      "On commence par une corde à vide, d'accord ?",
+      "Pas besoin d'aller vite : les étoiles t'attendent.",
+      "Une fausse note n'est pas une erreur, c'est un nouveau chemin.",
+      "Écoute d'abord le son, puis laisse tes doigts partir.",
+      "Tu veux écouter quel morceau aujourd'hui ?",
+    ]
+  : [
+      "今天也从一根空弦开始，好吗？",
+      "慢一点没关系，星星会等你。",
+      "弹错不是迷路，是发现了一条新小路。",
+      "先听声音，再让手指出发。",
+      "今天想听哪一首？我陪你去音乐厅。",
+    ];
 ---
 
-<div class="hero-scene" role="group" aria-label="小蝙蝠 Momo 和水豚 Capi 在星空下弹古典吉他">
+<div class="hero-scene" role="group" aria-label={isFr ? "Momo la chauve-souris et Capi le capybara jouent de la guitare sous les étoiles" : "小蝙蝠 Momo 和水豚 Capi 在星空下弹古典吉他"}>
   <div class="scene-stars" aria-hidden="true">
     {
       stars.map((star) => (
@@ -62,10 +75,10 @@ const tips = [
   <div class="cloud cloud-b" aria-hidden="true"></div>
 
   <button class="speech-bubble" type="button" data-tip-bubble data-tips={JSON.stringify(tips)}>
-    <span class="speech-name">Momo 小提示</span>
+    <span class="speech-name">{isFr ? "Le conseil de Momo" : "Momo 小提示"}</span>
     <span class="speech-text" data-tip-text>{tips[0]}</span>
     <span class="speech-refresh" aria-hidden="true"><Icon name="refresh" size={14} /></span>
-    <span class="sr-only">点击换一条提示</span>
+    <span class="sr-only">{isFr ? "Afficher un autre conseil" : "点击换一条提示"}</span>
   </button>
 
   <div class="bat-wrap" aria-hidden="true">
@@ -90,10 +103,10 @@ const tips = [
   </div>
 
   <div class="hero-sticker sticker-left" aria-hidden="true">
-    <Icon name="music" size={17} /> 六根弦的小宇宙
+    <Icon name="music" size={17} /> {isFr ? "Un petit univers à six cordes" : "六根弦的小宇宙"}
   </div>
   <div class="hero-sticker sticker-right" aria-hidden="true">
-    <Icon name="heart" size={16} /> 不着急，慢慢来
+    <Icon name="heart" size={16} /> {isFr ? "Tout doucement" : "不着急，慢慢来"}
   </div>
 </div>
 

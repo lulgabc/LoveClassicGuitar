@@ -1,0 +1,314 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import PracticeTimer from "../../components/PracticeTimer.astro";
+import Metronome from "../../components/Metronome.astro";
+import Tuner from "../../components/Tuner.astro";
+import NoteGame from "../../components/NoteGame.astro";
+import EarGame from "../../components/EarGame.astro";
+import MascotBubble from "../../components/MascotBubble.astro";
+import Icon from "../../components/Icon.astro";
+import { PRACTICE_PRESETS_FR, NOTE_QUESTIONS_FR, PRACTICE_RULES_FR, WARMUPS_FR } from "../../data/fr/practice";
+import { GUITAR_STRINGS_FR } from "../../data/fr/basics";
+import { url } from "../../lib/url";
+---
+
+<BaseLayout
+  lang="fr"
+  title="Le studio de pratique"
+  description="Un studio de pratique interactif pour enfant : minuteur de 10, 15 ou 20 minutes, métronome, notes de référence, chasse aux notes et jeu d'écoute."
+>
+  <PageHero
+    kicker="Studio de pratique · Sous les étoiles"
+    title="Un tout petit peu,<br /><em>déjà beaucoup</em>."
+    lead="Dix minutes, une corde, un jeu. La pratique n'est pas un devoir : c'est un moment avec la musique."
+  >
+    <div class="slug">
+      <a href="#timer">Minuteur</a>
+      <a href="#metronome">Métronome</a>
+      <a href="#strings">Accorder</a>
+      <a href="#note-game">Jeu de notes</a>
+      <a href="#ear-game">Oreille</a>
+    </div>
+  </PageHero>
+
+  <nav class="tool-rail" aria-label="Outils de pratique">
+    <div class="container tool-rail-inner">
+      <span class="tool-rail-label"><Icon name="timer" size={15} /> Les outils</span>
+      <a href="#timer"><Icon name="timer" size={13} /> Minuteur</a>
+      <a href="#metronome"><Icon name="metronome" size={13} /> Métronome</a>
+      <a href="#strings"><Icon name="tuning" size={13} /> Accorder</a>
+      <a href="#note-game"><Icon name="game" size={13} /> Notes</a>
+      <a href="#ear-game"><Icon name="ear" size={13} /> Oreille</a>
+      <a href="#warmups"><Icon name="heart" size={13} /> Échauffement</a>
+      <a class="rail-print" href={url("/fr/print/weekly/")}><Icon name="printer" size={13} /> Imprimer</a>
+    </div>
+  </nav>
+
+  <section class="section" id="timer">
+    <div class="container">
+      <div class="tip-strip">
+        <span class="tip-icon"><Icon name="sparkle" size={18} /></span>
+        <div><span>Le petit mot de Momo</span><p data-fr-tip aria-live="polite">Un seul petit objectif, c'est déjà une belle séance.</p></div>
+        <button type="button" data-fr-tip-refresh><Icon name="refresh" size={14} /> Un autre</button>
+      </div>
+      <SectionHead kicker="01 · Le minuteur" title="Une séance, <em>sans se presser</em>" lead="Le minuteur te propose quatre petits moments. Tu peux mettre en pause ou passer à l'étape suivante." />
+      <PracticeTimer presets={PRACTICE_PRESETS_FR} lang="fr" />
+    </div>
+  </section>
+
+  <section class="section section-wash" id="metronome">
+    <div class="container">
+      <SectionHead kicker="02 · Le rythme" title="Un cœur qui <em>bat</em>" lead="Tape d'abord dans les mains. 60 BPM, c'est un clic chaque seconde." />
+      <Metronome lang="fr" />
+      <div class="tuner-section" id="strings">
+        <SectionHead kicker="03 · Accorder" title="Écoute les <em>six notes</em>" lead="Des notes de référence pour comparer. Pour accorder, demande à un adulte." />
+        <Tuner strings={GUITAR_STRINGS_FR} lang="fr" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="games">
+    <div class="container">
+      <SectionHead kicker="04 · Jouer" title="La musique est un <em>jeu</em>" lead="Deux jeux de trois minutes. Pas de note, pas de classement : juste l'œil et l'oreille." />
+      <div class="games-stack">
+        <NoteGame questions={NOTE_QUESTIONS_FR} lang="fr" />
+        <EarGame lang="fr" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="warmups">
+    <div class="container">
+      <SectionHead kicker="05 · S'échauffer" title="Le corps d'abord" lead="Une minute pour relâcher les épaules et les mains avant de jouer." />
+      <div class="warmups-grid">
+        {WARMUPS_FR.map((warmup, index) => (
+          <article class="warmup-card card">
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <div><h3>{warmup.title}</h3><p>{warmup.body}</p></div>
+          </article>
+        ))}
+      </div>
+      <div class="rules">
+        {PRACTICE_RULES_FR.map((rule) => <p><Icon name="check" size={13} /> {rule}</p>)}
+      </div>
+      <div class="print-cta card">
+        <Icon name="printer" size={21} />
+        <div><h3>Une fiche pour la semaine</h3><p>À imprimer, colorier et accrocher près de la guitare.</p></div>
+        <a class="btn btn-secondary btn-sm" href={url("/fr/print/weekly/")}>Ouvrir la fiche</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container bottom-note">
+      <MascotBubble who="capi" title="Capi te dit" text="Si tu n'as pas envie aujourd'hui, écoute une pièce et reviens demain. La musique ne s'échappe pas." tone="sun" />
+      <a class="btn btn-primary" href={url("/fr/roadmap/")}>Retour au parcours <Icon name="arrow-right" size={14} /></a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { PRACTICE_TIPS_FR } from "../../data/fr/practice";
+  const tip = document.querySelector<HTMLElement>("[data-fr-tip]");
+  const refresh = document.querySelector<HTMLButtonElement>("[data-fr-tip-refresh]");
+  let index = new Date().getDate() % PRACTICE_TIPS_FR.length;
+  if (tip) tip.textContent = PRACTICE_TIPS_FR[index] ?? "";
+  refresh?.addEventListener("click", () => {
+    index = (index + 1) % PRACTICE_TIPS_FR.length;
+    if (tip) tip.textContent = PRACTICE_TIPS_FR[index] ?? "";
+  });
+</script>
+
+<style>
+  .slug {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .slug a {
+    display: inline-flex;
+    padding: 5px 9px;
+    color: #d9cef6;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 9.5px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .slug a:hover { color: #fff1c9; background: rgba(255, 216, 111, 0.1); }
+
+  .tool-rail {
+    position: sticky;
+    top: var(--header-h);
+    z-index: 40;
+    background: color-mix(in srgb, var(--bg) 91%, transparent);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(16px);
+  }
+
+  .tool-rail-inner {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    min-height: 52px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tool-rail-inner::-webkit-scrollbar { display: none; }
+
+  .tool-rail-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex: 0 0 auto;
+    margin-right: 7px;
+    color: var(--violet-700);
+    font-size: 9px;
+    font-weight: 850;
+  }
+
+  .tool-rail a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+    padding: 5px 8px;
+    color: var(--muted);
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .tool-rail a:hover { color: var(--violet-700); background: var(--violet-wash); }
+  .tool-rail .rail-print { margin-left: auto; color: var(--violet-700); background: var(--violet-wash); }
+
+  #timer,
+  #metronome,
+  #strings,
+  #games,
+  #warmups { scroll-margin-top: calc(var(--header-h) + 78px); }
+
+  .tip-strip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 26px;
+    padding: 11px 14px;
+    border: 1.5px dashed var(--line-strong);
+    border-radius: 14px;
+    background: var(--surface);
+  }
+
+  .tip-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    color: #67470b;
+    border-radius: 11px;
+    background: var(--sun-500);
+    transform: rotate(-4deg);
+  }
+
+  .tip-strip > div { flex: 1; min-width: 0; }
+  .tip-strip span { color: var(--sun-700); font-family: var(--font-mono); font-size: 8px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+  .tip-strip p { margin: 2px 0 0; color: var(--ink); font-size: 12px; font-weight: 650; line-height: 1.5; }
+
+  .tip-strip button {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+    padding: 6px 9px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface-2);
+    font-size: 8.5px;
+    font-weight: 750;
+  }
+
+  .tuner-section { margin-top: 38px; }
+  .games-stack { display: grid; gap: 15px; }
+
+  .warmups-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .warmup-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 13px;
+    box-shadow: none;
+    background: var(--surface);
+  }
+
+  .warmup-card > span { color: var(--violet-700); font-family: var(--font-display); font-size: 20px; font-weight: 900; line-height: 1; }
+  .warmup-card h3 { margin: 0 0 3px; color: var(--ink); font-size: 11px; }
+  .warmup-card p { margin: 0; color: var(--muted); font-size: 8.5px; line-height: 1.55; }
+
+  .rules {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+    margin-top: 15px;
+    padding: 13px 15px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 12px;
+    background: var(--surface-2);
+  }
+
+  .rules p { display: flex; align-items: flex-start; gap: 5px; margin: 0; color: var(--muted); font-size: 8.5px; line-height: 1.55; }
+  .rules .icon { margin-top: 1px; color: var(--mint-500); }
+
+  .print-cta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 15px;
+    padding: 15px 17px;
+    background: var(--surface);
+  }
+
+  .print-cta > .icon { color: var(--violet-700); }
+  .print-cta div { flex: 1; }
+  .print-cta h3 { margin: 0 0 2px; color: var(--ink); font-size: 13px; }
+  .print-cta p { margin: 0; color: var(--muted); font-size: 9px; line-height: 1.5; }
+
+  .bottom-note { display: flex; align-items: center; gap: 16px; }
+  .bottom-note :global(.mascot-bubble) { flex: 1; }
+
+  @media (max-width: 1000px) {
+    .warmups-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 700px) {
+    .warmups-grid { grid-template-columns: 1fr 1fr; }
+    .rules { grid-template-columns: 1fr; }
+    .bottom-note { align-items: flex-start; flex-direction: column; }
+  }
+
+  @media (max-width: 520px) {
+    .tool-rail-label { display: none; }
+    .tool-rail .rail-print { margin-left: 0; }
+    .warmups-grid { grid-template-columns: 1fr; }
+    .tip-strip { align-items: flex-start; flex-wrap: wrap; }
+    .tip-strip > div { flex-basis: calc(100% - 46px); }
+    .tip-strip button { margin-left: 44px; }
+    .print-cta { align-items: flex-start; flex-wrap: wrap; }
+    .print-cta .btn { margin-left: 33px; }
+  }
+</style>
