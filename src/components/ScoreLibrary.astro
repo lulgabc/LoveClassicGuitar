@@ -50,7 +50,16 @@ const t = isFr
       tip: "Conseil",
       imslp: "Chercher sur IMSLP",
       library: "Éditeur / bibliothèque",
-      note: "Ce site n'héberge pas de PDF. Les œuvres du domaine public renvoient vers IMSLP ; les œuvres protégées vers WorldCat, un éditeur ou une bibliothèque. Le statut des droits varie selon les pays.",
+      open: "Voir la partition",
+      close: "Fermer",
+      previewNote: "Aperçu de la première page · partition complète sur IMSLP",
+      noPreviewImslp: "L'aperçu de la première page n'est pas disponible pour cette pièce. Utilise le bouton ci-dessous pour chercher la partition complète sur IMSLP.",
+      noPreviewLibrary: "Œuvre sous droits. Ce site n'héberge pas la partition complète ; passe par un éditeur ou une bibliothèque.",
+      imslpFull: "Voir la partition complète sur IMSLP",
+      libraryFull: "Éditeur / bibliothèque",
+      imageAlt: "Aperçu de la première page de la partition",
+      practicePage: "Page d'exercice",
+      note: "Ce site n'héberge pas de PDF. Certaines œuvres du domaine public ont un aperçu de la première page ; la partition complète renvoie vers IMSLP. Les œuvres protégées renvoient vers WorldCat, un éditeur ou une bibliothèque. Le statut des droits varie selon les pays.",
     }
   : {
       searchPlaceholder: "搜曲名、作曲家或练习重点…",
@@ -67,7 +76,16 @@ const t = isFr
       tip: "练习提示",
       imslp: "在 IMSLP 找乐谱",
       library: "出版社 / 图书馆",
-      note: "本站不托管 PDF。公共领域作品链接到 IMSLP；现代版权作品链接到 WorldCat、出版社或图书馆。版权状态因国家而异，请家长或老师确认。",
+      open: "查看乐谱",
+      close: "关闭",
+      previewNote: "第一页预览 · 完整乐谱请在 IMSLP 查看",
+      noPreviewImslp: "这首曲子的第一页预览暂时不可用。请点击下方按钮，在 IMSLP 查找完整乐谱。",
+      noPreviewLibrary: "这是一首版权作品。本站不托管完整乐谱，请通过出版社或图书馆获取。",
+      imslpFull: "在 IMSLP 查看完整版",
+      libraryFull: "出版社 / 图书馆",
+      imageAlt: "乐谱第一页预览",
+      practicePage: "练习页示例",
+      note: "本站不托管 PDF。部分公共领域作品提供第一页预览，完整乐谱链接到 IMSLP；现代版权作品链接到 WorldCat、出版社或图书馆。版权状态因国家而异，请家长或老师确认。",
     };
 
 const step = 24;
@@ -129,9 +147,21 @@ const focusKeys = Object.keys(focusLabels) as ScoreFocus[];
             <span class="score-era">{score.era}</span>
           </div>
           <p class="score-tip"><strong>{t.tip}:</strong> {isFr ? score.tipFr : score.tipZh}</p>
-          <a class="score-link" href={score.url} target="_blank" rel="noopener noreferrer">
-            {score.source === "IMSLP" ? t.imslp : t.library} <Icon name="external" size={11} />
-          </a>
+          <button
+            type="button"
+            class="score-open"
+            data-score-open
+            data-title={isFr ? score.title : score.titleZh ?? score.title}
+            data-composer={score.composer}
+            data-level={`${score.level} · ${levelLabels[score.level]}`}
+            data-focus={focusLabels[score.focus]}
+            data-tip={isFr ? score.tipFr : score.tipZh}
+            data-preview={score.previewUrl ?? ""}
+            data-url={score.url}
+            data-source={score.source}
+          >
+            <Icon name="book" size={11} /> {t.open}
+          </button>
         </article>
       ))
     }
@@ -142,6 +172,56 @@ const focusKeys = Object.keys(focusLabels) as ScoreFocus[];
     <button type="button" class="btn btn-secondary btn-sm" data-score-more>{t.more(step)}</button>
   </div>
   <p class="score-note"><Icon name="info" size={13} /> {t.note}</p>
+
+  <dialog class="score-modal" data-score-modal aria-labelledby="score-modal-title">
+    <div class="score-modal-panel">
+      <div class="score-modal-head">
+        <span class="score-modal-kicker" data-score-modal-kicker></span>
+        <button type="button" class="score-modal-close" data-score-close aria-label={t.close}>×</button>
+      </div>
+      <h2 id="score-modal-title" data-score-modal-title></h2>
+      <p class="score-modal-meta" data-score-modal-meta></p>
+      <div class="score-modal-stage">
+        <img data-score-modal-image alt="" hidden />
+        <div class="score-modal-placeholder" data-score-modal-placeholder hidden>
+          <div class="score-placeholder-sheet" aria-hidden="true">
+            <span class="score-placeholder-label">{t.practicePage}</span>
+            <svg viewBox="0 0 560 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g stroke="currentColor" stroke-width="1" opacity="0.35">
+                <line x1="18" y1="48" x2="542" y2="48"></line>
+                <line x1="18" y1="66" x2="542" y2="66"></line>
+                <line x1="18" y1="84" x2="542" y2="84"></line>
+                <line x1="18" y1="102" x2="542" y2="102"></line>
+                <line x1="18" y1="120" x2="542" y2="120"></line>
+              </g>
+              <g fill="currentColor" opacity="0.7">
+                <ellipse cx="158" cy="84" rx="8" ry="6" transform="rotate(-18 158 84)"></ellipse>
+                <ellipse cx="218" cy="75" rx="8" ry="6" transform="rotate(-18 218 75)"></ellipse>
+                <ellipse cx="278" cy="93" rx="8" ry="6" transform="rotate(-18 278 93)"></ellipse>
+                <ellipse cx="338" cy="66" rx="8" ry="6" transform="rotate(-18 338 66)"></ellipse>
+                <ellipse cx="398" cy="84" rx="8" ry="6" transform="rotate(-18 398 84)"></ellipse>
+              </g>
+              <g stroke="currentColor" stroke-width="2" opacity="0.7">
+                <line x1="164" y1="84" x2="164" y2="48"></line>
+                <line x1="224" y1="75" x2="224" y2="39"></line>
+                <line x1="284" y1="93" x2="284" y2="57"></line>
+                <line x1="344" y1="66" x2="344" y2="30"></line>
+                <line x1="404" y1="84" x2="404" y2="48"></line>
+              </g>
+              <text x="24" y="110" fill="currentColor" opacity="0.6" font-family="Georgia, serif" font-size="58">𝄞</text>
+            </svg>
+          </div>
+          <p data-score-modal-placeholder-text>{t.noPreviewLibrary}</p>
+        </div>
+      </div>
+      <p class="score-modal-preview-note" data-score-modal-preview-note hidden>{t.previewNote}</p>
+      <p class="score-modal-tip" data-score-modal-tip></p>
+      <div class="score-modal-actions">
+        <a class="btn btn-primary btn-sm" data-score-modal-external target="_blank" rel="noopener noreferrer" href="#"></a>
+        <button class="btn btn-ghost btn-sm" type="button" data-score-close>{t.close}</button>
+      </div>
+    </div>
+  </dialog>
 </div>
 
 <noscript>
@@ -217,6 +297,97 @@ const focusKeys = Object.keys(focusLabels) as ScoreFocus[];
     more?.addEventListener("click", () => {
       limit += step;
       apply();
+    });
+
+    const modal = root.querySelector<HTMLDialogElement>("[data-score-modal]");
+    const modalTitle = root.querySelector<HTMLElement>("[data-score-modal-title]");
+    const modalKicker = root.querySelector<HTMLElement>("[data-score-modal-kicker]");
+    const modalMeta = root.querySelector<HTMLElement>("[data-score-modal-meta]");
+    const modalTip = root.querySelector<HTMLElement>("[data-score-modal-tip]");
+    const modalImage = root.querySelector<HTMLImageElement>("[data-score-modal-image]");
+    const modalPlaceholder = root.querySelector<HTMLElement>("[data-score-modal-placeholder]");
+    const modalPlaceholderText = root.querySelector<HTMLElement>("[data-score-modal-placeholder-text]");
+    const modalPreviewNote = root.querySelector<HTMLElement>("[data-score-modal-preview-note]");
+    const modalExternal = root.querySelector<HTMLAnchorElement>("[data-score-modal-external]");
+    const labels = isFr
+      ? {
+          noPreviewImslp: "L'aperçu de la première page n'est pas disponible pour cette pièce. Utilise le bouton ci-dessous pour chercher la partition complète sur IMSLP.",
+          noPreviewLibrary: "Œuvre sous droits. Ce site n'héberge pas la partition complète ; passe par un éditeur ou une bibliothèque.",
+          previewNote: "Aperçu de la première page · partition complète sur IMSLP",
+          imslpFull: "Voir la partition complète sur IMSLP",
+          libraryFull: "Éditeur / bibliothèque",
+          imageAlt: "Aperçu de la première page de la partition",
+        }
+      : {
+          noPreviewImslp: "这首曲子的第一页预览暂时不可用。请点击下方按钮，在 IMSLP 查找完整乐谱。",
+          noPreviewLibrary: "这是一首版权作品。本站不托管完整乐谱，请通过出版社或图书馆获取。",
+          previewNote: "第一页预览 · 完整乐谱请在 IMSLP 查看",
+          imslpFull: "在 IMSLP 查看完整版",
+          libraryFull: "出版社 / 图书馆",
+          imageAlt: "乐谱第一页预览",
+        };
+    let lastFocus: HTMLElement | null = null;
+
+    function closeModal(): void {
+      if (!modal || !modal.open) return;
+      modal.close();
+    }
+
+    function openModal(button: HTMLButtonElement): void {
+      if (!modal) return;
+      const title = button.dataset.title ?? "";
+      const composer = button.dataset.composer ?? "";
+      const levelText = button.dataset.level ?? "";
+      const focusText = button.dataset.focus ?? "";
+      const tip = button.dataset.tip ?? "";
+      const preview = button.dataset.preview ?? "";
+      const source = button.dataset.source ?? "IMSLP";
+      if (modalTitle) modalTitle.textContent = title;
+      if (modalKicker) modalKicker.textContent = `${levelText} · ${focusText}`;
+      if (modalMeta) modalMeta.textContent = composer;
+      if (modalTip) modalTip.textContent = tip;
+      if (modalExternal) {
+        modalExternal.href = button.dataset.url ?? "#";
+        modalExternal.textContent = source === "IMSLP" ? labels.imslpFull : labels.libraryFull;
+      }
+      if (modalImage && modalPlaceholder && modalPreviewNote) {
+        if (preview) {
+          modalImage.onerror = () => {
+            modalImage.hidden = true;
+            modalPlaceholder.hidden = false;
+            modalPreviewNote.hidden = true;
+          };
+          modalImage.src = preview;
+          modalImage.alt = `${title} — ${labels.imageAlt}`;
+          modalImage.hidden = false;
+          modalPlaceholder.hidden = true;
+          modalPreviewNote.hidden = false;
+        } else {
+          modalImage.hidden = true;
+          modalImage.removeAttribute("src");
+          modalPlaceholder.hidden = false;
+          modalPreviewNote.hidden = true;
+          if (modalPlaceholderText) modalPlaceholderText.textContent = source === "IMSLP" ? labels.noPreviewImslp : labels.noPreviewLibrary;
+        }
+      }
+      lastFocus = button;
+      if (!modal.open) modal.showModal();
+      document.body.classList.add("score-modal-open");
+      modal.querySelector<HTMLButtonElement>("[data-score-close]")?.focus();
+    }
+
+    root.querySelectorAll<HTMLButtonElement>("[data-score-open]").forEach((button) => {
+      button.addEventListener("click", () => openModal(button));
+    });
+    root.querySelectorAll<HTMLElement>("[data-score-close]").forEach((button) => {
+      button.addEventListener("click", closeModal);
+    });
+    modal?.addEventListener("close", () => {
+      document.body.classList.remove("score-modal-open");
+      lastFocus?.focus();
+    });
+    modal?.addEventListener("click", (event) => {
+      if (event.target === modal) modal.close();
     });
 
     apply();
@@ -485,20 +656,23 @@ const focusKeys = Object.keys(focusLabels) as ScoreFocus[];
     color: var(--ink);
   }
 
-  .score-link {
+  .score-open {
     display: inline-flex;
     align-items: center;
     gap: 3px;
     width: fit-content;
     margin-top: auto;
-    padding-top: 9px;
+    padding: 9px 0 0;
     color: var(--violet-700);
+    border: 0;
+    background: transparent;
     font-size: 8.5px;
     font-weight: 850;
     text-decoration: none;
+    cursor: pointer;
   }
 
-  .score-link:hover {
+  .score-open:hover {
     color: var(--violet-800);
   }
 
@@ -529,6 +703,183 @@ const focusKeys = Object.keys(focusLabels) as ScoreFocus[];
     color: var(--violet-700);
   }
 
+  .score-modal {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 18px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+  }
+
+  .score-modal[open] {
+    display: grid;
+    place-items: center;
+  }
+
+  .score-modal::backdrop {
+    background: rgba(8, 5, 20, 0.76);
+    backdrop-filter: blur(4px);
+  }
+
+  .score-modal-panel {
+    position: relative;
+    z-index: 1;
+    width: min(920px, 100%);
+    max-height: 92vh;
+    overflow: auto;
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--surface);
+    box-shadow: 0 24px 80px rgba(8, 5, 20, 0.4);
+  }
+
+  .score-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .score-modal-kicker {
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .score-modal-close {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--surface-2);
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .score-modal-close:hover {
+    color: var(--ink);
+    border-color: var(--line-strong);
+  }
+
+  .score-modal-panel h2 {
+    margin: 7px 0 2px;
+    color: var(--ink);
+    font-size: clamp(22px, 3vw, 30px);
+    line-height: 1.2;
+  }
+
+  .score-modal-meta {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .score-modal-stage {
+    display: grid;
+    place-items: center;
+    min-height: 280px;
+    max-height: 58vh;
+    margin-top: 14px;
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #f7f1e7;
+  }
+
+  .score-modal-stage img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+    background: #fff;
+  }
+
+  .score-modal-placeholder {
+    display: grid;
+    place-items: center;
+    gap: 10px;
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .score-placeholder-sheet {
+    width: min(100%, 540px);
+    padding: 14px 16px 8px;
+    color: #5b3fd4;
+    border: 1px solid #e3d5bf;
+    border-radius: 8px;
+    background: #fffdf7;
+    box-shadow: 0 8px 24px rgba(60, 40, 20, 0.08);
+  }
+
+  .score-placeholder-label {
+    display: block;
+    color: #6f5328;
+    font-family: var(--font-mono);
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .score-placeholder-sheet svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: 4px;
+  }
+
+  .score-modal-placeholder .icon {
+    color: var(--violet-500);
+  }
+
+  .score-modal-placeholder p {
+    max-width: 480px;
+    margin: 0;
+    color: #5c4a3a;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .score-modal-preview-note {
+    margin: 8px 0 0;
+    color: var(--faint);
+    font-size: 8.5px;
+  }
+
+  .score-modal-tip {
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--surface-2);
+    color: var(--ink-soft);
+    font-size: 10px;
+    line-height: 1.6;
+  }
+
+  .score-modal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  :global(body.score-modal-open) {
+    overflow: hidden;
+  }
+
   html[data-theme="night"] .score-price.is-free {
     color: var(--mint-500);
   }
@@ -548,6 +899,23 @@ const focusKeys = Object.keys(focusLabels) as ScoreFocus[];
   @media (max-width: 560px) {
     .score-grid {
       grid-template-columns: 1fr;
+    }
+
+    .score-modal {
+      padding: 10px;
+    }
+
+    .score-modal-panel {
+      padding: 15px;
+      border-radius: 15px;
+    }
+
+    .score-modal-stage {
+      max-height: 52vh;
+    }
+
+    .score-modal-placeholder {
+      padding: 34px 16px;
     }
 
     .score-filter-label {

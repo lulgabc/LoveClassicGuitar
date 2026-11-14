@@ -1,4 +1,6 @@
 import { REPERTOIRE, type RepertoireEra, type RepertoirePiece } from "./repertoire";
+import { SCORE_PAGE_URLS } from "./score-pages";
+import { SCORE_PREVIEWS } from "./score-previews";
 
 export type ScoreLevel = 1 | 2 | 3 | 4 | 5;
 export type ScoreFocus = "right" | "left" | "reading" | "rhythm" | "tone" | "phrasing" | "ensemble";
@@ -15,6 +17,7 @@ export type ScoreEntry = {
   free: boolean;
   source: ScoreSource;
   url: string;
+  previewUrl?: string;
   tipZh: string;
   tipFr: string;
 };
@@ -112,6 +115,10 @@ const MODERN_COMPOSERS = new Set([
   "Manuel de Falla",
   "Aureo Puerta Carreño",
   "Stanley Myers",
+  "Sérgio Assad",
+  "Andrew York",
+  "Paulo Bellinati",
+  "Egberto Gismonti",
 ]);
 
 const TIPS: Record<ScoreFocus, { zh: string; fr: string }> = {
@@ -198,9 +205,8 @@ function scoreFocus(piece: RepertoirePiece): ScoreFocus {
 
 function scoreUrl(piece: RepertoirePiece, modern: boolean): string {
   const query = encodeURIComponent(`${piece.title} ${piece.composer}`);
-  return modern
-    ? `https://search.worldcat.org/search?q=${query}`
-    : `https://imslp.org/wiki/Special:Search?search=${query}`;
+  if (modern) return `https://search.worldcat.org/search?q=${query}`;
+  return SCORE_PAGE_URLS[piece.id] ?? `https://imslp.org/index.php?title=Special:Search&search=${query}`;
 }
 
 export const SCORES: ScoreEntry[] = REPERTOIRE.map((piece) => {
@@ -217,6 +223,7 @@ export const SCORES: ScoreEntry[] = REPERTOIRE.map((piece) => {
     free: !modern,
     source: modern ? "Library" : "IMSLP",
     url: scoreUrl(piece, modern),
+    previewUrl: SCORE_PREVIEWS[piece.id],
     tipZh: TIPS[focus].zh,
     tipFr: TIPS[focus].fr,
   };
