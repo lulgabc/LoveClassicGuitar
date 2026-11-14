@@ -32,7 +32,7 @@ const sources = [
 
 <BaseLayout
   title="乐谱库"
-  description="给孩子的古典吉他乐谱库：200 首完整 MusicXML 乐谱，按 5 个难度级别整理，站内直接渲染、缩放和下载，附练习重点与来源说明。"
+  description="给孩子的古典吉他乐谱库：200 首完整 MusicXML 乐谱，按 5 个难度级别整理，站内可在五线谱和简谱之间切换、缩放和下载，附练习重点与来源说明。"
 >
   <PageHero
     kicker="Partitions · 200 首"
@@ -43,6 +43,7 @@ const sources = [
       <span><Icon name="book" size={12} /> 200 首</span>
       <span><Icon name="map" size={12} /> 5 个级别</span>
       <span><Icon name="shield" size={12} /> 不托管 PDF</span>
+      <span><Icon name="music" size={12} /> 五线谱 / 简谱</span>
       <span><Icon name="printer" size={12} /> 可打印练习卡</span>
     </div>
   </PageHero>
@@ -75,7 +76,7 @@ const sources = [
       <SectionHead
         kicker="200 首练习乐谱"
         title="按难度和<em>练习重点</em>找一首"
-        lead="全部 200 首都能在站内打开完整乐谱，用 OpenSheetMusicDisplay 渲染 MusicXML。按级别和练习重点筛选，再点“查看完整乐谱”。"
+        lead="全部 200 首都能在站内打开完整乐谱，并在五线谱和简谱之间切换。按级别和练习重点筛选，再点“查看完整乐谱”。"
       />
       <FullScoreLibrary scores={SCORE_LIBRARY} lang="zh" />
     </div>

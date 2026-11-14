@@ -59,6 +59,12 @@ const t = isFr
       tip: "Conseil",
       note: "Les 200 partitions viennent des arrangements GuitarLoot, utilisés avec sa permission de réutilisation avec attribution. Le site héberge les fichiers MusicXML et les rend avec OpenSheetMusicDisplay.",
       scoreArea: "Partition rendue",
+      staff: "Portée",
+      jianpu: "Jianpu",
+      viewLabel: "Choisir le type de partition",
+      jianpuLoading: "Conversion du jianpu…",
+      jianpuError: "Échec de la conversion jianpu. Regarde la portée ou télécharge le MusicXML.",
+      lineLabel: (start: number, end: number) => `Mesures ${start}–${end}`,
     }
   : {
       searchPlaceholder: "搜曲名、作曲家或练习重点…",
@@ -80,6 +86,12 @@ const t = isFr
       tip: "练习提示",
       note: "200 首乐谱来自 GuitarLoot 的许可编配，按来源署名要求使用。本站托管 MusicXML 文件，并用 OpenSheetMusicDisplay 在页面内渲染。",
       scoreArea: "乐谱渲染区域",
+      staff: "五线谱",
+      jianpu: "简谱",
+      viewLabel: "选择乐谱显示方式",
+      jianpuLoading: "正在转换简谱…",
+      jianpuError: "简谱转换失败。可以先看五线谱，或下载 MusicXML。",
+      lineLabel: (start: number, end: number) => `第 ${start}–${end} 小节`,
     };
 
 const step = 24;
@@ -170,13 +182,20 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
       <h2 id="full-score-modal-title" data-score-modal-title></h2>
       <p class="full-score-meta" data-score-modal-meta></p>
       <div class="full-score-toolbar">
-        <button type="button" data-score-zoom-out aria-label={t.zoomOut}>−</button>
-        <button type="button" data-score-zoom-in aria-label={t.zoomIn}>+</button>
+        <div class="score-view-switch" role="group" aria-label={t.viewLabel}>
+          <button type="button" class="is-active" data-score-view="staff" aria-pressed="true">{t.staff}</button>
+          <button type="button" data-score-view="jianpu" aria-pressed="false">{t.jianpu}</button>
+        </div>
+        <button type="button" data-score-zoom-out data-staff-control aria-label={t.zoomOut}>−</button>
+        <button type="button" data-score-zoom-in data-staff-control aria-label={t.zoomIn}>+</button>
         <a data-score-source-link target="_blank" rel="noopener noreferrer">{t.source} <Icon name="external" size={11} /></a>
         <a data-score-download download>{t.download}</a>
       </div>
-      <div class="full-score-stage" role="region" tabindex="0" aria-label={t.scoreArea}>
+      <div class="full-score-stage" data-staff-stage role="region" tabindex="0" aria-label={t.scoreArea}>
         <div class="full-score-render" data-score-render></div>
+      </div>
+      <div class="full-score-stage jianpu-stage" data-jianpu-stage role="region" tabindex="0" aria-label={t.jianpu} hidden>
+        <div class="jianpu-lines" data-jianpu-render></div>
       </div>
       <p class="full-score-tip" data-score-modal-tip></p>
       <div class="full-score-actions">
@@ -207,6 +226,11 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     const modalMeta = root.querySelector<HTMLElement>("[data-score-modal-meta]");
     const modalTip = root.querySelector<HTMLElement>("[data-score-modal-tip]");
     const renderEl = root.querySelector<HTMLElement>("[data-score-render]");
+    const staffStage = root.querySelector<HTMLElement>("[data-staff-stage]");
+    const jianpuStage = root.querySelector<HTMLElement>("[data-jianpu-stage]");
+    const jianpuRender = root.querySelector<HTMLElement>("[data-jianpu-render]");
+    const viewButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-score-view]"));
+    const staffControls = Array.from(root.querySelectorAll<HTMLElement>("[data-staff-control]"));
     const sourceLink = root.querySelector<HTMLAnchorElement>("[data-score-source-link]");
     const downloadLink = root.querySelector<HTMLAnchorElement>("[data-score-download]");
     const zoomIn = root.querySelector<HTMLButtonElement>("[data-score-zoom-in]");
@@ -220,15 +244,27 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     let lastFocus: HTMLElement | null = null;
     let osmd: any = null;
     let osmdCtor: any = null;
+    let jianpuCtor: any = null;
+    let jszipCtor: any = null;
+    let currentFile = "";
+    let currentXml = "";
+    let currentXmlFile = "";
+    let jianpuRenderers: any[] = [];
 
     const labels = isFr
       ? {
           loading: "Rendu de la partition…",
           error: "Le rendu a échoué. Télécharge le MusicXML et ouvre-le dans MuseScore.",
+          jianpuLoading: "Conversion du jianpu…",
+          jianpuError: "Échec de la conversion jianpu. Regarde la portée ou télécharge le MusicXML.",
+          lineLabel: (start: number, end: number) => `Mesures ${start}–${end}`,
         }
       : {
           loading: "正在渲染乐谱…",
           error: "乐谱渲染失败。可以下载 MusicXML，用 MuseScore 打开。",
+          jianpuLoading: "正在转换简谱…",
+          jianpuError: "简谱转换失败。可以先看五线谱，或下载 MusicXML。",
+          lineLabel: (start: number, end: number) => `第 ${start}–${end} 小节`,
         };
 
     const countLabel = (shown: number, total: number) => isFr ? `${shown} / ${total} partitions` : `显示 ${shown} / ${total} 首`;
@@ -303,6 +339,113 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
       }
     }
 
+    function clearJianpu(): void {
+      jianpuRenderers.forEach((renderer) => {
+        try {
+          renderer.destroy();
+        } catch {
+          // ignore a renderer that was already destroyed
+        }
+      });
+      jianpuRenderers = [];
+      if (jianpuRender) jianpuRender.innerHTML = "";
+    }
+
+    async function getXml(file: string): Promise<string> {
+      if (currentXml && currentXmlFile === file) return currentXml;
+      const response = await fetch(`${base}scores/${file}`);
+      if (!response.ok) throw new Error("score fetch failed");
+      const buffer = await response.arrayBuffer();
+      if (!jszipCtor) {
+        const module = await import("jszip");
+        jszipCtor = module.default ?? module;
+      }
+      const zip = await jszipCtor.loadAsync(buffer);
+      const containerFile = zip.file("META-INF/container.xml");
+      if (containerFile) {
+        const containerXml = await containerFile.async("string");
+        const match = containerXml.match(/full-path="([^"]+)"/);
+        const scoreFile = match?.[1] ? zip.file(match[1]) : null;
+        if (scoreFile) {
+          const xml = await scoreFile.async("string");
+          currentXml = xml;
+          currentXmlFile = file;
+          return xml;
+        }
+      }
+      const name = Object.keys(zip.files).find(
+        (entry) => /\.(xml|musicxml)$/i.test(entry) && !entry.startsWith("META-INF/"),
+      );
+      if (!name) throw new Error("musicxml missing");
+      const xml = await zip.file(name)!.async("string");
+      currentXml = xml;
+      currentXmlFile = file;
+      return xml;
+    }
+
+    async function renderJianpu(file: string): Promise<void> {
+      if (!jianpuRender || !file) return;
+      jianpuRender.innerHTML = `<p class="score-loading">${labels.jianpuLoading}</p>`;
+      try {
+        const [xml, jianpuModule] = await Promise.all([
+          getXml(file),
+          jianpuCtor ? Promise.resolve({ JianpuSVGRender: jianpuCtor }) : import("jianpurender"),
+        ]);
+        jianpuCtor = jianpuModule.JianpuSVGRender;
+        const { buildJianpuLines, parseMusicXml } = await import("../lib/jianpu");
+        const measures = parseMusicXml(xml);
+        const perLine = window.innerWidth < 640 ? 2 : 4;
+        const lines = buildJianpuLines(measures, perLine);
+        if (!lines.length) throw new Error("empty jianpu");
+        clearJianpu();
+        lines.forEach((line, index) => {
+          const section = document.createElement("section");
+          section.className = "jianpu-line";
+          const label = document.createElement("p");
+          label.className = "jianpu-line-label";
+          label.textContent = labels.lineLabel(line.startMeasure, line.endMeasure);
+          const holder = document.createElement("div");
+          holder.className = "jianpu-line-svg";
+          section.append(label, holder);
+          jianpuRender.appendChild(section);
+          const renderer = new jianpuCtor(
+            {
+              notes: line.notes,
+              keySignatures: line.keySignatures,
+              timeSignatures: line.timeSignatures,
+              tempos: line.tempos,
+            },
+            {
+              noteHeight: window.innerWidth < 640 ? 22 : 26,
+              showBarNumbers: false,
+              showTempoMarking: index === 0,
+              noteSpacingFactor: 1.25,
+              noteColor: "#1b1247",
+              fontFamily: "sans-serif",
+            },
+            holder,
+          );
+          jianpuRenderers.push(renderer);
+        });
+      } catch (error) {
+        jianpuRender.innerHTML = `<p class="score-error">${labels.jianpuError}</p>`;
+      }
+    }
+
+    function setView(view: "staff" | "jianpu"): void {
+      viewButtons.forEach((button) => {
+        const active = button.dataset.scoreView === view;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      staffControls.forEach((control) => {
+        control.hidden = view !== "staff";
+      });
+      if (staffStage) staffStage.hidden = view !== "staff";
+      if (jianpuStage) jianpuStage.hidden = view !== "jianpu";
+      if (view === "jianpu" && currentFile) void renderJianpu(currentFile);
+    }
+
     function openModal(button: HTMLButtonElement): void {
       if (!modal) return;
       if (modalTitle) modalTitle.textContent = button.dataset.title ?? "";
@@ -314,11 +457,16 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
         downloadLink.href = `${base}scores/${button.dataset.file ?? ""}`;
         downloadLink.setAttribute("download", button.dataset.file ?? "score.mxl");
       }
+      currentFile = button.dataset.file ?? "";
+      currentXml = "";
+      currentXmlFile = "";
+      clearJianpu();
+      setView("staff");
       lastFocus = button;
       if (!modal.open) modal.showModal();
       document.body.classList.add("score-modal-open");
       modal.querySelector<HTMLButtonElement>("[data-score-close]")?.focus();
-      void renderScore(button.dataset.file ?? "");
+      void renderScore(currentFile);
     }
 
     function closeModal(): void {
@@ -333,10 +481,17 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     });
     modal?.addEventListener("close", () => {
       document.body.classList.remove("score-modal-open");
+      clearJianpu();
       lastFocus?.focus();
     });
     modal?.addEventListener("click", (event) => {
       if (event.target === modal) modal.close();
+    });
+
+    viewButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setView(button.dataset.scoreView === "jianpu" ? "jianpu" : "staff");
+      });
     });
 
     zoomIn?.addEventListener("click", () => {
@@ -595,6 +750,45 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     color: var(--violet-700);
   }
 
+  .full-score-stage[hidden] {
+    display: none;
+  }
+
+  .jianpu-stage {
+    background: #fffdf8;
+  }
+
+  .jianpu-lines {
+    padding: 12px 14px;
+  }
+
+  :global(.jianpu-line) {
+    margin-bottom: 16px;
+  }
+
+  :global(.jianpu-line:last-child) {
+    margin-bottom: 0;
+  }
+
+  :global(.jianpu-line-label) {
+    margin: 0 0 4px;
+    color: #7a5a2e;
+    font-family: var(--font-mono);
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+  }
+
+  :global(.jianpu-line-svg) {
+    overflow-x: auto;
+  }
+
+  :global(.jianpu-line-svg svg) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
   .full-score-modal {
     width: 100%;
     max-width: none;
@@ -681,6 +875,31 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     flex-wrap: wrap;
     gap: 5px;
     margin-top: 12px;
+  }
+
+  .score-view-switch {
+    display: inline-flex;
+    gap: 2px;
+    padding: 2px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface-2);
+  }
+
+  .score-view-switch button {
+    min-height: 26px;
+    padding: 3px 9px;
+    color: var(--muted);
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    font-size: 8.5px;
+    font-weight: 800;
+  }
+
+  .score-view-switch button.is-active {
+    color: #fff;
+    background: #5b3fd4;
   }
 
   .full-score-toolbar button,
