@@ -48,7 +48,7 @@ const t = isFr
       count: (shown: number, total: number) => `${shown} / ${total} partitions`,
       more: (step: number) => `Afficher ${step} partitions de plus`,
       empty: "Aucune partition trouvée. Essaie un mot plus court ou enlève un filtre.",
-      open: "Voir la partition complète",
+      open: "Voir la partition",
       close: "Fermer",
       loading: "Rendu de la partition…",
       error: "Le rendu a échoué. Télécharge le MusicXML et ouvre-le dans MuseScore.",
@@ -56,7 +56,6 @@ const t = isFr
       zoomOut: "Réduire",
       source: "Source",
       download: "Télécharger le MusicXML",
-      tip: "Conseil",
       note: "Les 200 partitions viennent des arrangements GuitarLoot, utilisés avec sa permission de réutilisation avec attribution. Le site héberge les fichiers MusicXML et les rend avec OpenSheetMusicDisplay.",
       scoreArea: "Partition rendue",
       staff: "Portée",
@@ -76,7 +75,7 @@ const t = isFr
       count: (shown: number, total: number) => `显示 ${shown} / ${total} 首`,
       more: (step: number) => `再看 ${step} 首`,
       empty: "没有找到。换个短一点的词，或者去掉一个筛选条件。",
-      open: "查看完整乐谱",
+      open: "看乐谱",
       close: "关闭",
       loading: "正在渲染乐谱…",
       error: "乐谱渲染失败。可以下载 MusicXML，用 MuseScore 打开。",
@@ -84,7 +83,6 @@ const t = isFr
       zoomOut: "缩小",
       source: "来源",
       download: "下载 MusicXML",
-      tip: "练习提示",
       note: "200 首乐谱来自 GuitarLoot 的许可编配，按来源署名要求使用。本站托管 MusicXML 文件，并用 OpenSheetMusicDisplay 在页面内渲染。",
       scoreArea: "乐谱渲染区域",
       staff: "五线谱",
@@ -96,7 +94,7 @@ const t = isFr
       lineLabel: (start: number, end: number) => `第 ${start}–${end} 小节`,
     };
 
-const step = 24;
+const step = 12;
 const focusKeys = Object.keys(focusLabels) as ScoreLibraryFocus[];
 const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => score.level === level).length);
 ---
@@ -140,15 +138,10 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
         >
           <div class="score-top">
             <span class="score-level">{score.level} · {levelLabels[score.level]}</span>
-            <span class="score-grade">G{score.grade}</span>
+            <span class="score-focus">{focusLabels[score.focus]}</span>
           </div>
           <h3>{score.title}</h3>
           <p class="score-composer">{score.composer}</p>
-          <div class="score-meta">
-            <span class="score-focus">{focusLabels[score.focus]}</span>
-            <span class="score-era">{eraLabels[score.era] ?? score.era}</span>
-          </div>
-          <p class="score-tip"><strong>{t.tip}:</strong> {isFr ? score.tipFr : score.tipZh}</p>
           <button
             type="button"
             class="score-open"
@@ -162,7 +155,7 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
             data-source={score.source}
             data-source-url={score.sourceUrl}
           >
-            <Icon name="book" size={11} /> {t.open}
+            <Icon name="book" size={15} /> {t.open}
           </button>
         </article>
       ))
@@ -549,7 +542,7 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     border: 0;
     outline: 0;
     background: transparent;
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .score-search input::placeholder {
@@ -560,14 +553,14 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     margin-left: auto;
     color: var(--faint);
     font-family: var(--font-mono);
-    font-size: 8.5px;
+    font-size: 11px;
     white-space: nowrap;
   }
 
   .score-filters {
     display: grid;
-    gap: 6px;
-    margin-bottom: 14px;
+    gap: 8px;
+    margin-bottom: 16px;
   }
 
   .score-filter-row {
@@ -581,18 +574,18 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     flex: 0 0 54px;
     color: var(--violet-700);
     font-family: var(--font-mono);
-    font-size: 8px;
+    font-size: 11px;
     font-weight: 800;
   }
 
   .score-chip {
-    min-height: 28px;
-    padding: 4px 8px;
+    min-height: 34px;
+    padding: 6px 11px;
     color: var(--muted);
     border: 1px solid var(--line);
     border-radius: 999px;
     background: var(--surface);
-    font-size: 8.5px;
+    font-size: 11px;
     font-weight: 750;
     white-space: nowrap;
   }
@@ -605,16 +598,16 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
 
   .score-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
   }
 
   .score-card {
     display: flex;
     flex-direction: column;
     min-width: 0;
-    min-height: 230px;
-    padding: 14px;
+    min-height: 190px;
+    padding: 18px;
     border-top: 3px solid var(--score-accent, var(--violet-500));
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 30%), var(--surface);
     transition: transform 180ms var(--ease), border-color 180ms ease;
@@ -638,92 +631,74 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 5px;
+    gap: 8px;
   }
 
   .score-level {
-    color: var(--ink-soft);
-    font-family: var(--font-mono);
-    font-size: 7.5px;
-    font-weight: 800;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-  }
-
-  .score-grade {
     flex: 0 0 auto;
-    padding: 2px 5px;
+    padding: 4px 9px;
     border-radius: 999px;
-    color: var(--muted);
-    background: var(--surface-2);
-    font-family: var(--font-mono);
-    font-size: 7px;
-    font-weight: 700;
-  }
-
-  .score-card h3 {
-    margin: 8px 0 1px;
     color: var(--ink);
-    font-size: 14px;
+    background: color-mix(in srgb, var(--score-accent, var(--violet-500)) 16%, var(--surface));
+    font-size: 11px;
+    font-weight: 800;
     line-height: 1.35;
   }
 
+  .score-card h3 {
+    margin: 12px 0 2px;
+    color: var(--ink);
+    font-size: 19px;
+    line-height: 1.3;
+  }
+
   .score-composer {
-    margin: 3px 0 0;
+    margin: 2px 0 0;
     color: var(--muted);
-    font-size: 8.5px;
+    font-size: 12.5px;
     line-height: 1.5;
   }
 
-  .score-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-top: 7px;
-  }
-
-  .score-focus,
-  .score-era {
-    padding: 2px 5px;
-    border-radius: 999px;
-    background: var(--surface-2);
-    color: var(--muted);
-    font-size: 7px;
-    font-weight: 700;
-  }
-
   .score-focus {
+    flex: 0 0 auto;
+    margin-left: auto;
+    padding: 4px 9px;
+    border-radius: 999px;
     color: var(--violet-700);
-  }
-
-  .score-tip {
-    margin: 8px 0 0;
-    color: var(--ink-soft);
-    font-size: 8.5px;
-    line-height: 1.55;
-  }
-
-  .score-tip strong {
-    color: var(--ink);
+    background: var(--violet-wash);
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.35;
   }
 
   .score-open {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 3px;
-    width: fit-content;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    min-height: 40px;
     margin-top: auto;
-    padding: 9px 0 0;
+    padding: 9px 12px;
     color: var(--violet-700);
-    border: 0;
-    background: transparent;
-    font-size: 8.5px;
+    border: 1.5px solid color-mix(in srgb, var(--violet-500) 26%, var(--line));
+    border-radius: 999px;
+    background: var(--violet-wash);
+    font-size: 13px;
     font-weight: 850;
     cursor: pointer;
+    transition: background 160ms ease, border-color 160ms ease;
   }
 
   .score-open:hover {
     color: var(--violet-800);
+    border-color: var(--violet-500);
+    background: var(--violet-wash-2);
+  }
+
+  .score-open:focus-visible {
+    outline: 3px solid var(--sun-500);
+    outline-offset: 2px;
   }
 
   .score-empty {
@@ -744,8 +719,8 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     gap: 5px;
     margin: 12px 0 0;
     color: var(--faint);
-    font-size: 8px;
-    line-height: 1.55;
+    font-size: 10px;
+    line-height: 1.6;
   }
 
   .score-note .icon {
@@ -990,13 +965,7 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     overflow: hidden;
   }
 
-  @media (max-width: 1100px) {
-    .score-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  @media (max-width: 850px) {
+  @media (max-width: 900px) {
     .score-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -1005,6 +974,20 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
   @media (max-width: 560px) {
     .score-grid {
       grid-template-columns: 1fr;
+    }
+
+    .score-card {
+      min-height: 0;
+      padding: 16px;
+    }
+
+    .score-card h3 {
+      font-size: 18px;
+    }
+
+    .score-level,
+    .score-focus {
+      font-size: 10.5px;
     }
 
     .score-filter-label {

@@ -43,11 +43,10 @@ const t = isFr
       count: (shown: number, total: number) => `${shown} / ${total} pièces`,
       more: (step: number) => `Afficher ${step} pièces de plus`,
       empty: "Aucune pièce trouvée. Essaie un mot plus court ou enlève un filtre.",
-      play: "Écouter dans le lecteur",
+      play: "Écouter",
       search: "Chercher sur YouTube",
-      watch: "Voir sur YouTube",
+      watch: "Écouter",
       note: "18 pièces sont jouables directement dans le lecteur ci-dessus. Les autres ouvrent la vidéo correspondante sur YouTube. Les vignettes viennent de ces vidéos ; leur disponibilité change selon les pays et les droits.",
-      original: "Titre original",
     }
   : {
       searchPlaceholder: "搜曲名或作曲家…",
@@ -59,16 +58,15 @@ const t = isFr
       count: (shown: number, total: number) => `显示 ${shown} / ${total} 首`,
       more: (step: number) => `再看 ${step} 首`,
       empty: "没有找到。换个短一点的词，或者去掉一个筛选条件。",
-      play: "在播放器中听",
+      play: "播放",
       search: "在 YouTube 找",
-      watch: "在 YouTube 看",
+      watch: "去听",
       note: "18 首可以在上面的播放器里直接听；其余曲目一键去 YouTube 看对应视频。封面来自这些视频，视频是否可嵌入由平台和版权方决定。",
-      original: "原文曲名",
     };
 
 const youtubeSearch = (piece: RepertoirePiece): string =>
   `https://www.youtube.com/results?search_query=${encodeURIComponent(`${piece.title} ${piece.composer} classical guitar`)}`;
-const step = 24;
+const step = 12;
 ---
 
 <div class="repertoire" data-repertoire data-lang={lang} data-step={step}>
@@ -122,7 +120,6 @@ const step = 24;
               <span class:list={["rep-level", `is-${piece.level}`]}>{levelLabels[piece.level]}</span>
             </div>
             <h3>{isFr ? piece.title : piece.titleZh ?? piece.title}</h3>
-            {!isFr && piece.titleZh && <p class="rep-original">{piece.title}</p>}
             <p class="rep-composer">{piece.composer}</p>
             <div class="rep-actions">
               {piece.videoId ? (
@@ -297,7 +294,7 @@ const step = 24;
     border: 0;
     outline: 0;
     background: transparent;
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .rep-search input::placeholder {
@@ -309,7 +306,7 @@ const step = 24;
     align-items: center;
     gap: 6px;
     color: var(--muted);
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
     cursor: pointer;
   }
@@ -358,14 +355,14 @@ const step = 24;
     margin-left: auto;
     color: var(--faint);
     font-family: var(--font-mono);
-    font-size: 8.5px;
+    font-size: 11px;
     white-space: nowrap;
   }
 
   .rep-filters {
     display: grid;
-    gap: 6px;
-    margin-bottom: 14px;
+    gap: 8px;
+    margin-bottom: 16px;
   }
 
   .rep-filter-row {
@@ -379,18 +376,18 @@ const step = 24;
     flex: 0 0 34px;
     color: var(--violet-700);
     font-family: var(--font-mono);
-    font-size: 8px;
+    font-size: 11px;
     font-weight: 800;
   }
 
   .rep-chip {
-    min-height: 28px;
-    padding: 4px 8px;
+    min-height: 34px;
+    padding: 6px 11px;
     color: var(--muted);
     border: 1px solid var(--line);
     border-radius: 999px;
     background: var(--surface);
-    font-size: 8.5px;
+    font-size: 11px;
     font-weight: 750;
   }
 
@@ -402,8 +399,8 @@ const step = 24;
 
   .rep-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
   }
 
   .rep-card {
@@ -411,8 +408,8 @@ const step = 24;
     display: flex;
     flex-direction: column;
     min-width: 0;
-    min-height: 190px;
-    padding: 14px;
+    min-height: 200px;
+    padding: 18px;
     overflow: hidden;
     background: var(--surface);
     transition: transform 180ms var(--ease), border-color 180ms ease;
@@ -474,24 +471,23 @@ const step = 24;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 5px;
+    gap: 8px;
   }
 
   .rep-era {
     color: var(--violet-700);
-    font-family: var(--font-mono);
-    font-size: 7px;
+    font-size: 10.5px;
     font-weight: 800;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
+    line-height: 1.35;
   }
 
   .rep-level {
     flex: 0 0 auto;
-    padding: 2px 5px;
+    padding: 3px 8px;
     border-radius: 999px;
-    font-size: 7px;
+    font-size: 10.5px;
     font-weight: 800;
+    line-height: 1.35;
   }
 
   .rep-level.is-beginner {
@@ -510,60 +506,67 @@ const step = 24;
   }
 
   .rep-card h3 {
-    margin: 7px 0 1px;
+    margin: 10px 0 2px;
     color: var(--ink);
-    font-size: 13.5px;
-    line-height: 1.35;
-  }
-
-  .rep-original {
-    margin: 0;
-    color: var(--faint);
-    font-size: 7.5px;
-    font-style: italic;
-    line-height: 1.4;
+    font-size: 19px;
+    line-height: 1.3;
   }
 
   .rep-composer {
-    margin: 3px 0 0;
+    margin: 2px 0 0;
     color: var(--muted);
-    font-size: 8.5px;
+    font-size: 12.5px;
     line-height: 1.5;
   }
 
   .rep-actions {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     margin-top: auto;
-    padding-top: 9px;
+    padding-top: 14px;
   }
 
   .rep-play,
   .rep-link {
     display: inline-flex;
     align-items: center;
-    gap: 3px;
-    color: var(--violet-700);
-    font-size: 8px;
+    justify-content: center;
+    gap: 5px;
+    min-height: 36px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 12.5px;
     font-weight: 850;
     line-height: 1.4;
     text-decoration: none;
   }
 
   .rep-play {
-    padding: 0;
-    border: 0;
-    background: transparent;
+    color: var(--violet-700);
+    border: 1.5px solid color-mix(in srgb, var(--violet-500) 26%, var(--line));
+    background: var(--violet-wash);
+  }
+
+  .rep-link {
+    min-width: 36px;
+    margin-left: auto;
+    color: var(--violet-700);
+    border: 1.5px solid var(--line);
+    background: var(--surface);
   }
 
   .rep-play:hover,
   .rep-link:hover {
     color: var(--violet-800);
+    border-color: var(--violet-500);
+    background: var(--violet-wash-2);
   }
 
-  .rep-link {
-    margin-left: auto;
+  .rep-play:focus-visible,
+  .rep-link:focus-visible {
+    outline: 3px solid var(--sun-500);
+    outline-offset: 2px;
   }
 
   .rep-empty {
@@ -584,8 +587,8 @@ const step = 24;
     gap: 5px;
     margin: 12px 0 0;
     color: var(--faint);
-    font-size: 8px;
-    line-height: 1.55;
+    font-size: 10.5px;
+    line-height: 1.6;
   }
 
   .rep-note .icon {
@@ -603,10 +606,6 @@ const step = 24;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.65);
   }
 
-  .rep-card.has-cover .rep-original {
-    color: rgba(255, 245, 230, 0.7);
-  }
-
   .rep-card.has-cover .rep-composer {
     color: rgba(255, 245, 230, 0.84);
     text-shadow: 0 1px 5px rgba(0, 0, 0, 0.55);
@@ -614,15 +613,21 @@ const step = 24;
 
   .rep-card.has-cover .rep-play {
     color: #ffd86f;
+    border-color: rgba(255, 216, 111, 0.45);
+    background: rgba(255, 255, 255, 0.14);
   }
 
   .rep-card.has-cover .rep-link {
-    color: #e8ddff;
+    color: #f4ecff;
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.12);
   }
 
   .rep-card.has-cover .rep-play:hover,
   .rep-card.has-cover .rep-link:hover {
     color: #fff;
+    border-color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.22);
   }
 
   .rep-card.has-cover .rep-level.is-beginner {
@@ -648,13 +653,7 @@ const step = 24;
     color: var(--coral-500);
   }
 
-  @media (max-width: 1100px) {
-    .rep-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  @media (max-width: 850px) {
+  @media (max-width: 900px) {
     .rep-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -663,6 +662,20 @@ const step = 24;
   @media (max-width: 560px) {
     .rep-grid {
       grid-template-columns: 1fr;
+    }
+
+    .rep-card {
+      min-height: 0;
+      padding: 16px;
+    }
+
+    .rep-card h3 {
+      font-size: 18px;
+    }
+
+    .rep-era,
+    .rep-level {
+      font-size: 10px;
     }
 
     .rep-filter-label {

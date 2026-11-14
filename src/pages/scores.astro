@@ -4,7 +4,7 @@ import PageHero from "../components/PageHero.astro";
 import SectionHead from "../components/SectionHead.astro";
 import FullScoreLibrary from "../components/FullScoreLibrary.astro";
 import Icon from "../components/Icon.astro";
-import { SCORE_LIBRARY, SCORE_LIBRARY_LEVELS } from "../data/score-library";
+import { SCORE_LIBRARY } from "../data/score-library";
 import { url } from "../lib/url";
 
 const levels = [
@@ -57,13 +57,12 @@ const sources = [
       />
       <div class="level-grid">
         {
-          levels.map((level, index) => (
+          levels.map((level) => (
             <article class="level-card card">
               <span class="level-number">{level.n}</span>
               <h3>{level.title}</h3>
               <p>{level.body}</p>
               <span class="level-check"><Icon name="check" size={11} /> {level.check}</span>
-              <span class="level-count">{SCORE_LIBRARY_LEVELS[index]?.count ?? 0} 首</span>
             </article>
           ))
         }
@@ -76,7 +75,7 @@ const sources = [
       <SectionHead
         kicker="200 首练习乐谱"
         title="按难度和<em>练习重点</em>找一首"
-        lead="全部 200 首都能在站内打开完整乐谱，并在五线谱和简谱之间切换。按级别和练习重点筛选，再点“查看完整乐谱”。"
+        lead="全部 200 首都能在站内打开完整乐谱，并在五线谱和简谱之间切换。按级别和练习重点筛选，再点“看乐谱”。"
       />
       <FullScoreLibrary scores={SCORE_LIBRARY} lang="zh" />
     </div>
@@ -162,7 +161,7 @@ const sources = [
   .level-grid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 8px;
+    gap: 10px;
   }
 
   .level-card {
@@ -170,7 +169,7 @@ const sources = [
     display: flex;
     flex-direction: column;
     min-height: 190px;
-    padding: 15px;
+    padding: 18px;
     overflow: hidden;
     background: var(--surface);
   }
@@ -178,45 +177,37 @@ const sources = [
   .level-number {
     color: var(--violet-700);
     font-family: var(--font-display);
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 900;
     line-height: 1;
   }
 
   .level-card h3 {
-    margin: 8px 0 4px;
+    margin: 10px 0 5px;
     color: var(--ink);
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .level-card > p {
     margin: 0;
     color: var(--muted);
-    font-size: 9.5px;
-    line-height: 1.6;
+    font-size: 11.5px;
+    line-height: 1.55;
   }
 
   .level-check {
     display: flex;
     align-items: flex-start;
-    gap: 4px;
-    margin-top: 9px;
+    gap: 5px;
+    margin-top: 10px;
     color: var(--ink-soft);
-    font-size: 8px;
+    font-size: 10.5px;
     line-height: 1.5;
   }
 
   .level-check .icon {
     margin-top: 1px;
     color: var(--mint-500);
-  }
-
-  .level-count {
-    margin-top: auto;
-    padding-top: 10px;
-    color: var(--faint);
-    font-family: var(--font-mono);
-    font-size: 8px;
   }
 
   .how-grid {
