@@ -3,15 +3,17 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHero from "../../components/PageHero.astro";
 import SectionHead from "../../components/SectionHead.astro";
 import Anatomy from "../../components/Anatomy.astro";
+import GuitarFamily from "../../components/GuitarFamily.astro";
 import StringBoard from "../../components/StringBoard.astro";
 import GlossaryExplorer from "../../components/GlossaryExplorer.astro";
 import BasicsQuiz from "../../components/BasicsQuiz.astro";
 import Icon from "../../components/Icon.astro";
-import { BASICS_QUIZ_FR, CARE_TIPS_FR, GLOSSARY_FR, GUITAR_PARTS_FR, GUITAR_STRINGS_FR, POSTURE_STEPS_FR, STRING_CHANT_FR, TIMELINE_FR } from "../../data/fr/basics";
+import { BASICS_QUIZ_FR, CARE_TIPS_FR, GLOSSARY_FR, GUITAR_PARTS_FR, GUITAR_STRINGS_FR, GUITAR_TYPES_FR, POSTURE_STEPS_FR, STRING_CHANT_FR, TIMELINE_FR } from "../../data/fr/basics";
 import { url } from "../../lib/url";
 
 const chapters = [
   { id: "anatomy", label: "La guitare" },
+  { id: "family", label: "La famille" },
   { id: "strings", label: "Les cordes" },
   { id: "posture", label: "La position" },
   { id: "hands", label: "Les mains" },
@@ -28,7 +30,7 @@ const rightHand = [
 
 ---
 
-<BaseLayout lang="fr" title="Découvrir la guitare" description="Les bases de la guitare classique pour les enfants : parties de l'instrument, cordes à vide, posture, mains, lecture, entretien et quiz interactif." bodyClass="basics-page">
+<BaseLayout lang="fr" title="Découvrir la guitare" description="Les bases de la guitare classique pour les enfants : famille des guitares, parties de l'instrument, cordes à vide, posture, mains, lecture, entretien et quiz interactif." bodyClass="basics-page">
   <PageHero
     kicker="Chapitre 01 · Les bases"
     title="D'abord, fais<br />connaissance avec <em>la guitare</em>."
@@ -54,19 +56,32 @@ const rightHand = [
       />
       <Anatomy parts={GUITAR_PARTS_FR} lang="fr" />
       <div class="row-note">
+        <a class="text-link" href="#family">La famille des guitares <Icon name="arrow-right" size={13} /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="family">
+    <div class="container">
+      <SectionHead
+        title="La guitare a <em>toute une famille</em>"
+        lead="La classique n'est pas la seule. Regarde leurs formes et écoute leurs voix."
+      />
+      <GuitarFamily types={GUITAR_TYPES_FR} lang="fr" />
+      <div class="row-note">
         <a class="text-link" href="#strings">Les six cordes <Icon name="arrow-right" size={13} /></a>
       </div>
     </div>
   </section>
 
-  <section class="section section-wash" id="strings">
+  <section class="section" id="strings">
     <div class="container">
       <SectionHead kicker="02 · Six cordes" title="Six voix à écouter" lead="Touche une corde pour entendre sa note de référence." />
       <StringBoard strings={GUITAR_STRINGS_FR} chant={STRING_CHANT_FR} lang="fr" />
     </div>
   </section>
 
-  <section class="section" id="posture">
+  <section class="section section-wash" id="posture">
     <div class="container">
       <SectionHead kicker="03 · Bien s'installer" title="La guitare contre soi, le corps détendu" lead="On vérifie six petits points, sans se raidir. La position doit aider la main, pas la bloquer." />
       <div class="posture-grid">
@@ -87,7 +102,7 @@ const rightHand = [
     </div>
   </section>
 
-  <section class="section section-wash" id="hands">
+  <section class="section" id="hands">
     <div class="container">
       <SectionHead kicker="04 · Deux mains" title="p, i, m, a : les quatre amis" lead="La main droite fait sonner les cordes, la main gauche choisit les notes." />
       <div class="hands-grid">
@@ -119,7 +134,7 @@ const rightHand = [
     </div>
   </section>
 
-  <section class="section" id="reading">
+  <section class="section section-wash" id="reading">
     <div class="container">
       <SectionHead kicker="05 · Lire la musique" title="Lire, c'est dessiner une carte" lead="La portée indique les hauteurs et le rythme. La tablature indique où poser les doigts." />
       <div class="reading-grid">
@@ -151,7 +166,7 @@ E |-----------|</pre>
     </div>
   </section>
 
-  <section class="section section-wash">
+  <section class="section">
     <div class="container two-folds">
       <details class="fold card">
         <summary><span><Icon name="shield" size={18} /> Prendre soin de la guitare</span><Icon name="chevron-down" size={16} /></summary>
@@ -166,14 +181,14 @@ E |-----------|</pre>
     </div>
   </section>
 
-  <section class="section" id="glossary">
+  <section class="section section-wash" id="glossary">
     <div class="container">
       <SectionHead kicker="06 · Mini-dictionnaire" title="Un mot inconnu ? Cherche ici" lead="Pas besoin d'apprendre par cœur. Un mot revient, puis devient familier." />
       <GlossaryExplorer entries={GLOSSARY_FR} categories={["Tous", "Guitare & mains", "Lecture", "Son", "Pratique"]} lang="fr" />
     </div>
   </section>
 
-  <section class="section section-wash" id="quiz">
+  <section class="section" id="quiz">
     <div class="container quiz-layout">
       <div>
         <SectionHead kicker="07 · Petit quiz" title="Détective de la musique" lead="Six questions, zéro pression. Une erreur explique simplement la réponse." />

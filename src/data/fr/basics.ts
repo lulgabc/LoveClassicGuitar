@@ -1,4 +1,4 @@
-import type { GuitarPart, GuitarString, PostureStep, QuizQuestion } from "../basics";
+import type { GuitarPart, GuitarString, GuitarType, PostureStep, QuizQuestion } from "../basics";
 
 type GlossaryEntryFr = {
   term: string;
@@ -60,7 +60,7 @@ export const GUITAR_PARTS_FR: GuitarPart[] = [
     short: "Les petites lignes argentées",
     detail:
       "Ces lignes métalliques divisent la touche en cases. La case 1 est la plus proche de la tête ; plus le numéro augmente, plus on va vers le corps.",
-    x: 60,
+    x: 54,
     y: 28,
   },
   {
@@ -82,7 +82,7 @@ export const GUITAR_PARTS_FR: GuitarPart[] = [
     short: "Six lignes qui chantent",
     detail:
       "La guitare classique utilise des cordes en nylon. La 6e est la plus épaisse et la plus grave ; la 1re est la plus fine et la plus aiguë.",
-    x: 68,
+    x: 50,
     y: 46,
   },
   {
@@ -94,7 +94,7 @@ export const GUITAR_PARTS_FR: GuitarPart[] = [
     detail:
       "Les vibrations passent de la table au corps, puis sortent par la rosace. On n'y met pas les doigts et on n'y glisse pas de petits objets.",
     x: 50,
-    y: 65,
+    y: 63.5,
   },
   {
     id: "soundboard",
@@ -116,7 +116,7 @@ export const GUITAR_PARTS_FR: GuitarPart[] = [
     detail:
       "Le bloc de bois en bas du corps. Les cordes s'y accrochent et transmettent leur vibration à la table.",
     x: 50,
-    y: 80,
+    y: 79,
   },
   {
     id: "body",
@@ -127,7 +127,58 @@ export const GUITAR_PARTS_FR: GuitarPart[] = [
     detail:
       "Le corps forme une petite caisse de résonance. C'est lui qui donne ce son chaud, même quand on ne pince qu'une seule corde.",
     x: 50,
-    y: 90,
+    y: 88,
+  },
+];
+
+export const GUITAR_TYPES_FR: GuitarType[] = [
+  {
+    id: "classical",
+    name: "Guitare classique",
+    en: "Classical guitar",
+    tagline: "Cordes en nylon, son doux",
+    detail: "On joue avec les doigts. C'est celle que tu apprends ici.",
+    color: "sun",
+  },
+  {
+    id: "acoustic",
+    name: "Guitare folk",
+    en: "Acoustic guitar",
+    tagline: "Cordes en acier, son clair",
+    detail: "Parfaite pour accompagner une chanson.",
+    color: "sky",
+  },
+  {
+    id: "electric",
+    name: "Guitare électrique",
+    en: "Electric guitar",
+    tagline: "Branchée à un ampli, elle peut être très puissante",
+    detail: "On l'entend dans le rock, la pop et les films.",
+    color: "violet",
+  },
+  {
+    id: "jazz",
+    name: "Guitare jazz",
+    en: "Jazz guitar",
+    tagline: "Un son rond et chaleureux",
+    detail: "Son corps ressemble à un petit violon. Idéale pour le jazz et le blues.",
+    color: "coral",
+  },
+  {
+    id: "bass",
+    name: "Guitare basse",
+    en: "Bass guitar",
+    tagline: "Quatre cordes épaisses pour tenir le grave",
+    detail: "Avec la batterie, elle stabilise le rythme.",
+    color: "mint",
+  },
+  {
+    id: "flamenco",
+    name: "Guitare flamenca",
+    en: "Flamenco guitar",
+    tagline: "Plus légère et plus brillante",
+    detail: "Cousine de la classique, elle accompagne le chant et la danse.",
+    color: "pink",
   },
 ];
 
@@ -206,7 +257,11 @@ export const TIMELINE_FR = [
   { year: "XXe s.", title: "La grande scène", body: "Andrés Segovia et d'autres guitaristes parcourent le monde et font entrer la guitare dans les salles de concert." },
   { year: "Années 1940", title: "Le nylon", body: "Les cordes en nylon remplacent peu à peu les cordes en boyau. Elles sont plus stables et plus faciles pour les débutants." },
   { year: "Aujourd'hui", title: "Un instrument mondial", body: "De Bach à l'Espagne, du Brésil à la Chine, la guitare classique continue d'inventer de nouvelles histoires." },
+  { year: "Années 1930", title: "La guitare électrique", body: "Branchée à un ampli, elle peut devenir très puissante. Le rock commence à faire du bruit !" },
+  { year: "Années 1950", title: "La basse électrique", body: "Quatre cordes épaisses : avec la batterie, elle donne un solide tapis au groupe." },
 ];
+
+
 
 export const BASICS_QUIZ_FR: QuizQuestion[] = [
   { q: "Quelle est la 6e corde, la plus épaisse ?", options: ["Mi aigu", "Mi grave", "La"], answer: 1, explain: "La 6e corde est le mi grave. La 1re est le mi aigu." },

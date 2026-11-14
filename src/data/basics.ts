@@ -62,7 +62,7 @@ export const GUITAR_PARTS: GuitarPart[] = [
     short: "指板上的小银线",
     detail:
       "一条条银色金属线把指板分成一格一格。每一格叫一个“品”。第 1 品离琴头最近，数字越大，位置越往琴身走。",
-    x: 60,
+    x: 54,
     y: 28,
   },
   {
@@ -84,7 +84,7 @@ export const GUITAR_PARTS: GuitarPart[] = [
     short: "六根会唱歌的线",
     detail:
       "古典吉他用尼龙弦，摸起来比民谣吉他的钢弦柔软。最粗的是第 6 弦，最低；最细的是第 1 弦，最高。",
-    x: 68,
+    x: 50,
     y: 46,
   },
   {
@@ -96,7 +96,7 @@ export const GUITAR_PARTS: GuitarPart[] = [
     detail:
       "琴弦的振动传给面板，声音再从音孔和琴身里跑出来。不要用手指去戳音孔，也不要把小东西放进去。",
     x: 50,
-    y: 65,
+    y: 63.5,
   },
   {
     id: "soundboard",
@@ -118,7 +118,7 @@ export const GUITAR_PARTS: GuitarPart[] = [
     detail:
       "琴身下方的木块叫琴桥，上面白色的小条叫下弦枕。六根弦在这里被固定住，再把振动传给面板。",
     x: 50,
-    y: 80,
+    y: 79,
   },
   {
     id: "body",
@@ -129,7 +129,67 @@ export const GUITAR_PARTS: GuitarPart[] = [
     detail:
       "琴身像一个小小的音箱。它由面板、背板和侧板围成，声音在里面回荡，所以只拨一根弦，也会有圆圆的、暖暖的声音。",
     x: 50,
-    y: 90,
+    y: 88,
+  },
+];
+
+export type GuitarType = {
+  id: "classical" | "acoustic" | "electric" | "jazz" | "bass" | "flamenco";
+  name: string;
+  en: string;
+  tagline: string;
+  detail: string;
+  color: "sun" | "sky" | "violet" | "coral" | "mint" | "pink";
+};
+
+export const GUITAR_TYPES: GuitarType[] = [
+  {
+    id: "classical",
+    name: "古典吉他",
+    en: "Classical guitar",
+    tagline: "尼龙弦，声音温柔",
+    detail: "用手指弹，声音圆润。你正在学的就是它。",
+    color: "sun",
+  },
+  {
+    id: "acoustic",
+    name: "民谣吉他",
+    en: "Acoustic guitar",
+    tagline: "钢弦，声音明亮",
+    detail: "常用来弹唱，扫弦会发出清脆的声音。",
+    color: "sky",
+  },
+  {
+    id: "electric",
+    name: "电吉他",
+    en: "Electric guitar",
+    tagline: "插上音箱，声音可以很酷",
+    detail: "摇滚、流行和电影音乐里都能听到它。",
+    color: "violet",
+  },
+  {
+    id: "jazz",
+    name: "爵士吉他",
+    en: "Jazz guitar",
+    tagline: "圆润、温暖的“嗡嗡”声",
+    detail: "琴身像一把小提琴，适合爵士和布鲁斯。",
+    color: "coral",
+  },
+  {
+    id: "bass",
+    name: "电贝斯",
+    en: "Bass guitar",
+    tagline: "四根粗弦，稳住低音",
+    detail: "和鼓一起打底，让音乐站得更稳。",
+    color: "mint",
+  },
+  {
+    id: "flamenco",
+    name: "弗拉门戈吉他",
+    en: "Flamenco guitar",
+    tagline: "更轻、更亮，会跳舞",
+    detail: "和古典吉他是亲戚，常为歌唱和舞蹈伴奏。",
+    color: "pink",
   },
 ];
 
@@ -349,6 +409,11 @@ export const TIMELINE = [
   { year: "20 世纪", title: "走进大音乐厅", body: "安德烈斯·塞戈维亚等演奏家带着古典吉他巡回世界，委托作曲家写新作品，让古典吉他成为音乐厅里的独奏乐器。" },
   { year: "1940s", title: "尼龙弦出现", body: "尼龙弦逐渐取代早期的羊肠弦，音准更稳定、手感更友好，也让今天的小朋友更容易开始学习。" },
   { year: "今天", title: "从西班牙到全世界", body: "古典吉他连接着巴赫、西班牙、南美和当代音乐。中国演奏家杨雪霏等也活跃在世界舞台，把新的声音带给大家。" },
+];
+
+export const MODERN_TIMELINE = [
+  { year: "1930s", title: "电吉他出现", body: "插上音箱，声音可以变得很大。摇滚乐开始热闹起来。" },
+  { year: "1950s", title: "电贝斯加入乐队", body: "四根粗弦的低音和鼓一起打底，让乐队站得更稳。" },
 ];
 
 export type QuizQuestion = {

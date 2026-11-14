@@ -1,0 +1,162 @@
+---
+import type { GuitarType } from "../data/basics";
+
+interface Props {
+  type: GuitarType["id"];
+}
+
+const { type } = Astro.props;
+
+const palette = {
+  classical: { body: "#F4C57B", edge: "#A96832", dark: "#3A2015", accent: "#FFE7A8" },
+  acoustic: { body: "#E8A45A", edge: "#95552A", dark: "#2F1A12", accent: "#FFE7A8" },
+  electric: { body: "#7C5CFF", edge: "#3C2A99", dark: "#241A4D", accent: "#FFD86F" },
+  jazz: { body: "#C05A3A", edge: "#6E2E1E", dark: "#2B1611", accent: "#FFD86F" },
+  bass: { body: "#3FBF9F", edge: "#1D6B57", dark: "#102E27", accent: "#FFD86F" },
+  flamenco: { body: "#E85A4F", edge: "#8F2F2A", dark: "#2B1210", accent: "#FFE7A8" },
+} as const;
+
+const p = palette[type];
+const strings = [0, 1, 2, 3, 4, 5];
+---
+
+<svg class="guitar-type-icon" viewBox="0 0 160 246" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <ellipse cx="80" cy="238" rx="46" ry="5" fill="#2A1A2F" opacity="0.12"></ellipse>
+
+  {type === "classical" && (
+    <g stroke={p.edge} stroke-width="3" stroke-linejoin="round">
+      <rect x="68" y="10" width="24" height="34" rx="6" fill={p.dark}></rect>
+      <rect x="73" y="14" width="5" height="26" rx="2.5" fill="#1E1210" stroke="none"></rect>
+      <rect x="82" y="14" width="5" height="26" rx="2.5" fill="#1E1210" stroke="none"></rect>
+      <rect x="72" y="42" width="16" height="54" fill={p.dark}></rect>
+      <path d="M80 94C62 94 50 102 46 118C43 130 47 140 56 148C43 156 34 170 33 188C31 212 46 228 66 236C70 238 75 240 80 240C85 240 90 238 94 236C114 228 129 212 127 188C126 170 117 156 104 148C113 140 117 130 114 118C110 102 98 94 80 94Z" fill={p.body}></path>
+      <circle cx="80" cy="182" r="16" fill="#3A1E16"></circle>
+      <circle cx="80" cy="182" r="21" stroke={p.accent} stroke-width="1.5" stroke-dasharray="2 4" opacity="0.8"></circle>
+      <rect x="58" y="214" width="44" height="8" rx="3" fill={p.dark}></rect>
+      <g stroke="#FFF6E0" stroke-width="1.3" opacity="0.9">
+        {strings.map((i) => <path d={`M${74 + i * 2.4} 44L${62 + i * 7.2} 218`} />)}
+      </g>
+      <circle cx="63" cy="18" r="2.2" fill={p.accent} stroke="none"></circle>
+      <circle cx="63" cy="29" r="2.2" fill={p.accent} stroke="none"></circle>
+      <circle cx="63" cy="40" r="2.2" fill={p.accent} stroke="none"></circle>
+      <circle cx="97" cy="18" r="2.2" fill={p.accent} stroke="none"></circle>
+      <circle cx="97" cy="29" r="2.2" fill={p.accent} stroke="none"></circle>
+      <circle cx="97" cy="40" r="2.2" fill={p.accent} stroke="none"></circle>
+    </g>
+  )}
+
+  {type === "acoustic" && (
+    <g stroke={p.edge} stroke-width="3" stroke-linejoin="round">
+      <rect x="64" y="10" width="32" height="30" rx="5" fill={p.dark}></rect>
+      <rect x="72" y="40" width="16" height="56" fill={p.dark}></rect>
+      <path d="M80 94C56 94 40 106 36 126C33 142 40 154 52 162C38 172 30 190 33 210C36 228 54 238 80 238C106 238 124 228 127 210C130 190 122 172 108 162C120 154 127 142 124 126C120 106 104 94 80 94Z" fill={p.body}></path>
+      <path d="M95 164c18 7 27 24 24 43-16-2-28-11-35-24-4-8-1-15 11-19Z" fill={p.dark} opacity="0.72"></path>
+      <circle cx="80" cy="182" r="16" fill="#3A1E16"></circle>
+      <circle cx="80" cy="182" r="21" stroke={p.accent} stroke-width="1.5" stroke-dasharray="2 4" opacity="0.8"></circle>
+      <rect x="56" y="216" width="48" height="8" rx="3" fill={p.dark}></rect>
+      <g stroke="#FFF6E0" stroke-width="1.3" opacity="0.92">
+        {strings.map((i) => <path d={`M${74 + i * 2.4} 42L${60 + i * 8} 220`} />)}
+      </g>
+      <g fill={p.accent} stroke="none">
+        <circle cx="58" cy="17" r="2.4"></circle><circle cx="58" cy="29" r="2.4"></circle><circle cx="58" cy="41" r="2.4"></circle>
+        <circle cx="102" cy="17" r="2.4"></circle><circle cx="102" cy="29" r="2.4"></circle><circle cx="102" cy="41" r="2.4"></circle>
+      </g>
+    </g>
+  )}
+
+  {type === "electric" && (
+    <g stroke={p.edge} stroke-width="3" stroke-linejoin="round">
+      <rect x="66" y="10" width="28" height="30" rx="5" fill={p.dark}></rect>
+      <rect x="72" y="40" width="16" height="82" fill={p.dark}></rect>
+      <path d="M80 122C60 122 44 134 40 154C36 174 48 194 66 202C72 204 77 200 80 194C83 200 88 204 94 202C112 194 124 174 120 154C116 134 100 122 80 122Z" fill={p.body}></path>
+      <path d="M56 132c-10-6-17-16-15-25 9 2 17 9 21 19" fill={p.body}></path>
+      <path d="M104 132c10-6 17-16 15-25-9 2-17 9-21 19" fill={p.body}></path>
+      <rect x="60" y="158" width="40" height="9" rx="3" fill={p.dark}></rect>
+      <rect x="60" y="174" width="40" height="9" rx="3" fill={p.dark}></rect>
+      <rect x="56" y="198" width="48" height="8" rx="3" fill={p.dark}></rect>
+      <g fill={p.accent} stroke="none">
+        <circle cx="64" cy="192" r="3"></circle><circle cx="76" cy="192" r="3"></circle><circle cx="88" cy="192" r="3"></circle>
+      </g>
+      <g stroke="#FFF6E0" stroke-width="1.2" opacity="0.9">
+        {strings.map((i) => <path d={`M${74 + i * 2.4} 42L${60 + i * 8} 202`} />)}
+      </g>
+      <g fill={p.accent} stroke="none">
+        <circle cx="58" cy="17" r="2.4"></circle><circle cx="58" cy="29" r="2.4"></circle><circle cx="58" cy="41" r="2.4"></circle>
+        <circle cx="102" cy="17" r="2.4"></circle><circle cx="102" cy="29" r="2.4"></circle><circle cx="102" cy="41" r="2.4"></circle>
+      </g>
+    </g>
+  )}
+
+  {type === "jazz" && (
+    <g stroke={p.edge} stroke-width="3" stroke-linejoin="round">
+      <rect x="64" y="10" width="32" height="30" rx="5" fill={p.dark}></rect>
+      <rect x="72" y="40" width="16" height="54" fill={p.dark}></rect>
+      <path d="M80 94C56 94 40 106 36 128C33 148 40 162 52 170C38 180 30 198 34 214C38 230 56 238 80 238C104 238 122 230 126 214C130 198 122 180 108 170C120 162 127 148 124 128C120 106 104 94 80 94Z" fill={p.body}></path>
+      <ellipse cx="80" cy="170" rx="32" ry="48" fill="#F0B06A" opacity="0.22" stroke="none"></ellipse>
+      <path d="M56 148c-7 10-7 27 0 37M104 148c7 10 7 27 0 37" stroke={p.dark} stroke-width="3" fill="none"></path>
+      <circle cx="56" cy="148" r="3" fill={p.dark} stroke="none"></circle>
+      <circle cx="56" cy="185" r="3" fill={p.dark} stroke="none"></circle>
+      <circle cx="104" cy="148" r="3" fill={p.dark} stroke="none"></circle>
+      <circle cx="104" cy="185" r="3" fill={p.dark} stroke="none"></circle>
+      <rect x="58" y="210" width="44" height="8" rx="3" fill={p.dark}></rect>
+      <path d="M66 218h28l-5 14H71Z" fill={p.dark}></path>
+      <g stroke="#FFF6E0" stroke-width="1.3" opacity="0.9">
+        {strings.map((i) => <path d={`M${74 + i * 2.4} 42L${60 + i * 8} 214`} />)}
+      </g>
+      <g fill={p.accent} stroke="none">
+        <circle cx="58" cy="17" r="2.4"></circle><circle cx="58" cy="29" r="2.4"></circle><circle cx="58" cy="41" r="2.4"></circle>
+        <circle cx="102" cy="17" r="2.4"></circle><circle cx="102" cy="29" r="2.4"></circle><circle cx="102" cy="41" r="2.4"></circle>
+      </g>
+    </g>
+  )}
+
+  {type === "bass" && (
+    <g stroke={p.edge} stroke-width="3" stroke-linejoin="round">
+      <rect x="66" y="8" width="28" height="34" rx="5" fill={p.dark}></rect>
+      <rect x="72" y="42" width="16" height="86" fill={p.dark}></rect>
+      <path d="M80 122C58 122 40 134 36 156C32 178 48 200 68 206C74 208 78 204 80 198C82 204 86 208 92 206C112 200 128 178 124 156C120 134 102 122 80 122Z" fill={p.body}></path>
+      <rect x="58" y="160" width="44" height="10" rx="3" fill={p.dark}></rect>
+      <rect x="58" y="178" width="44" height="10" rx="3" fill={p.dark}></rect>
+      <rect x="56" y="202" width="48" height="8" rx="3" fill={p.dark}></rect>
+      <g fill={p.accent} stroke="none">
+        <circle cx="64" cy="196" r="3"></circle><circle cx="78" cy="196" r="3"></circle><circle cx="92" cy="196" r="3"></circle>
+      </g>
+      <g stroke="#FFF6E0" stroke-width="2.1" opacity="0.92">
+        {[0, 1, 2, 3].map((i) => <path d={`M${74 + i * 4} 44L${60 + i * 13.3} 206`} />)}
+      </g>
+      <g fill={p.accent} stroke="none">
+        <circle cx="58" cy="16" r="2.6"></circle><circle cx="58" cy="29" r="2.6"></circle><circle cx="58" cy="42" r="2.6"></circle><circle cx="58" cy="55" r="2.6"></circle>
+      </g>
+    </g>
+  )}
+
+  {type === "flamenco" && (
+    <g stroke={p.edge} stroke-width="3" stroke-linejoin="round">
+      <rect x="68" y="10" width="24" height="34" rx="6" fill={p.dark}></rect>
+      <rect x="73" y="14" width="5" height="26" rx="2.5" fill="#1E1210" stroke="none"></rect>
+      <rect x="82" y="14" width="5" height="26" rx="2.5" fill="#1E1210" stroke="none"></rect>
+      <rect x="72" y="42" width="16" height="54" fill={p.dark}></rect>
+      <path d="M80 94C62 94 50 102 46 118C43 130 47 140 56 148C43 156 34 170 33 188C31 212 46 228 66 236C70 238 75 240 80 240C85 240 90 238 94 236C114 228 129 212 127 188C126 170 117 156 104 148C113 140 117 130 114 118C110 102 98 94 80 94Z" fill={p.body}></path>
+      <path d="M94 156c18 5 29 20 26 39-16-3-27-12-33-25-4-8-1-12 7-14Z" fill="#FFF6E0" opacity="0.7"></path>
+      <circle cx="80" cy="182" r="16" fill="#3A1E16"></circle>
+      <circle cx="80" cy="182" r="21" stroke={p.accent} stroke-width="1.5" stroke-dasharray="2 4" opacity="0.8"></circle>
+      <rect x="58" y="214" width="44" height="8" rx="3" fill={p.dark}></rect>
+      <g stroke="#FFF6E0" stroke-width="1.3" opacity="0.9">
+        {strings.map((i) => <path d={`M${74 + i * 2.4} 44L${62 + i * 7.2} 218`} />)}
+      </g>
+      <g fill={p.accent} stroke="none">
+        <circle cx="63" cy="18" r="2.2"></circle><circle cx="63" cy="29" r="2.2"></circle><circle cx="63" cy="40" r="2.2"></circle>
+        <circle cx="97" cy="18" r="2.2"></circle><circle cx="97" cy="29" r="2.2"></circle><circle cx="97" cy="40" r="2.2"></circle>
+      </g>
+    </g>
+  )}
+</svg>
+
+<style>
+  .guitar-type-icon {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+</style>

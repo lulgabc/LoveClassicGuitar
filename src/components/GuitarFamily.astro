@@ -1,0 +1,132 @@
+---
+import GuitarTypeIcon from "./GuitarTypeIcon.astro";
+import type { GuitarType } from "../data/basics";
+
+interface Props {
+  types: GuitarType[];
+  lang?: "zh" | "fr";
+}
+
+const { types, lang = "zh" } = Astro.props;
+const isFr = lang === "fr";
+const note = isFr
+  ? "Il existe aussi des guitares à douze cordes, des ukulélés et bien d'autres cousins."
+  : "还有十二弦吉他、尤克里里等亲戚，声音也各有各的性格。";
+---
+
+<div class="guitar-family">
+  <div class="family-grid">
+    {
+      types.map((type) => (
+        <article class:list={["family-card", "card", `family-${type.color}`]}>
+          <div class="family-art">
+            <GuitarTypeIcon type={type.id} />
+          </div>
+          <div class="family-copy">
+            <span class="family-en">{type.en}</span>
+            <h3>{type.name}</h3>
+            <p class="family-tagline">{type.tagline}</p>
+            <p class="family-detail">{type.detail}</p>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+  <p class="family-note">{note}</p>
+</div>
+
+<style>
+  .family-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .family-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    padding: 16px;
+    border-top: 3px solid var(--family-accent, var(--violet-500));
+    background: var(--surface);
+  }
+
+  .family-art {
+    flex: 0 0 76px;
+    width: 76px;
+    height: 118px;
+  }
+
+  .family-copy {
+    min-width: 0;
+  }
+
+  .family-en {
+    display: block;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .family-copy h3 {
+    margin: 2px 0 3px;
+    color: var(--ink);
+    font-size: 17px;
+    line-height: 1.3;
+  }
+
+  .family-tagline {
+    margin: 0;
+    color: var(--violet-700);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+
+  .family-detail {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .family-note {
+    margin: 12px 0 0;
+    color: var(--faint);
+    font-size: 10.5px;
+    line-height: 1.55;
+  }
+
+  .family-sun { --family-accent: var(--sun-500); }
+  .family-sky { --family-accent: var(--sky-500); }
+  .family-violet { --family-accent: var(--violet-500); }
+  .family-coral { --family-accent: var(--coral-500); }
+  .family-mint { --family-accent: var(--mint-500); }
+  .family-pink { --family-accent: var(--pink-500); }
+
+  @media (max-width: 1100px) {
+    .family-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .family-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .family-card {
+      padding: 14px;
+    }
+
+    .family-art {
+      flex-basis: 68px;
+      width: 68px;
+      height: 106px;
+    }
+  }
+</style>
