@@ -187,6 +187,28 @@ export const PERFORMANCES_FR: FrPerformance[] = [
     listenFor: "Est-ce que cela ressemble à une berceuse ? La musique te donne-t-elle envie de te balancer ?",
     color: "violet",
   },
+  {
+    id: "p-sauvages",
+    title: "Les Sauvages",
+    composer: "Jean-Philippe Rameau",
+    performer: "Raphaël Feuillâtre",
+    youtubeId: "rHtTEEejrbo",
+    duration: "2:35",
+    story: "Une danse française du XVIIIe siècle devenue une pièce virtuose pour guitare. Le titre parle de « sauvages », mais la musique ressemble à une danse très organisée et très rapide.",
+    listenFor: "Compte combien de fois le thème revient. À chaque retour, est-il plus rapide ou plus fort ?",
+    color: "mint",
+  },
+  {
+    id: "p-parting-glass",
+    title: "The Parting Glass",
+    composer: "Traditionnel écossais/irlandais",
+    performer: "Laura Snowden",
+    youtubeId: "pJLte9a9fZc",
+    duration: "2:19",
+    story: "Une chanson de farewell que l'on chantait à la fin des retrouvailles. La guitare la transforme en un doux bonsoir.",
+    listenFor: "On dirait une chanson. Fredonne avec « la » et cherche où respirer.",
+    color: "sun",
+  },
 ];
 
 export type FrArtist = {
