@@ -64,6 +64,7 @@ const t = isFr
       viewLabel: "Choisir le type de partition",
       jianpuLoading: "Conversion du jianpu…",
       jianpuError: "Échec de la conversion jianpu. Regarde la portée ou télécharge le MusicXML.",
+      jianpuHint: "Le jianpu affiche la mélodie principale ; la portée montre toutes les voix et les accords.",
       lineLabel: (start: number, end: number) => `Mesures ${start}–${end}`,
     }
   : {
@@ -91,6 +92,7 @@ const t = isFr
       viewLabel: "选择乐谱显示方式",
       jianpuLoading: "正在转换简谱…",
       jianpuError: "简谱转换失败。可以先看五线谱，或下载 MusicXML。",
+      jianpuHint: "简谱显示主旋律；完整和弦与声部请看五线谱。",
       lineLabel: (start: number, end: number) => `第 ${start}–${end} 小节`,
     };
 
@@ -195,6 +197,7 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
         <div class="full-score-render" data-score-render></div>
       </div>
       <div class="full-score-stage jianpu-stage" data-jianpu-stage role="region" tabindex="0" aria-label={t.jianpu} hidden>
+        <p class="jianpu-hint">{t.jianpuHint}</p>
         <div class="jianpu-lines" data-jianpu-render></div>
       </div>
       <p class="full-score-tip" data-score-modal-tip></p>
@@ -392,8 +395,8 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
           jianpuCtor ? Promise.resolve({ JianpuSVGRender: jianpuCtor }) : import("jianpurender"),
         ]);
         jianpuCtor = jianpuModule.JianpuSVGRender;
-        const { buildJianpuLines, parseMusicXml } = await import("../lib/jianpu");
-        const measures = parseMusicXml(xml);
+        const { buildJianpuLines, parseMusicXml, selectMelody } = await import("../lib/jianpu");
+        const measures = selectMelody(parseMusicXml(xml));
         const perLine = window.innerWidth < 640 ? 2 : 4;
         const lines = buildJianpuLines(measures, perLine);
         if (!lines.length) throw new Error("empty jianpu");
@@ -756,6 +759,15 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
 
   .jianpu-stage {
     background: #fffdf8;
+  }
+
+  .jianpu-hint {
+    margin: 0;
+    padding: 10px 14px 0;
+    color: #6b5a3e;
+    font-size: 8px;
+    font-weight: 700;
+    line-height: 1.45;
   }
 
   .jianpu-lines {

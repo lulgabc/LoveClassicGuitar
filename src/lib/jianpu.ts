@@ -169,6 +169,50 @@ export function parseMusicXml(xml: string): JianpuMeasure[] {
   return measures;
 }
 
+/**
+ * Reduce a polyphonic score to a single melody line.
+ *
+ * JianpuRender places every note that shares an onset at the same x/y, so a
+ * guitar arrangement with chords and several voices prints the numbers on top
+ * of each other. The jianpu view therefore keeps the top note of each onset
+ * (the melody) and drops the accompanying voices. Each melody note is also
+ * clipped at the next onset, which keeps the line monophonic when a tie or a
+ * held voice would otherwise run into the following note. The full polyphony
+ * stays available in the staff view.
+ */
+export function selectMelody(measures: JianpuMeasure[]): JianpuMeasure[] {
+  type Candidate = { measureIndex: number; note: JianpuNote };
+  const byOnset = new Map<number, Candidate>();
+
+  measures.forEach((measure, measureIndex) => {
+    for (const note of measure.notes) {
+      // MusicXML durations are rational, but floating point division can
+      // produce values like 0.30000000000000004. Quantise the onset key so
+      // simultaneous notes always land in the same bucket.
+      const onset = Math.round(note.start * 1000) / 1000;
+      const current = byOnset.get(onset);
+      if (!current || note.pitch > current.note.pitch) {
+        byOnset.set(onset, { measureIndex, note: { ...note } });
+      }
+    }
+  });
+
+  const melody = Array.from(byOnset.values()).sort((a, b) => a.note.start - b.note.start);
+  for (let index = 0; index < melody.length - 1; index += 1) {
+    const current = melody[index]!;
+    const nextStart = melody[index + 1]!.note.start;
+    if (current.note.start + current.note.length > nextStart) {
+      current.note.length = Math.max(0.001, nextStart - current.note.start);
+    }
+  }
+
+  const result = measures.map((measure) => ({ ...measure, notes: [] as JianpuNote[] }));
+  for (const { measureIndex, note } of melody) {
+    result[measureIndex]!.notes.push(note);
+  }
+  return result;
+}
+
 /** Split measures into lines and shift each line's timing back to zero. */
 export function buildJianpuLines(measures: JianpuMeasure[], perLine: number): JianpuLine[] {
   const lines: JianpuLine[] = [];
