@@ -7,9 +7,8 @@ import Metronome from "../../components/Metronome.astro";
 import Tuner from "../../components/Tuner.astro";
 import NoteGame from "../../components/NoteGame.astro";
 import EarGame from "../../components/EarGame.astro";
-import MascotBubble from "../../components/MascotBubble.astro";
 import Icon from "../../components/Icon.astro";
-import { PRACTICE_PRESETS_FR, NOTE_QUESTIONS_FR, PRACTICE_RULES_FR, WARMUPS_FR } from "../../data/fr/practice";
+import { PRACTICE_PRESETS_FR, NOTE_QUESTIONS_FR, WARMUPS_FR } from "../../data/fr/practice";
 import { GUITAR_STRINGS_FR } from "../../data/fr/basics";
 import { url } from "../../lib/url";
 ---
@@ -22,16 +21,8 @@ import { url } from "../../lib/url";
   <PageHero
     kicker="Studio de pratique · Sous les étoiles"
     title="Un tout petit peu,<br /><em>déjà beaucoup</em>."
-    lead="Dix minutes, une corde, un jeu. La pratique n'est pas un devoir : c'est un moment avec la musique."
-  >
-    <div class="slug">
-      <a href="#timer">Minuteur</a>
-      <a href="#metronome">Métronome</a>
-      <a href="#strings">Accorder</a>
-      <a href="#note-game">Jeu de notes</a>
-      <a href="#ear-game">Oreille</a>
-    </div>
-  </PageHero>
+    lead="Dix minutes, une corde, un jeu."
+  />
 
   <nav class="tool-rail" aria-label="Outils de pratique">
     <div class="container tool-rail-inner">
@@ -50,20 +41,19 @@ import { url } from "../../lib/url";
     <div class="container">
       <div class="tip-strip">
         <span class="tip-icon"><Icon name="sparkle" size={18} /></span>
-        <div><span>Le petit mot de Momo</span><p data-fr-tip aria-live="polite">Un seul petit objectif, c'est déjà une belle séance.</p></div>
-        <button type="button" data-fr-tip-refresh><Icon name="refresh" size={14} /> Un autre</button>
+        <div><span>Le petit mot de Momo</span><p>Un seul petit objectif, c'est déjà une belle séance.</p></div>
       </div>
-      <SectionHead kicker="01 · Le minuteur" title="Une séance, <em>sans se presser</em>" lead="Le minuteur te propose quatre petits moments. Tu peux mettre en pause ou passer à l'étape suivante." />
+      <SectionHead title="Une séance, <em>sans se presser</em>" lead="Choisis 10, 15 ou 20 minutes, puis suis les étapes." />
       <PracticeTimer presets={PRACTICE_PRESETS_FR} lang="fr" />
     </div>
   </section>
 
   <section class="section section-wash" id="metronome">
     <div class="container">
-      <SectionHead kicker="02 · Le rythme" title="Un cœur qui <em>bat</em>" lead="Tape d'abord dans les mains. 60 BPM, c'est un clic chaque seconde." />
+      <SectionHead title="Un cœur qui <em>bat</em>" lead="Tape d'abord dans les mains. 60 BPM, c'est un clic chaque seconde." />
       <Metronome lang="fr" />
       <div class="tuner-section" id="strings">
-        <SectionHead kicker="03 · Accorder" title="Écoute les <em>six notes</em>" lead="Des notes de référence pour comparer. Pour accorder, demande à un adulte." />
+        <SectionHead title="Écoute les <em>six notes</em>" lead="Pour accorder, demande à un adulte." />
         <Tuner strings={GUITAR_STRINGS_FR} lang="fr" />
       </div>
     </div>
@@ -71,7 +61,7 @@ import { url } from "../../lib/url";
 
   <section class="section" id="games">
     <div class="container">
-      <SectionHead kicker="04 · Jouer" title="La musique est un <em>jeu</em>" lead="Deux jeux de trois minutes. Pas de note, pas de classement : juste l'œil et l'oreille." />
+      <SectionHead title="La musique est un <em>jeu</em>" lead="Deux jeux de trois minutes, sans classement." />
       <div class="games-stack">
         <NoteGame questions={NOTE_QUESTIONS_FR} lang="fr" />
         <EarGame lang="fr" />
@@ -81,7 +71,7 @@ import { url } from "../../lib/url";
 
   <section class="section section-wash" id="warmups">
     <div class="container">
-      <SectionHead kicker="05 · S'échauffer" title="Le corps d'abord" lead="Une minute pour relâcher les épaules et les mains avant de jouer." />
+      <SectionHead title="Le corps d'abord" lead="Une minute pour relâcher les épaules et les mains." />
       <div class="warmups-grid">
         {WARMUPS_FR.map((warmup, index) => (
           <article class="warmup-card card">
@@ -90,36 +80,15 @@ import { url } from "../../lib/url";
           </article>
         ))}
       </div>
-      <div class="rules">
-        {PRACTICE_RULES_FR.map((rule) => <p><Icon name="check" size={13} /> {rule}</p>)}
-      </div>
-      <div class="print-cta card">
-        <Icon name="printer" size={21} />
-        <div><h3>Une fiche pour la semaine</h3><p>À imprimer, colorier et accrocher près de la guitare.</p></div>
-        <a class="btn btn-secondary btn-sm" href={url("/fr/print/weekly/")}>Ouvrir la fiche</a>
-      </div>
     </div>
   </section>
 
   <section class="section-tight">
     <div class="container bottom-note">
-      <MascotBubble who="capi" title="Capi te dit" text="Si tu n'as pas envie aujourd'hui, écoute une pièce et reviens demain. La musique ne s'échappe pas." tone="sun" />
       <a class="btn btn-primary" href={url("/fr/roadmap/")}>Retour au parcours <Icon name="arrow-right" size={14} /></a>
     </div>
   </section>
 </BaseLayout>
-
-<script>
-  import { PRACTICE_TIPS_FR } from "../../data/fr/practice";
-  const tip = document.querySelector<HTMLElement>("[data-fr-tip]");
-  const refresh = document.querySelector<HTMLButtonElement>("[data-fr-tip-refresh]");
-  let index = new Date().getDate() % PRACTICE_TIPS_FR.length;
-  if (tip) tip.textContent = PRACTICE_TIPS_FR[index] ?? "";
-  refresh?.addEventListener("click", () => {
-    index = (index + 1) % PRACTICE_TIPS_FR.length;
-    if (tip) tip.textContent = PRACTICE_TIPS_FR[index] ?? "";
-  });
-</script>
 
 <style>
   .slug {
@@ -170,7 +139,7 @@ import { url } from "../../lib/url";
     flex: 0 0 auto;
     margin-right: 7px;
     color: var(--violet-700);
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 850;
   }
 
@@ -179,10 +148,11 @@ import { url } from "../../lib/url";
     align-items: center;
     gap: 4px;
     flex: 0 0 auto;
-    padding: 5px 8px;
+    min-height: 34px;
+    padding: 6px 10px;
     color: var(--muted);
     border-radius: 999px;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
     text-decoration: none;
     white-space: nowrap;

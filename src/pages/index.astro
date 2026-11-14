@@ -2,81 +2,36 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import HeroScene from "../components/HeroScene.astro";
 import SectionHead from "../components/SectionHead.astro";
-import MascotBubble from "../components/MascotBubble.astro";
-import TutorialCard from "../components/TutorialCard.astro";
 import Jukebox from "../components/Jukebox.astro";
 import Icon from "../components/Icon.astro";
-import { HERO_CHIPS } from "../data/site";
 import { STAGES, TOTAL_QUESTS } from "../data/roadmap";
-import { FEATURED_TUTORIALS } from "../data/videos";
-import { PERFORMANCES, MASTERS } from "../data/concert";
-import { RESOURCES } from "../data/library";
+import { PERFORMANCES } from "../data/concert";
 import { url } from "../lib/url";
 
-const featuredTutorials = FEATURED_TUTORIALS.slice(0, 3);
 const homeTracks = PERFORMANCES.slice(0, 4);
-const stats = [
-  { value: String(STAGES.length), label: "站学习地图" },
-  { value: String(TOTAL_QUESTS), label: "个小任务" },
-  { value: "30+", label: "精选视频与课程" },
-  { value: String(MASTERS.length), label: "位演奏家" },
-];
 const quickLinks = [
   {
     icon: "book" as const,
-    eyebrow: "先认识它",
     title: "吉他小百科",
-    text: "认识琴、姿势、六根弦和读谱。点一点，就能听见声音。",
+    text: "认识琴、姿势、六根弦和读谱。",
     href: "/basics/",
     color: "sky",
   },
   {
     icon: "timer" as const,
-    eyebrow: "今天练什么",
     title: "15 分钟练习室",
-    text: "计时器、节拍器和两个小游戏，把练习变成一场冒险。",
+    text: "计时器、节拍器和小游戏。",
     href: "/practice/",
     color: "violet",
   },
   {
     icon: "headphones" as const,
-    eyebrow: "耳朵先出发",
     title: "星空音乐厅",
-    text: "在页面里直接听大师演奏，找到你喜欢的声音。",
+    text: "在页面里听大师演奏。",
     href: "/concert/",
     color: "pink",
   },
 ];
-
-const featureBoxes = [
-  {
-    number: "01",
-    icon: "music" as const,
-    title: "一把琴，就是一支小乐队",
-    text: "旋律、低音和和声，一个人也能拥有完整的小乐队。",
-    foot: "melody + bass + harmony",
-    color: "violet",
-  },
-  {
-    number: "02",
-    icon: "wand" as const,
-    title: "十根手指，就是调色盘",
-    text: "不用拨片。触弦位置一变，同一个音就有了不同颜色。",
-    foot: "tone color is a superpower",
-    color: "sky",
-  },
-  {
-    number: "03",
-    icon: "compass" as const,
-    title: "一根弦，能走 500 年",
-    text: "从巴赫到西班牙，再到今天的电影音乐，六根弦一直有新故事。",
-    foot: "Bach → Tárrega → today",
-    color: "pink",
-  },
-];
-const resourceHighlights = RESOURCES.filter((resource) =>
-  ["ticg-method", "cgs-start", "kids-dojo", "siccas"].includes(resource.id),
-).slice(0, 4);
 ---
 
 <BaseLayout bodyClass="home-page">
@@ -91,7 +46,6 @@ const resourceHighlights = RESOURCES.filter((resource) =>
         </h1>
         <p class="hero-lead">
           和小蝙蝠 Momo、水豚 Capi 一起，从第一声拨弦开始，弹出自己的小音乐会。
-          这里没有催促，也没有排名。
         </p>
         <div class="btn-row hero-actions">
           <a class="btn btn-sun btn-lg" href={url("/roadmap/")}>
@@ -101,31 +55,10 @@ const resourceHighlights = RESOURCES.filter((resource) =>
             <Icon name="play" size={16} /> 先玩 15 分钟
           </a>
         </div>
-        <div class="hero-chips">
-          {HERO_CHIPS.map((chip) => <span><Icon name="star" size={11} /> {chip}</span>)}
-        </div>
       </div>
 
       <div class="hero-visual">
         <HeroScene />
-      </div>
-    </div>
-
-    <div class="container hero-stats-wrap">
-      <div class="hero-stats">
-        {
-          stats.map((stat) => (
-            <div class="hero-stat">
-              <strong>{stat.value}</strong>
-              <span>{stat.label}</span>
-            </div>
-          ))
-        }
-        <a class="hero-stat hero-stat-link" href={url("/parents/")}>
-          <span class="stat-icon"><Icon name="heart" size={18} /></span>
-          <span>给爸爸妈妈的陪伴指南</span>
-          <Icon name="arrow-right" size={14} />
-        </a>
       </div>
     </div>
   </section>
@@ -134,9 +67,8 @@ const resourceHighlights = RESOURCES.filter((resource) =>
     <div class="container">
       <div class="section-head-row">
         <SectionHead
-          kicker="Start here"
           title="今天想做什么？"
-          lead="不用每次从“从头开始”开始。选一个小入口，让音乐先发生。"
+          lead="选一个小入口，让音乐先发生。"
         />
       </div>
       <div class="quick-grid">
@@ -144,24 +76,12 @@ const resourceHighlights = RESOURCES.filter((resource) =>
           quickLinks.map((link) => (
             <a class:list={["quick-card", "card", "card-hover", `quick-${link.color}`]} href={url(link.href)}>
               <span class="quick-icon"><Icon name={link.icon} size={23} /></span>
-              <span class="quick-eyebrow">{link.eyebrow}</span>
               <h3>{link.title}</h3>
               <p>{link.text}</p>
               <span class="quick-arrow">出发 <Icon name="arrow-right" size={14} /></span>
             </a>
           ))
         }
-      </div>
-
-      <div class="daily-challenge">
-        <div class="challenge-mascot" aria-hidden="true"><Icon name="sparkle" size={20} /></div>
-        <div class="challenge-copy">
-          <span>Momo 的今日小挑战</span>
-          <p data-home-challenge aria-live="polite">用 3 根空弦弹出 4 拍节奏，最后停在最细的 1 弦上。</p>
-        </div>
-        <button class="challenge-refresh" type="button" data-challenge-refresh>
-          <Icon name="refresh" size={16} /> 换一个
-        </button>
       </div>
     </div>
   </section>
@@ -170,9 +90,8 @@ const resourceHighlights = RESOURCES.filter((resource) =>
     <div class="container">
       <div class="section-head-row">
         <SectionHead
-          kicker="The star map"
           title="六站，把“不会”变成“我会”"
-          lead="从认识琴，到在家人面前开一场小小音乐会。每一站都很短，可以按自己的节奏停留。"
+          lead="每一站都很短，按自己的节奏走。"
         />
         <a class="btn btn-secondary" href={url("/roadmap/")}>看完整地图 <Icon name="arrow-right" size={14} /></a>
       </div>
@@ -180,7 +99,7 @@ const resourceHighlights = RESOURCES.filter((resource) =>
       <div class="progress-strip card">
         <div class="progress-copy">
           <span class="progress-label"><Icon name="star" size={15} /> 我的探险进度</span>
-          <strong data-home-progress-text>还没有点亮小星星，从准备站开始吧</strong>
+          <strong data-home-progress-text>从准备站开始吧</strong>
         </div>
         <div class="progress-bar" aria-hidden="true">
           <span data-home-progress-bar style="width: 0%"></span>
@@ -196,49 +115,9 @@ const resourceHighlights = RESOURCES.filter((resource) =>
               <span class="station-dot">
                 <span>{stage.n === 0 ? "✦" : stage.n}</span>
               </span>
-              <span class="station-weeks">{stage.weeks}</span>
               <strong>{stage.title}</strong>
-              <small>{stage.badge}</small>
-              <span class="station-count">{stage.quests.length} 个小任务 <Icon name="chevron-right" size={11} /></span>
+              <span class="station-count">{stage.quests.length} 颗星 <Icon name="chevron-right" size={11} /></span>
             </a>
-          ))
-        }
-      </div>
-
-      <div class="map-bottom-note">
-        <MascotBubble
-          who="capi"
-          text="如果某一站卡住了，不用往前冲。回到上一站，找一个你喜欢的音，再出发。"
-          tone="sky"
-        />
-        <a class="map-mini-link" href={url("/parents/#milestones")}>
-          <Icon name="calendar" size={16} /> 看看 9 个月大概会走到哪里 <Icon name="arrow-right" size={13} />
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section why-section">
-    <div class="container">
-      <SectionHead
-        kicker="Why classical guitar"
-        title="为什么是<em>古典吉他</em>？"
-        lead="因为它既可以很安静，也可以很热闹；既可以一个人弹，也可以和别人一起唱歌。"
-        center
-      />
-      <div class="why-grid">
-        {
-          featureBoxes.map((box, index) => (
-            <article class:list={["why-card", "card", `why-${box.color}`, "reveal", `reveal-delay-${index + 1}`]}>
-              <div class="why-top">
-                <span class="why-icon"><Icon name={box.icon} size={25} /></span>
-                <span class="why-number">{box.number}</span>
-              </div>
-              <h3>{box.title}</h3>
-              <p>{box.text}</p>
-              <span class="why-foot">{box.foot}</span>
-              <span class="why-orbit" aria-hidden="true"></span>
-            </article>
           ))
         }
       </div>
@@ -246,43 +125,20 @@ const resourceHighlights = RESOURCES.filter((resource) =>
   </section>
 
   <section class="section practice-preview-section">
-    <div class="container practice-preview-grid">
-      <div class="practice-preview-copy">
-        <SectionHead
-          kicker="A little every day"
-          title="15 分钟，<em>刚刚好</em>。"
-          lead="热身 2 分钟，技术 4 分钟，曲目 6 分钟，听一听 3 分钟。短而专注，刚刚好。"
-        />
-        <div class="practice-points">
-          <div><span>01</span><p><strong>先听声音</strong>不急着弹下一根弦。</p></div>
-          <div><span>02</span><p><strong>只练一小段</strong>2–4 小节就很够。</p></div>
-          <div><span>03</span><p><strong>留下好心情</strong>结束前弹一首喜欢的。</p></div>
+    <div class="container">
+      <div class="practice-preview-card card reveal">
+        <div class="practice-preview-head">
+          <SectionHead
+            title="15 分钟，刚刚好"
+            lead="热身 2 分钟，技术 4 分钟，曲目 6 分钟，听一听 3 分钟。"
+          />
+          <a class="btn btn-primary" href={url("/practice/")}><Icon name="timer" size={17} /> 打开练习室</a>
         </div>
-        <a class="btn btn-primary" href={url("/practice/")}><Icon name="timer" size={17} /> 打开练习室</a>
-      </div>
-
-      <div class="mission-card-wrap">
-        <div class="mission-card card reveal">
-          <div class="mission-head">
-            <div>
-              <span>MY 15 MINUTES</span>
-              <h3>今天的星空练习卡</h3>
-            </div>
-            <span class="mission-star"><Icon name="star" size={23} /></span>
-          </div>
-          <div class="mission-list">
-            <div class="mission-item"><span class="mission-check"><Icon name="check" size={13} /></span><div><strong>呼吸与空弦</strong><small>2 分钟 · 听每个音从响到消失</small></div><span>01</span></div>
-            <div class="mission-item"><span class="mission-check"><Icon name="check" size={13} /></span><div><strong>一个技术小任务</strong><small>4 分钟 · i–m 交替或左手落指</small></div><span>02</span></div>
-            <div class="mission-item"><span class="mission-check"><Icon name="check" size={13} /></span><div><strong>曲目慢练</strong><small>6 分钟 · 只练最难的 2–4 小节</small></div><span>03</span></div>
-            <div class="mission-item"><span class="mission-check"><Icon name="check" size={13} /></span><div><strong>听一听 / 玩一玩</strong><small>3 分钟 · 完整弹一遍或听一首</small></div><span>04</span></div>
-          </div>
-          <div class="mission-footer">
-            <span><Icon name="heart" size={13} /> 不追求完美，只记录今天</span>
-            <span class="mission-stars">☆ ☆ ☆</span>
-          </div>
-        </div>
-        <div class="mission-note">
-          <Icon name="lightbulb" size={16} /> 练完可以把这张卡打印出来，贴一颗真的星星。
+        <div class="practice-step-grid">
+          <div><span>01</span><strong>呼吸与空弦</strong><small>2 分钟</small></div>
+          <div><span>02</span><strong>一个技术小任务</strong><small>4 分钟</small></div>
+          <div><span>03</span><strong>曲目慢练</strong><small>6 分钟</small></div>
+          <div><span>04</span><strong>听一听</strong><small>3 分钟</small></div>
         </div>
       </div>
     </div>
@@ -292,41 +148,12 @@ const resourceHighlights = RESOURCES.filter((resource) =>
     <div class="container">
       <div class="section-head-row">
         <SectionHead
-          kicker="Listening room · 直接在页面里听"
           title="点一首，让<em>音乐</em>开始。"
-          lead={`Momo 已经准备好播放器。先听四首，或者去音乐厅打开 ${PERFORMANCES.length} 首可播放曲目和 200 首曲库。`}
+          lead="先听四首，喜欢再去音乐厅。"
         />
         <a class="btn btn-secondary" href={url("/concert/")}>更多曲目 <Icon name="arrow-right" size={14} /></a>
       </div>
       <Jukebox items={homeTracks} lang="zh" />
-    </div>
-  </section>
-
-  <section class="section free-preview-section">
-    <div class="container">
-      <div class="section-head-row">
-        <SectionHead
-          kicker="Free & public"
-          title="免费好课，<em>先挑三个</em>"
-          lead="先看一个姿势视频，再试一个手指热身。一次只挑一个。"
-        />
-        <a class="btn btn-ghost" href={url("/library/")}>全部免费资源 <Icon name="arrow-right" size={14} /></a>
-      </div>
-      <div class="tutorial-grid">
-        {featuredTutorials.map((tutorial) => <TutorialCard tutorial={tutorial} compact />)}
-      </div>
-      <div class="resource-peek">
-        <span class="resource-peek-label"><Icon name="sparkle" size={14} /> 资源宝库里还有</span>
-        {
-          resourceHighlights.map((resource) => (
-            <a href={url("/library/")}>
-              <Icon name={resource.kind === "乐谱" ? "book" : resource.kind === "听力" ? "headphones" : "play"} size={14} />
-              {resource.name}
-            </a>
-          ))
-        }
-        <a class="resource-more" href={url("/library/")}>共 {RESOURCES.length} 个精选入口 <Icon name="arrow-right" size={12} /></a>
-      </div>
     </div>
   </section>
 
@@ -336,19 +163,11 @@ const resourceHighlights = RESOURCES.filter((resource) =>
         <div class="parent-preview-copy">
           <span class="eyebrow"><Icon name="heart" size={13} /> 给爸爸妈妈</span>
           <h2>你不需要懂吉他，<br />也可以是最好的陪练。</h2>
-          <p>帮她调好音、留出 15 分钟，在她弹完时说一句“谢谢你弹给我听”。剩下的，慢慢来。</p>
-          <div class="btn-row">
-            <a class="btn btn-primary" href={url("/parents/")}>读陪伴指南 <Icon name="arrow-right" size={14} /></a>
-            <a class="btn btn-ghost" href={url("/parents/#teacher")}>怎样找老师？</a>
-          </div>
+          <p>帮她调好音、留出 15 分钟，弹完说一句“谢谢你弹给我听”。</p>
         </div>
-        <div class="parent-checklist">
-          <div class="checklist-head"><span>PARENT CHECKLIST</span><strong>这周只做三件小事</strong></div>
-          <div class="parent-check"><Icon name="check" size={14} /><span>观察坐姿是否舒服，不追求“标准到僵硬”</span></div>
-          <div class="parent-check"><Icon name="check" size={14} /><span>练习结束前，让曲子完整地响一次</span></div>
-          <div class="parent-check"><Icon name="check" size={14} /><span>夸具体的事，例如“今天的低音好稳”</span></div>
-          <div class="parent-check"><Icon name="check" size={14} /><span>每周留一天只听音乐，不碰琴</span></div>
-          <div class="parent-sign">慢一点，也是在向前。<span>— Capi</span></div>
+        <div class="btn-row parent-preview-actions">
+          <a class="btn btn-primary" href={url("/parents/")}>读陪伴指南 <Icon name="arrow-right" size={14} /></a>
+          <a class="btn btn-ghost" href={url("/parents/#teacher")}>怎样找老师？</a>
         </div>
       </div>
     </div>
@@ -367,41 +186,6 @@ const resourceHighlights = RESOURCES.filter((resource) =>
   import { readProgress } from "../lib/progress";
   import { TOTAL_QUESTS } from "../data/roadmap";
 
-  const challenges = [
-    "用 3 根空弦弹出 4 拍节奏，最后停在最细的 1 弦上。",
-    "把今天最难的 2 个小节，慢到不会错，连续弹 3 次。",
-    "听一首 2 分钟的吉他曲，听到低音时轻轻点一下脚尖。",
-    "找到第 2 弦第 1 品，弹 4 次，每次弹完都让手放松。",
-    "给今天的曲子编一个新结尾，只用两个音。",
-    "左手按一个音，右手拨 4 次，听听第 4 次和第一次有什么不同。",
-    "把《欢乐颂》的第一句唱出来，再在琴上找音。",
-    "不开节拍器弹一遍，再开 60 BPM 弹一遍，比较哪次更稳。",
-    "给家人播放一首你在音乐厅发现的新曲子。",
-    "今天只练一个音：让它从很轻到很响，再回到很轻。",
-  ];
-  const challengeText = document.querySelector<HTMLElement>("[data-home-challenge]");
-  const refresh = document.querySelector<HTMLButtonElement>("[data-challenge-refresh]");
-  let challengeIndex = new Date().getDate() % challenges.length;
-
-  challengeText?.replaceChildren(document.createTextNode(challenges[challengeIndex] ?? challenges[0] ?? ""));
-
-  refresh?.addEventListener("click", () => {
-    challengeIndex = (challengeIndex + 1) % challenges.length;
-    if (challengeText) {
-      challengeText.textContent = challenges[challengeIndex] ?? challenges[0] ?? "";
-      challengeText.animate(
-        [
-          { opacity: 0, transform: "translateY(5px)" },
-          { opacity: 1, transform: "translateY(0)" },
-        ],
-        { duration: 280, easing: "ease-out" },
-      );
-    }
-    refresh.classList.remove("spin");
-    void refresh.offsetWidth;
-    refresh.classList.add("spin");
-  });
-
   function updateProgressPreview(): void {
     const progress = readProgress();
     const done = Math.min(progress.quests.length, TOTAL_QUESTS);
@@ -414,10 +198,10 @@ const resourceHighlights = RESOURCES.filter((resource) =>
     if (label) {
       label.textContent =
         done === 0
-          ? "还没有点亮小星星，从准备站开始吧"
+          ? "从准备站开始吧"
           : done >= TOTAL_QUESTS
-            ? "全部点亮！你完成了一场了不起的星空冒险"
-            : `${progress.name ? progress.name + "，" : "你"}已经点亮了 ${done} 颗星，继续慢慢走`;
+            ? "全部点亮！"
+            : `已点亮 ${done} 颗星`;
     }
   }
 
@@ -1969,6 +1753,219 @@ const resourceHighlights = RESOURCES.filter((resource) =>
 
     .closing-inner .btn {
       flex-basis: 100%;
+    }
+  }
+
+  /* Compact home layout */
+  .home-hero {
+    padding: clamp(26px, 3.6vw, 42px) 0 clamp(20px, 3vw, 30px);
+  }
+
+  .hero-copy {
+    padding-block: 6px;
+  }
+
+  .hero-copy h1 {
+    margin-top: 14px;
+    font-size: clamp(36px, 5vw, 58px);
+  }
+
+  .hero-lead {
+    max-width: 560px;
+    margin-top: 12px;
+    font-size: clamp(14.5px, 1.4vw, 16px);
+    line-height: 1.65;
+  }
+
+  .hero-actions {
+    margin-top: 18px;
+  }
+
+  .quick-section {
+    padding-top: 26px;
+  }
+
+  .quick-grid {
+    gap: 12px;
+  }
+
+  .quick-card {
+    min-height: 190px;
+    padding: 18px;
+  }
+
+  .quick-icon {
+    margin-bottom: 14px;
+  }
+
+  .quick-card h3 {
+    font-size: 22px;
+  }
+
+  .quick-card p {
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  .progress-strip {
+    margin-bottom: 12px;
+    padding: 12px 14px;
+  }
+
+  .station-scroll {
+    gap: 8px;
+    padding: 8px 0 4px;
+  }
+
+  .station-dot {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 7px;
+  }
+
+  .station-dot span {
+    font-size: 17px;
+  }
+
+  .station strong {
+    font-size: 14px;
+  }
+
+  .station-count {
+    margin-top: 4px;
+    font-size: 10px;
+  }
+
+  .practice-preview-card {
+    padding: clamp(18px, 2.6vw, 28px);
+  }
+
+  .practice-preview-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .practice-preview-head .section-head {
+    margin-bottom: 0;
+  }
+
+  .practice-step-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .practice-step-grid > div {
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface-2);
+  }
+
+  .practice-step-grid span {
+    color: var(--violet-800);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 800;
+  }
+
+  .practice-step-grid strong {
+    display: block;
+    margin-top: 3px;
+    font-size: 14px;
+  }
+
+  .practice-step-grid small {
+    display: block;
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .parent-preview-section {
+    padding-block: clamp(28px, 4vw, 44px) 0;
+  }
+
+  .parent-preview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: clamp(22px, 3.2vw, 34px);
+  }
+
+  .parent-preview-copy {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .parent-preview-actions {
+    flex: 0 0 auto;
+    margin-top: 0;
+  }
+
+  .parent-preview-copy h2 {
+    margin: 10px 0 8px;
+    font-size: clamp(25px, 3vw, 34px);
+  }
+
+  .parent-preview-copy p {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .parent-preview-copy .btn-row {
+    margin-top: 16px;
+  }
+
+  @media (max-width: 900px) {
+    .hero-visual {
+      display: none;
+    }
+
+    .hero-copy {
+      padding-bottom: 8px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .quick-grid,
+    .practice-step-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .parent-preview {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .parent-preview-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .practice-preview-head {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .practice-preview-head .btn {
+      width: 100%;
+    }
+
+    .station-scroll {
+      display: flex;
+      overflow-x: auto;
+      gap: 6px;
+      padding-bottom: 10px;
+    }
+
+    .station {
+      flex: 0 0 96px;
     }
   }
 

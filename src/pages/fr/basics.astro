@@ -6,7 +6,6 @@ import Anatomy from "../../components/Anatomy.astro";
 import StringBoard from "../../components/StringBoard.astro";
 import GlossaryExplorer from "../../components/GlossaryExplorer.astro";
 import BasicsQuiz from "../../components/BasicsQuiz.astro";
-import MascotBubble from "../../components/MascotBubble.astro";
 import Icon from "../../components/Icon.astro";
 import { BASICS_QUIZ_FR, CARE_TIPS_FR, GLOSSARY_FR, GUITAR_PARTS_FR, GUITAR_STRINGS_FR, POSTURE_STEPS_FR, STRING_CHANT_FR, TIMELINE_FR } from "../../data/fr/basics";
 import { url } from "../../lib/url";
@@ -26,28 +25,15 @@ const rightHand = [
   { finger: "m", name: "Majeur", role: "Alterne avec l'index" },
   { finger: "a", name: "Annulaire", role: "Couleurs et accords" },
 ];
-const faqs = [
-  { q: "J'ai un peu mal au bout des doigts, c'est normal ?", a: "Une légère pression est possible au début. Une douleur vive, un engourdissement ou une douleur qui dure ne sont pas normaux : arrête et parle à un adulte." },
-  { q: "Je dois jouer tous les jours ?", a: "Non. Trois à cinq fois par semaine, pendant 10 à 15 minutes, suffisent souvent. Écouter de la musique compte aussi." },
-  { q: "Faut-il un professeur ?", a: "C'est fortement recommandé au début pour vérifier la taille de la guitare, la posture et les gestes. Même une leçon de temps en temps aide." },
-  { q: "Combien de temps pour jouer un morceau ?", a: "Avec une pratique régulière, beaucoup d'enfants jouent une courte mélodie après deux ou trois mois. Chaque enfant avance à son rythme." },
-];
+
 ---
 
-<BaseLayout lang="fr" title="Découvrir la guitare" description="Les bases de la guitare classique pour les enfants : parties de l'instrument, cordes à vide, posture, mains, lecture, entretien et quiz interactif.">
+<BaseLayout lang="fr" title="Découvrir la guitare" description="Les bases de la guitare classique pour les enfants : parties de l'instrument, cordes à vide, posture, mains, lecture, entretien et quiz interactif." bodyClass="basics-page">
   <PageHero
     kicker="Chapitre 01 · Les bases"
     title="D'abord, fais<br />connaissance avec <em>la guitare</em>."
-    lead="Pas besoin de théorie. Regarde, touche, écoute : la musique commence avec une seule corde."
-  >
-    <div class="slug">
-      <a href="#anatomy">La guitare</a>
-      <a href="#strings">Les cordes</a>
-      <a href="#posture">La position</a>
-      <a href="#hands">Les mains</a>
-      <a href="#quiz">Quiz</a>
-    </div>
-  </PageHero>
+    lead="Pas besoin de théorie. Regarde, touche, écoute."
+  />
 
   <nav class="chapter-rail" aria-label="Sommaire de la page">
     <div class="container rail-inner">
@@ -68,7 +54,6 @@ const faqs = [
       />
       <Anatomy parts={GUITAR_PARTS_FR} lang="fr" />
       <div class="row-note">
-        <MascotBubble who="capi" title="Le conseil de Capi" text="Mes cordes sont en nylon, plus douces que l'acier. Mais il faut quand même poser les doigts juste derrière la frette." tone="sun" />
         <a class="text-link" href="#strings">Les six cordes <Icon name="arrow-right" size={13} /></a>
       </div>
     </div>
@@ -129,7 +114,6 @@ const faqs = [
         <div><b>Tirando</b><span>Le doigt revient vers la paume : un son plus léger.</span></div>
       </div>
       <div class="row-note">
-        <MascotBubble who="momo" title="Le conseil de Momo" text="Si les doigts se fatiguent, secoue les mains et respire. Le repos fait partie du jeu." tone="pink" />
         <a class="btn btn-secondary" href={url("/fr/practice/")}>Aller au studio <Icon name="arrow-right" size={13} /></a>
       </div>
     </div>
@@ -193,18 +177,8 @@ E |-----------|</pre>
     <div class="container quiz-layout">
       <div>
         <SectionHead kicker="07 · Petit quiz" title="Détective de la musique" lead="Six questions, zéro pression. Une erreur explique simplement la réponse." />
-        <MascotBubble who="capi" title="Capi te souffle" text="Tu n'as pas besoin d'être parfait. Tu as seulement besoin d'être curieux." tone="sky" />
       </div>
       <BasicsQuiz questions={BASICS_QUIZ_FR} lang="fr" />
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <SectionHead kicker="Questions d'enfants" title="Les questions qu'on n'ose pas toujours poser" />
-      <div class="faq-list">
-        {faqs.map((faq, index) => <details open={index === 0}><summary><span>{String(index + 1).padStart(2, "0")}</span>{faq.q}<Icon name="chevron-down" size={16} /></summary><p>{faq.a}</p></details>)}
-      </div>
     </div>
   </section>
 
@@ -237,6 +211,10 @@ E |-----------|</pre>
 </script>
 
 <style>
+  :global(.basics-page .section-head .kicker) {
+    display: none;
+  }
+
   .slug {
     display: flex;
     flex-wrap: wrap;
@@ -293,7 +271,7 @@ E |-----------|</pre>
     gap: 5px;
     flex: 0 0 auto;
     color: var(--violet-700);
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 850;
   }
 
@@ -312,10 +290,11 @@ E |-----------|</pre>
 
   .rail-links a {
     flex: 0 0 auto;
-    padding: 5px 8px;
+    min-height: 34px;
+    padding: 6px 10px;
     color: var(--muted);
     border-radius: 999px;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
     text-decoration: none;
   }
@@ -332,7 +311,7 @@ E |-----------|</pre>
     flex: 0 0 auto;
     margin-left: auto;
     color: var(--ink-soft);
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 750;
     text-decoration: none;
     white-space: nowrap;

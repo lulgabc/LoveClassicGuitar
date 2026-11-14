@@ -5,7 +5,7 @@ import RoadmapBoard from "../../components/RoadmapBoard.astro";
 import SectionHead from "../../components/SectionHead.astro";
 import MascotBubble from "../../components/MascotBubble.astro";
 import Icon from "../../components/Icon.astro";
-import { STAGES_FR, TOTAL_QUESTS_FR, WATCH_TITLES_FR } from "../../data/fr/roadmap";
+import { STAGES_FR, WATCH_TITLES_FR } from "../../data/fr/roadmap";
 import { url } from "../../lib/url";
 
 const week = [
@@ -29,12 +29,6 @@ const week = [
     title="D'un premier son<br />à un <em>petit concert</em>."
     lead="Coche une mission quand tu l'as essayée. Rien ne se verrouille : reviens quand tu veux, répète ce que tu aimes."
   >
-    <div class="slug">
-      <span><Icon name="map" size={12} /> 6 étapes</span>
-      <span><Icon name="check" size={12} /> {TOTAL_QUESTS_FR} missions</span>
-      <span><Icon name="clock" size={12} /> 10–15 min</span>
-      <span><Icon name="shield" size={12} /> sauvegardé sur cet appareil</span>
-    </div>
   </PageHero>
 
   <section class="section-tight">

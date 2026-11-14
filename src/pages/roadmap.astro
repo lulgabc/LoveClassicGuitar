@@ -5,7 +5,7 @@ import RoadmapBoard from "../components/RoadmapBoard.astro";
 import SectionHead from "../components/SectionHead.astro";
 import MascotBubble from "../components/MascotBubble.astro";
 import Icon from "../components/Icon.astro";
-import { MILESTONES, PRINCIPLES, STAGES, TOTAL_QUESTS, WEEKLY_RHYTHM } from "../data/roadmap";
+import { MILESTONES, PRINCIPLES, WEEKLY_RHYTHM } from "../data/roadmap";
 import { url } from "../lib/url";
 ---
 
@@ -18,12 +18,6 @@ import { url } from "../lib/url";
     title="把“不会”，<br />一站一站走成<em>“我会”</em>。"
     lead="这条路线不是考试，也不是比赛。它只是一张地图：告诉你下一小步在哪里，也允许你在喜欢的风景里多待一会儿。"
   >
-    <div class="slug">
-      <span><Icon name="map" size={12} /> {STAGES.length} 站</span>
-      <span><Icon name="check" size={12} /> {TOTAL_QUESTS} 个小任务</span>
-      <span><Icon name="clock" size={12} /> 每次 10–15 分钟</span>
-      <span><Icon name="star" size={12} /> 进度只保存在本机</span>
-    </div>
   </PageHero>
 
   <section class="section-tight">

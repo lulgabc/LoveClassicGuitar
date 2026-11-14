@@ -6,7 +6,6 @@ import MascotBubble from "../../components/MascotBubble.astro";
 import Icon from "../../components/Icon.astro";
 import { BOOKS_FR, FR_KINDS, RESOURCES_FR } from "../../data/fr/library";
 import { url } from "../../lib/url";
-const bookCount = BOOKS_FR.length;
 ---
 
 <BaseLayout
@@ -19,12 +18,6 @@ const bookCount = BOOKS_FR.length;
     title="Des portes,<br />pas une <em>montagne</em>."
     lead="Quelques bons liens suffisent. Choisis une seule porte aujourd'hui, puis va jouer."
   >
-    <div class="slug">
-      <span><Icon name="compass" size={12} /> {RESOURCES_FR.length} ressources</span>
-      <span><Icon name="book" size={12} /> {bookCount} livres</span>
-      <span><Icon name="shield" size={12} /> gratuit / payant indiqué</span>
-      <span><Icon name="external" size={12} /> liens externes</span>
-    </div>
   </PageHero>
 
   <section class="section" id="liens">

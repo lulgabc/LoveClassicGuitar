@@ -3,21 +3,17 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import HeroScene from "../../components/HeroScene.astro";
 import SectionHead from "../../components/SectionHead.astro";
 import Jukebox from "../../components/Jukebox.astro";
-import MascotBubble from "../../components/MascotBubble.astro";
 import Icon from "../../components/Icon.astro";
-import { HERO_CHIPS_FR } from "../../data/site";
 import { STAGES_FR, TOTAL_QUESTS_FR } from "../../data/fr/roadmap";
 import { PERFORMANCES_FR } from "../../data/fr/concert";
-import { RESOURCES_FR } from "../../data/fr/library";
 import { url } from "../../lib/url";
 
 const homeTracks = PERFORMANCES_FR.slice(0, 4);
 const quickLinks = [
-  { icon: "book" as const, eyebrow: "Découvrir", title: "La guitare", text: "L'instrument, les six cordes et le premier son.", href: "/fr/basics/", color: "sky" },
-  { icon: "timer" as const, eyebrow: "Pratiquer", title: "15 minutes", text: "Un minuteur, un métronome et deux petits jeux.", href: "/fr/practice/", color: "violet" },
-  { icon: "headphones" as const, eyebrow: "Écouter", title: "La salle de concert", text: "De la musique à écouter directement dans la page.", href: "/fr/concert/", color: "pink" },
+  { icon: "book" as const, title: "La guitare", text: "L'instrument, les six cordes et le premier son.", href: "/fr/basics/", color: "sky" },
+  { icon: "timer" as const, title: "15 minutes", text: "Un minuteur, un métronome et deux jeux.", href: "/fr/practice/", color: "violet" },
+  { icon: "headphones" as const, title: "La salle de concert", text: "De la musique à écouter dans la page.", href: "/fr/concert/", color: "pink" },
 ];
-const previewResources = RESOURCES_FR.filter((resource) => resource.featured).slice(0, 3);
 ---
 
 <BaseLayout
@@ -30,39 +26,26 @@ const previewResources = RESOURCES_FR.filter((resource) => resource.featured).sl
       <div class="fr-hero-copy">
         <span class="eyebrow"><Icon name="sparkle" size={14} /> Le studio des étoiles · pour une musicienne de 7 ans</span>
         <h1>Six cordes<br />pour aller <span>jusqu'aux étoiles</span>.</h1>
-        <p class="hero-lead">Avec Momo la petite chauve-souris et Capi le capybara, apprends à ton rythme. Pas de classement, pas de pression : juste des étoiles à allumer.</p>
+        <p class="hero-lead">Avec Momo et Capi, apprends à ton rythme. Pas de classement, pas de pression.</p>
         <div class="btn-row">
           <a class="btn btn-sun btn-lg" href={url("/fr/roadmap/")}><Icon name="map" size={18} /> Commencer le parcours</a>
           <a class="btn hero-ghost btn-lg" href={url("/fr/practice/")}><Icon name="play" size={16} /> Essayer 15 min</a>
-        </div>
-        <div class="hero-chips">
-          {HERO_CHIPS_FR.map((chip) => <span><Icon name="star" size={11} /> {chip}</span>)}
         </div>
       </div>
       <div class="fr-hero-visual">
         <HeroScene lang="fr" />
       </div>
     </div>
-    <div class="container">
-      <div class="fr-stats">
-        <div><strong>6</strong><span>étapes</span></div>
-        <div><strong>{TOTAL_QUESTS_FR}</strong><span>missions</span></div>
-        <div><strong>30+</strong><span>vidéos et cours</span></div>
-        <div><strong>10</strong><span>guitaristes</span></div>
-        <a href={url("/fr/parents/")}><Icon name="heart" size={17} /> Aux parents <Icon name="arrow-right" size={14} /></a>
-      </div>
-    </div>
   </section>
 
   <section class="section">
     <div class="container">
-      <SectionHead kicker="Aujourd'hui" title="On fait <em>quoi</em> ?" lead="Un petit choix, et la musique peut commencer." />
+      <SectionHead title="On fait <em>quoi</em> ?" lead="Un petit choix, et la musique peut commencer." />
       <div class="quick-grid">
         {
           quickLinks.map((link) => (
             <a class:list={["quick-card", "card", "card-hover", `quick-${link.color}`]} href={url(link.href)}>
               <span class="quick-icon"><Icon name={link.icon} size={23} /></span>
-              <span class="quick-eyebrow">{link.eyebrow}</span>
               <h3>{link.title}</h3>
               <p>{link.text}</p>
               <span class="quick-arrow">C'est parti <Icon name="arrow-right" size={14} /></span>
@@ -70,18 +53,13 @@ const previewResources = RESOURCES_FR.filter((resource) => resource.featured).sl
           ))
         }
       </div>
-      <div class="challenge">
-        <span class="challenge-star"><Icon name="sparkle" size={20} /></span>
-        <div><span>Le défi de Momo</span><p data-fr-challenge aria-live="polite">Un seul petit objectif, c'est déjà une belle séance.</p></div>
-        <button type="button" data-fr-challenge-refresh><Icon name="refresh" size={15} /> Un autre</button>
-      </div>
     </div>
   </section>
 
   <section class="section section-wash">
     <div class="container">
       <div class="section-head-row">
-        <SectionHead kicker="Le parcours" title="Six étapes, <em>un pas à la fois</em>" lead="De la première corde à vide au petit concert de famille. Les étapes restent ouvertes : on peut revenir." />
+        <SectionHead title="Six étapes, <em>un pas à la fois</em>" lead="De la première corde au petit concert de famille." />
         <a class="btn btn-secondary" href={url("/fr/roadmap/")}>Ouvrir la carte <Icon name="arrow-right" size={14} /></a>
       </div>
       <div class="fr-progress card">
@@ -95,7 +73,6 @@ const previewResources = RESOURCES_FR.filter((resource) => resource.featured).sl
             <a class:list={["fr-stage", `fr-stage-${stage.color}`]} href={url(`/fr/roadmap/#${stage.id}`)}>
               <span>{stage.n === 0 ? "✦" : stage.n}</span>
               <strong>{stage.title}</strong>
-              <small>{stage.weeks}</small>
             </a>
           ))
         }
@@ -103,24 +80,10 @@ const previewResources = RESOURCES_FR.filter((resource) => resource.featured).sl
     </div>
   </section>
 
-  <section class="section">
-    <div class="container why-grid">
-      <div class="why-intro">
-        <SectionHead kicker="Pourquoi la guitare" title="Une guitare, <em>tout un monde</em>" lead="À la fois mélodie, basse et percussions. Et surtout, une voix qui peut être très douce." />
-        <MascotBubble who="capi" title="Capi te dit" text="Pas besoin de devenir une virtuose. Tu peux commencer par un seul son." tone="sun" />
-      </div>
-      <div class="why-mini-grid">
-        <article class="why-mini card"><Icon name="music" size={22} /><h3>Un petit orchestre</h3><p>La mélodie, la basse et les accords se rencontrent sous les mêmes doigts.</p></article>
-        <article class="why-mini card"><Icon name="wand" size={22} /><h3>Une palette de couleurs</h3><p>Près de la rosace ou près du chevalet, le même son change de lumière.</p></article>
-        <article class="why-mini card"><Icon name="compass" size={22} /><h3>Cinq siècles d'histoires</h3><p>De Bach à l'Espagne et au Brésil, il y a toujours une nouvelle pièce à découvrir.</p></article>
-      </div>
-    </div>
-  </section>
-
   <section class="section section-wash">
     <div class="container">
       <div class="section-head-row">
-        <SectionHead kicker="Le studio" title="Quinze minutes, <em>et c'est tout</em>" lead="Une petite séance suffit. Le minuteur te guide, le métronome tient le rythme." />
+        <SectionHead title="Quinze minutes, <em>et c'est tout</em>" lead="Une petite séance suffit." />
         <a class="btn btn-primary" href={url("/fr/practice/")}><Icon name="timer" size={15} /> Ouvrir le studio</a>
       </div>
       <div class="session-card card">
@@ -139,33 +102,10 @@ const previewResources = RESOURCES_FR.filter((resource) => resource.featured).sl
   <section class="section">
     <div class="container">
       <div class="section-head-row">
-        <SectionHead kicker="Écouter maintenant" title="Une pièce, <em>directement ici</em>" lead={`Quatre pièces pour commencer ; la salle de concert propose ${PERFORMANCES_FR.length} pièces jouables et une bibliothèque de 200 pièces.`} />
+        <SectionHead title="Une pièce, <em>directement ici</em>" lead="Quatre pièces pour commencer." />
         <a class="btn btn-secondary" href={url("/fr/concert/")}>Toute la salle de concert <Icon name="arrow-right" size={14} /></a>
       </div>
       <Jukebox items={homeTracks} lang="fr" compact />
-    </div>
-  </section>
-
-  <section class="section section-wash">
-    <div class="container">
-      <SectionHead kicker="Ressources" title="Trois portes pour commencer" lead="Un cours, des partitions, une oreille. Le reste peut attendre." />
-      <div class="resource-mini-grid">
-        {
-          previewResources.map((resource) => (
-            <a class="resource-mini card card-hover" href={resource.url} target="_blank" rel="noopener noreferrer">
-              <span class="resource-kind">{resource.kind} · {resource.price}</span>
-              <h3>{resource.name}</h3>
-              <p>{resource.description}</p>
-              <span>Ouvrir <Icon name="external" size={12} /></span>
-            </a>
-          ))
-        }
-      </div>
-      <div class="home-links">
-        <a href={url("/fr/basics/")}>Découvrir les bases <Icon name="arrow-right" size={12} /></a>
-        <a href={url("/fr/library/")}>Toutes les ressources <Icon name="arrow-right" size={12} /></a>
-        <a href={url("/fr/parents/")}>Le guide des parents <Icon name="arrow-right" size={12} /></a>
-      </div>
     </div>
   </section>
 
@@ -183,21 +123,7 @@ const previewResources = RESOURCES_FR.filter((resource) => resource.featured).sl
 
 <script>
   import { readProgress } from "../../lib/progress";
-  import { PRACTICE_TIPS_FR } from "../../data/fr/practice";
   import { TOTAL_QUESTS_FR } from "../../data/fr/roadmap";
-
-  const challenges = PRACTICE_TIPS_FR;
-  const challenge = document.querySelector<HTMLElement>("[data-fr-challenge]");
-  const refresh = document.querySelector<HTMLButtonElement>("[data-fr-challenge-refresh]");
-  let index = new Date().getDate() % challenges.length;
-  if (challenge) challenge.textContent = challenges[index] ?? "";
-  refresh?.addEventListener("click", () => {
-    index = (index + 1) % challenges.length;
-    if (challenge) {
-      challenge.textContent = challenges[index] ?? "";
-      challenge.animate([{ opacity: 0, transform: "translateY(4px)" }, { opacity: 1, transform: "translateY(0)" }], { duration: 260, easing: "ease-out" });
-    }
-  });
 
   function updateProgress(): void {
     const done = Math.min(readProgress().quests.length, TOTAL_QUESTS_FR);
@@ -207,7 +133,7 @@ const previewResources = RESOURCES_FR.filter((resource) => resource.featured).sl
     const label = document.querySelector<HTMLElement>("[data-fr-progress-label]");
     if (bar) bar.style.width = `${percent}%`;
     if (count) count.textContent = String(done);
-    if (label) label.textContent = done === 0 ? "On commence par écouter une corde." : done >= TOTAL_QUESTS_FR ? "Toutes les étoiles sont allumées." : `Tu as déjà allumé ${done} étoiles.`;
+    if (label) label.textContent = done === 0 ? "On commence par écouter une corde." : done >= TOTAL_QUESTS_FR ? "Toutes les étoiles sont allumées." : `Déjà ${done} étoiles.`;
   }
   updateProgress();
   window.addEventListener("lcg:progress-change", updateProgress);
@@ -660,16 +586,141 @@ const previewResources = RESOURCES_FR.filter((resource) => resource.featured).sl
   @media (max-width: 620px) {
     .quick-grid, .resource-mini-grid { grid-template-columns: 1fr; }
     .quick-card:last-child, .resource-mini-grid > :last-child { grid-column: auto; }
-    .fr-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .fr-stats a { grid-column: 1 / -1; }
     .fr-progress { flex-wrap: wrap; }
     .fr-progress-bar { flex-basis: 100%; order: 3; }
     .fr-progress-count { margin-left: auto; }
     .session-steps { grid-template-columns: 1fr; }
     .parent-callout { align-items: flex-start; flex-direction: column; }
-    .home-links { flex-direction: column; }
-    .challenge { align-items: flex-start; flex-wrap: wrap; }
-    .challenge div { flex-basis: calc(100% - 50px); }
-    .challenge button { margin-left: 47px; }
+  }
+
+  /* Compact home layout */
+  .fr-hero {
+    padding: clamp(26px, 3.6vw, 42px) 0 clamp(20px, 3vw, 30px);
+  }
+
+  .fr-hero-copy {
+    padding-block: 6px;
+  }
+
+  .fr-hero h1 {
+    margin-top: 14px;
+    font-size: clamp(34px, 4.6vw, 54px);
+  }
+
+  .hero-lead {
+    max-width: 560px;
+    margin-top: 12px;
+    font-size: clamp(14.5px, 1.4vw, 16px);
+    line-height: 1.65;
+  }
+
+  .fr-hero .btn-row {
+    margin-top: 18px;
+  }
+
+  .quick-grid {
+    gap: 12px;
+  }
+
+  .quick-card {
+    min-height: 190px;
+    padding: 18px;
+  }
+
+  .quick-icon {
+    margin-bottom: 14px;
+  }
+
+  .quick-card h3 {
+    font-size: 22px;
+  }
+
+  .quick-card p {
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  .fr-progress {
+    margin-bottom: 12px;
+    padding: 12px 14px;
+  }
+
+  .fr-stage {
+    min-height: 100px;
+    padding: 10px 8px;
+  }
+
+  .fr-stage > span {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  .fr-stage strong {
+    font-size: 13px;
+  }
+
+  .session-card {
+    padding: 18px;
+    gap: 16px;
+  }
+
+  .session-steps b {
+    font-size: 9.5px;
+  }
+
+  .session-steps strong {
+    font-size: 13px;
+  }
+
+  .session-steps span {
+    grid-column: 2;
+    font-size: 10.5px;
+    line-height: 1.45;
+  }
+
+  .resource-mini-grid {
+    gap: 10px;
+  }
+
+  .resource-mini {
+    padding: 16px;
+  }
+
+  .resource-kind {
+    font-size: 9.5px;
+  }
+
+  .resource-mini h3 {
+    font-size: 18px;
+  }
+
+  .resource-mini p {
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+
+  .resource-mini > span:last-child {
+    font-size: 12px;
+  }
+
+  .parent-callout {
+    padding: clamp(20px, 3vw, 30px);
+  }
+
+  .parent-callout h2 {
+    font-size: clamp(24px, 3vw, 32px);
+  }
+
+  .parent-callout p {
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  @media (max-width: 900px) {
+    .fr-hero-visual {
+      display: none;
+    }
   }
 </style>

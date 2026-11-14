@@ -6,7 +6,7 @@ import LibraryExplorer from "../components/LibraryExplorer.astro";
 import ChannelCard from "../components/ChannelCard.astro";
 import MascotBubble from "../components/MascotBubble.astro";
 import Icon from "../components/Icon.astro";
-import { BOOKS, EXAM_BOARDS, RESOURCES, SHEET_SOURCES } from "../data/library";
+import { BOOKS, EXAM_BOARDS, SHEET_SOURCES } from "../data/library";
 import { CHANNELS } from "../data/videos";
 import { url } from "../lib/url";
 
@@ -67,12 +67,6 @@ const chooseTips = [
     title="好东西很多，<br />但你不必<em>全都收藏</em>。"
     lead="这里把免费课程、YouTube 频道、教材、曲谱和考级信息整理在一起。先选一条主线，其他的当作补充。"
   >
-    <div class="slug">
-      <span><Icon name="compass" size={12} /> {RESOURCES.length} 个入口</span>
-      <span><Icon name="youtube" size={12} /> {CHANNELS.length} 个频道</span>
-      <span><Icon name="book" size={12} /> {BOOKS.length} 本参考</span>
-      <span><Icon name="shield" size={12} /> 标明免费 / 付费</span>
-    </div>
   </PageHero>
 
   <section class="section">

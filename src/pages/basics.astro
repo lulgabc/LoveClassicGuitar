@@ -6,7 +6,6 @@ import Anatomy from "../components/Anatomy.astro";
 import StringBoard from "../components/StringBoard.astro";
 import GlossaryExplorer from "../components/GlossaryExplorer.astro";
 import BasicsQuiz from "../components/BasicsQuiz.astro";
-import MascotBubble from "../components/MascotBubble.astro";
 import Capybara from "../components/Capybara.astro";
 import Icon from "../components/Icon.astro";
 import {
@@ -30,51 +29,19 @@ const chapters = [
   { id: "quiz", label: "小测验" },
 ];
 
-const faqs = [
-  {
-    q: "手指按弦有点疼，正常吗？",
-    a: "刚开始指尖会有轻微压痛，这是皮肤在适应。但不应该出现刺痛、麻木或持续疼痛。缩短按弦时间、检查琴弦高度和按弦位置；如果疼痛持续，暂停并请老师检查琴，不要硬撑。",
-  },
-  {
-    q: "每天都必须练琴吗？",
-    a: "不必。对 7 岁孩子来说，每周 3–5 次、每次 10–15 分钟的稳定节奏，通常比每天硬撑更可持续。生病、旅行或心情不好时，听一首曲子也算音乐时间。",
-  },
-  {
-    q: "一定要找老师吗？",
-    a: "不是绝对必须，但对初学者非常推荐。老师能检查琴的尺寸、弦距、坐姿和手型，避免把错误练成习惯。即使两周一次课，也比完全没有人看一眼更安心。",
-  },
-  {
-    q: "可以用民谣吉他或拨片先学吗？",
-    a: "可以用通用吉他培养兴趣，但古典吉他的尼龙弦、宽琴颈、坐姿和拨弦方式不同。若目标明确是古典吉他，尽量用合适的古典吉他入门，并让老师检查尺寸。",
-  },
-  {
-    q: "五线谱和 TAB 要学哪个？",
-    a: "TAB 上手快，五线谱能打开更多曲目和音乐理解。小朋友可以先从节奏和少量音符开始，两者不必对立。好的教材通常会用五线谱为主，TAB 辅助。",
-  },
-  {
-    q: "多久才能弹一首完整的曲子？",
-    a: "如果每周稳定练习，很多孩子在第 2–3 个月可以完整弹出一首很短的旋律。但每个孩子的节奏不同。完整、放松、好听，比“多快”更重要。",
-  },
-];
+
 ---
 
 <BaseLayout
   title="吉他小百科"
   description="给孩子的古典吉他基础知识：吉他部位、六根弦、坐姿、左右手、读谱、护理、历史和小词典，配互动图解与音频。"
+  bodyClass="basics-page"
 >
   <PageHero
     kicker="Chapter 01 · Guitar basics"
     title="先和吉他<br />打个<em>招呼</em>。"
-    lead="不用先学会乐理。先认识它、抱抱它、找到最舒服的坐姿。等身体和琴变成朋友，音乐就会慢慢来。"
-  >
-    <div class="slug">
-      <a href="#anatomy">认识琴</a>
-      <a href="#strings">六根弦</a>
-      <a href="#posture">坐好</a>
-      <a href="#reading">读谱</a>
-      <a href="#glossary">小词典</a>
-    </div>
-  </PageHero>
+    lead="不用先学会乐理。先认识它、抱抱它，找到最舒服的坐姿。"
+  />
 
   <nav class="chapter-rail" aria-label="本页目录">
     <div class="container rail-inner">
@@ -95,11 +62,6 @@ const faqs = [
       />
       <Anatomy />
       <div class="after-note">
-        <MascotBubble
-          who="capi"
-          text="我的琴弦是尼龙做的，按起来比钢弦软，但也不是“随便按”。手指要立起来，按在品丝旁边，声音才会亮亮的。"
-          tone="sun"
-        />
         <a class="text-link" href="#strings">接下来：认识六根弦 <Icon name="arrow-right" size={13} /></a>
       </div>
     </div>
@@ -252,7 +214,6 @@ const faqs = [
       </div>
 
       <div class="hands-bottom">
-        <MascotBubble who="momo" text="手指酸了就先停下来，甩甩手。放松不是偷懒，是让下一次声音更好听。" tone="pink" />
         <a class="btn btn-secondary" href={url("/practice/#strings")}><Icon name="volume" size={14} /> 去听六根弦</a>
       </div>
     </div>
@@ -369,7 +330,6 @@ const faqs = [
         }
       </div>
       <div class="history-cta">
-        <MascotBubble who="capi" text="想听听这五百年最后变成了什么声音？去音乐厅挑一首塔雷加或巴赫吧。" tone="violet" />
         <a class="btn btn-secondary" href={url("/concert/")}><Icon name="headphones" size={15} /> 去音乐厅</a>
       </div>
     </div>
@@ -401,26 +361,6 @@ const faqs = [
         </div>
       </div>
       <BasicsQuiz />
-    </div>
-  </section>
-
-  <section class="section faq-section">
-    <div class="container">
-      <SectionHead
-        kicker="FAQ"
-        title="小朋友和家长常问的 6 件事"
-        lead="没有笨问题。每个演奏家也都是从“这个怎么弄”开始的。"
-      />
-      <div class="faq-list">
-        {
-          faqs.map((faq, index) => (
-            <details class="faq-item" open={index === 0}>
-              <summary><span>{String(index + 1).padStart(2, "0")}</span>{faq.q}<Icon name="chevron-down" size={18} /></summary>
-              <p>{faq.a}</p>
-            </details>
-          ))
-        }
-      </div>
     </div>
   </section>
 
@@ -494,6 +434,10 @@ const faqs = [
 </script>
 
 <style>
+  :global(.basics-page .section-head .kicker) {
+    display: none;
+  }
+
   #anatomy,
   #strings,
   #posture,
@@ -554,7 +498,7 @@ const faqs = [
     gap: 5px;
     flex: 0 0 auto;
     color: var(--violet-700);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 850;
   }
 
@@ -573,10 +517,11 @@ const faqs = [
 
   .rail-links a {
     flex: 0 0 auto;
-    padding: 5px 9px;
+    min-height: 34px;
+    padding: 6px 10px;
     border-radius: 999px;
     color: var(--muted);
-    font-size: 9.5px;
+    font-size: 11px;
     font-weight: 700;
     text-decoration: none;
     transition: background 150ms ease, color 150ms ease;
@@ -595,7 +540,7 @@ const faqs = [
     flex: 0 0 auto;
     margin-left: auto;
     color: var(--ink-soft);
-    font-size: 9.5px;
+    font-size: 11px;
     font-weight: 750;
     text-decoration: none;
     white-space: nowrap;

@@ -7,9 +7,8 @@ import Metronome from "../components/Metronome.astro";
 import Tuner from "../components/Tuner.astro";
 import NoteGame from "../components/NoteGame.astro";
 import EarGame from "../components/EarGame.astro";
-import MascotBubble from "../components/MascotBubble.astro";
 import Icon from "../components/Icon.astro";
-import { PRACTICE_RULES, WARMUPS } from "../data/practice";
+import { WARMUPS } from "../data/practice";
 import { url } from "../lib/url";
 ---
 
@@ -20,16 +19,8 @@ import { url } from "../lib/url";
   <PageHero
     kicker="Practice room · 星空练习室"
     title="今天只练一点点，<br />也<em>算数</em>。"
-    lead="15 分钟、10 分钟，甚至只弹一根空弦。让手指和耳朵先玩起来，练习不是作业，是你和音乐单独相处的时间。"
-  >
-    <div class="slug">
-      <a href="#timer">15 分钟计时</a>
-      <a href="#metronome">节拍器</a>
-      <a href="#strings">听六根弦</a>
-      <a href="#note-game">音符游戏</a>
-      <a href="#ear-game">耳朵游戏</a>
-    </div>
-  </PageHero>
+    lead="15 分钟、10 分钟，甚至只弹一根空弦。让手指和耳朵先玩起来。"
+  />
 
   <nav class="tool-rail" aria-label="练习工具">
     <div class="container tool-rail-inner">
@@ -50,15 +41,13 @@ import { url } from "../lib/url";
         <div class="tip-strip-icon"><Icon name="sparkle" size={19} /></div>
         <div>
           <span>Momo 今天的小纸条</span>
-          <p data-practice-tip aria-live="polite">今天只练一个小目标，就已经很棒。</p>
+          <p>今天只练一个小目标，就已经很棒。</p>
         </div>
-        <button type="button" class="tip-strip-refresh" data-practice-tip-refresh><Icon name="refresh" size={15} /> 换一句</button>
       </div>
 
       <SectionHead
-        kicker="01 · A gentle timer"
         title="先选一个长度，<em>开始就好</em>"
-        lead="计时器会带你走完空弦、技术、曲目和听一听。中途暂停、跳步都可以，没有“必须撑完”。"
+        lead="选 10、15 或 20 分钟，跟着走就好。"
       />
       <PracticeTimer />
     </div>
@@ -67,17 +56,15 @@ import { url } from "../lib/url";
   <section class="section section-wash" id="metronome">
     <div class="container">
       <SectionHead
-        kicker="02 · Keep the pulse"
         title="节拍器，是音乐的<em>心跳</em>"
-        lead="60 BPM 是散步，72 是小步走，88 是小跑。先拍手，再上琴，拍子会更容易住进身体里。"
+        lead="先拍手，再上琴。60 BPM 像散步。"
       />
       <Metronome />
 
       <div class="tuner-section" id="strings">
         <SectionHead
-          kicker="03 · Tune your strings"
           title="听一听，<em>六根弦</em>的标准声音"
-          lead="耳朵先认识“准”的声音，手指才知道要去哪里。第一年调音请大人帮忙，别让孩子独自拧弦轴。"
+          lead="第一年调音请大人帮忙。"
         />
         <Tuner />
       </div>
@@ -87,9 +74,8 @@ import { url } from "../lib/url";
   <section class="section" id="games">
     <div class="container">
       <SectionHead
-        kicker="04 · Play & listen"
         title="练习也可以像<em>玩游戏</em>"
-        lead="游戏不计成绩，只训练眼睛和耳朵。每天玩 3 分钟，认识音符和听高低会变成自然反应。"
+        lead="每天玩 3 分钟，认识音符和高低。"
       />
       <div class="games-stack">
         <NoteGame />
@@ -101,9 +87,8 @@ import { url } from "../lib/url";
   <section class="section section-wash" id="warmups">
     <div class="container">
       <SectionHead
-        kicker="05 · Warm up first"
         title="先让身体<em>打个哈欠</em>"
-        lead="弹琴前花 1 分钟抖抖手、放松肩膀。手不是机器，先暖起来，声音才会松。"
+        lead="弹琴前花 1 分钟放松肩膀和手。"
       />
       <div class="warmup-layout">
         <div class="warmup-list">
@@ -117,48 +102,12 @@ import { url } from "../lib/url";
             ))
           }
         </div>
-
-        <aside class="print-preview">
-          <div class="print-paper">
-            <span class="paper-hole"></span><span class="paper-hole"></span>
-            <div class="print-paper-head"><span>LOVE CLASSIC GUITAR</span><strong>本周练习卡</strong><small>名字：___________　本周星星：☆ ☆ ☆ ☆ ☆</small></div>
-            <div class="print-lines">
-              <span>周一　听一首曲子，跟着哼</span>
-              <span>周二　空弦 5 分钟 + 左手 3 分钟</span>
-              <span>周三　休息，给耳朵放假</span>
-              <span>周四　只练最难的 2 小节</span>
-              <span>周五　即兴 4 小节</span>
-              <span>周六　给家人弹一次</span>
-              <span>周日　回看这周，挑一颗新星星</span>
-            </div>
-            <div class="print-stamp">慢慢来</div>
-          </div>
-          <div class="print-copy">
-            <span class="mini-kicker">Print & pencil</span>
-            <h3>把练习卡贴在琴盒上</h3>
-            <p>有时候笔和纸比屏幕更有仪式感。打印一张，让孩子自己画星星或贴贴纸。</p>
-            <a class="btn btn-secondary btn-sm" href={url("/print/weekly/")}><Icon name="printer" size={14} /> 打开可打印练习卡</a>
-          </div>
-        </aside>
-      </div>
-
-      <div class="practice-rules">
-        {
-          PRACTICE_RULES.map((rule) => (
-            <div class="practice-rule"><Icon name="check" size={14} /><p>{rule}</p></div>
-          ))
-        }
       </div>
     </div>
   </section>
 
   <section class="section-tight">
     <div class="container practice-bottom">
-      <MascotBubble
-        who="capi"
-        text="如果你今天一点都不想练，就听一首喜欢的歌。明天再摸琴，音乐不会因此跑掉。"
-        tone="sun"
-      />
       <div class="btn-row">
         <a class="btn btn-primary" href={url("/roadmap/")}><Icon name="map" size={15} /> 回到学习地图</a>
         <a class="btn btn-ghost" href={url("/concert/")}>去听一首</a>
@@ -166,32 +115,6 @@ import { url } from "../lib/url";
     </div>
   </section>
 </BaseLayout>
-
-<script>
-  import { PRACTICE_TIPS } from "../data/practice";
-
-  const tipEl = document.querySelector<HTMLElement>("[data-practice-tip]");
-  const refresh = document.querySelector<HTMLButtonElement>("[data-practice-tip-refresh]");
-  let index = new Date().getDate() % PRACTICE_TIPS.length;
-
-  if (tipEl) tipEl.textContent = PRACTICE_TIPS[index] ?? "";
-  refresh?.addEventListener("click", () => {
-    index = (index + 1) % PRACTICE_TIPS.length;
-    if (tipEl) {
-      tipEl.textContent = PRACTICE_TIPS[index] ?? "";
-      tipEl.animate(
-        [
-          { opacity: 0, transform: "translateY(5px)" },
-          { opacity: 1, transform: "translateY(0)" },
-        ],
-        { duration: 260, easing: "ease-out" },
-      );
-    }
-    refresh.classList.remove("spin");
-    void refresh.offsetWidth;
-    refresh.classList.add("spin");
-  });
-</script>
 
 <style>
   #timer,
@@ -255,7 +178,7 @@ import { url } from "../lib/url";
     flex: 0 0 auto;
     margin-right: 7px;
     color: var(--violet-700);
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 850;
   }
 
@@ -264,10 +187,11 @@ import { url } from "../lib/url";
     align-items: center;
     gap: 4px;
     flex: 0 0 auto;
-    padding: 5px 8px;
+    min-height: 34px;
+    padding: 6px 10px;
     color: var(--muted);
     border-radius: 999px;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
     text-decoration: none;
     white-space: nowrap;
@@ -362,7 +286,7 @@ import { url } from "../lib/url";
 
   .warmup-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(290px, 0.85fr);
+    grid-template-columns: 1fr;
     gap: 22px;
     align-items: start;
   }
@@ -552,6 +476,7 @@ import { url } from "../lib/url";
   .practice-bottom {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 18px;
   }
 

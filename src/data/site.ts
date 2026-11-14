@@ -21,8 +21,6 @@ export const NAV = [
   { href: "/practice/", label: "练习室", short: "练习" },
   { href: "/concert/", label: "音乐厅", short: "音乐" },
   { href: "/scores/", label: "乐谱库", short: "乐谱" },
-  { href: "/library/", label: "资源宝库", short: "资源" },
-  { href: "/parents/", label: "给爸妈", short: "爸妈" },
 ] as const;
 
 export const NAV_FR = [
@@ -32,8 +30,6 @@ export const NAV_FR = [
   { href: "/fr/practice/", label: "Pratique", short: "Pratique" },
   { href: "/fr/concert/", label: "Écouter", short: "Écouter" },
   { href: "/fr/scores/", label: "Partitions", short: "Partitions" },
-  { href: "/fr/library/", label: "Ressources", short: "Ressources" },
-  { href: "/fr/parents/", label: "Parents", short: "Parents" },
 ] as const;
 
 export const HERO_CHIPS = ["零基础", "每天 10–15 分钟", "免费资源", "可打印练习卡"];

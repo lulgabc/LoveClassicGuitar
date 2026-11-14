@@ -67,8 +67,8 @@ const { kicker, title, lead, compact = false } = Astro.props;
   .page-hero {
     position: relative;
     overflow: hidden;
-    margin-bottom: clamp(32px, 5vw, 58px);
-    padding-block: clamp(58px, 7vw, 88px) clamp(54px, 7vw, 82px);
+    margin-bottom: clamp(18px, 2.4vw, 28px);
+    padding-block: clamp(32px, 4.2vw, 50px) clamp(28px, 3.6vw, 44px);
     color: #f8f1ff;
     background:
       radial-gradient(circle at 84% 15%, rgba(255, 216, 111, 0.14), transparent 25%),
@@ -93,7 +93,7 @@ const { kicker, title, lead, compact = false } = Astro.props;
   }
 
   .page-hero.compact {
-    padding-block: 46px 50px;
+    padding-block: 28px 30px;
   }
 
   .page-hero-stars {
@@ -125,7 +125,7 @@ const { kicker, title, lead, compact = false } = Astro.props;
     display: grid;
     grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
     align-items: center;
-    gap: clamp(24px, 5vw, 60px);
+    gap: clamp(20px, 4vw, 42px);
   }
 
   .page-hero-copy {
@@ -136,9 +136,9 @@ const { kicker, title, lead, compact = false } = Astro.props;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
     color: #ffd86f;
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 900;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -152,8 +152,8 @@ const { kicker, title, lead, compact = false } = Astro.props;
   .page-hero h1 {
     margin: 0;
     color: #fffaf0;
-    font-size: clamp(35px, 5vw, 58px);
-    line-height: 1.13;
+    font-size: clamp(30px, 4.2vw, 46px);
+    line-height: 1.15;
     letter-spacing: -0.025em;
     text-shadow: 0 2px 0 rgba(20, 10, 55, 0.28);
   }
@@ -166,17 +166,17 @@ const { kicker, title, lead, compact = false } = Astro.props;
 
   .page-hero-lead {
     max-width: 640px;
-    margin-top: 17px;
+    margin-top: 10px;
     color: #cfc3ed;
-    font-size: clamp(14.5px, 1.6vw, 17px);
-    line-height: 1.8;
+    font-size: clamp(14px, 1.35vw, 15.5px);
+    line-height: 1.65;
   }
 
   .page-hero-copy :global(.slug) {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 20px;
+    gap: 6px;
+    margin-top: 14px;
   }
 
   .art-orbit {
