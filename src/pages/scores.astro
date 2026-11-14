@@ -2,9 +2,9 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
 import SectionHead from "../components/SectionHead.astro";
-import ScoreLibrary from "../components/ScoreLibrary.astro";
+import FullScoreLibrary from "../components/FullScoreLibrary.astro";
 import Icon from "../components/Icon.astro";
-import { SCORES, SCORE_LEVELS } from "../data/scores";
+import { SCORE_LIBRARY, SCORE_LIBRARY_LEVELS } from "../data/score-library";
 import { url } from "../lib/url";
 
 const levels = [
@@ -23,17 +23,16 @@ const steps = [
 ];
 
 const sources = [
-  { name: "IMSLP", url: "https://imslp.org/wiki/Category:For_guitar", note: "公共领域乐谱，按作品和版本查找。" },
-  { name: "Mutopia", url: "https://www.mutopiaproject.org/", note: "自由授权的排版乐谱，适合打印。" },
-  { name: "This is Classical Guitar", url: "https://www.thisisclassicalguitar.com/free-classical-guitar-method-book-pdf/", note: "免费入门方法与练习。" },
-  { name: "8notes", url: "https://www.8notes.com/guitar/", note: "简单的旋律和改编曲，适合第一年。" },
-  { name: "WorldCat", url: "https://search.worldcat.org/", note: "查找出版社版本或附近图书馆。" },
+  { name: "GuitarLoot", url: "https://guitarloot.org.uk/", note: "200 首编配的来源。许可允许使用和改编，但需要保留来源署名。" },
+  { name: "OpenSheetMusicDisplay", url: "https://github.com/opensheetmusicdisplay/opensheetmusicdisplay", note: "站内 MusicXML 渲染引擎，支持缩放和多页乐谱。" },
+  { name: "IMSLP", url: "https://imslp.org/wiki/Category:For_guitar", note: "更多公共领域乐谱，按作品和版本查找。" },
+  { name: "Mutopia", url: "https://www.mutopiaproject.org/", note: "更多自由授权的排版乐谱，适合打印。" },
 ];
 ---
 
 <BaseLayout
   title="乐谱库"
-  description="给孩子的古典吉他乐谱库：200 首按 5 个难度级别整理的练习曲与小品，附练习重点、合法乐谱来源和家长/老师说明。"
+  description="给孩子的古典吉他乐谱库：200 首完整 MusicXML 乐谱，按 5 个难度级别整理，站内直接渲染、缩放和下载，附练习重点与来源说明。"
 >
   <PageHero
     kicker="Partitions · 200 首"
@@ -63,7 +62,7 @@ const sources = [
               <h3>{level.title}</h3>
               <p>{level.body}</p>
               <span class="level-check"><Icon name="check" size={11} /> {level.check}</span>
-              <span class="level-count">{SCORE_LEVELS[index]?.count ?? 0} 首</span>
+              <span class="level-count">{SCORE_LIBRARY_LEVELS[index]?.count ?? 0} 首</span>
             </article>
           ))
         }
@@ -76,9 +75,9 @@ const sources = [
       <SectionHead
         kicker="200 首练习乐谱"
         title="按难度和<em>练习重点</em>找一首"
-        lead="先用级别缩小范围，再看“练什么”。免费乐谱和版权作品分开标注，不会把买不到的谱子说成免费。"
+        lead="全部 200 首都能在站内打开完整乐谱，用 OpenSheetMusicDisplay 渲染 MusicXML。按级别和练习重点筛选，再点“查看完整乐谱”。"
       />
-      <ScoreLibrary scores={SCORES} lang="zh" />
+      <FullScoreLibrary scores={SCORE_LIBRARY} lang="zh" />
     </div>
   </section>
 
@@ -104,7 +103,7 @@ const sources = [
 
   <section class="section section-wash">
     <div class="container">
-      <SectionHead kicker="来源与版权" title="免费，但不<em>随便</em>" lead="本站不存储或分发 PDF。公共领域作品链接到 IMSLP；现代版权作品请通过出版社或图书馆获取。" />
+      <SectionHead kicker="来源与版权" title="开放，但保留<em>署名</em>" lead="200 首使用 GuitarLoot 的许可编配。本站托管 MusicXML 文件，不托管 PDF；GuitarLoot 的许可要求保留来源署名。" />
       <div class="source-grid">
         {sources.map((source) => (
           <a class="source-card card card-hover" href={source.url} target="_blank" rel="noopener noreferrer">
@@ -115,7 +114,7 @@ const sources = [
       </div>
       <div class="copyright-note">
         <Icon name="shield" size={17} />
-        <p><strong>重要：</strong>IMSLP 的版权状态因国家而异；现代作品、改编版和教材可能仍受版权保护。请家长或老师确认后再下载。免费乐谱不等于免费录音，演奏视频版权归演奏者。</p>
+        <p><strong>重要：</strong>GuitarLoot 的编配许可允许使用和改编，但要求注明来源。MusicXML 是可编辑的标准格式；乐谱的演奏、录音和视频版权仍归各自权利人。若用于公开演出或商业用途，请先确认相关权利。</p>
       </div>
     </div>
   </section>

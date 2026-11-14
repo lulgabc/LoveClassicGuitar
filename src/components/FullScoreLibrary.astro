@@ -1,0 +1,805 @@
+---
+import { SCORE_LIBRARY, type ScoreLibraryEntry, type ScoreLibraryFocus } from "../data/score-library";
+import Icon from "./Icon.astro";
+
+interface Props {
+  scores?: ScoreLibraryEntry[];
+  lang?: "zh" | "fr";
+}
+
+const { scores = SCORE_LIBRARY, lang = "zh" } = Astro.props;
+const isFr = lang === "fr";
+
+const levelLabels: Record<number, string> = isFr
+  ? { 1: "Éveil", 2: "Débutant", 3: "Intermédiaire", 4: "Avancé", 5: "Concert" }
+  : { 1: "启蒙", 2: "初级", 3: "中级", 4: "进阶", 5: "高级" };
+
+const focusLabels: Record<ScoreLibraryFocus, string> = isFr
+  ? {
+      right: "Main droite",
+      left: "Main gauche",
+      reading: "Lecture",
+      rhythm: "Rythme",
+      tone: "Son",
+      phrasing: "Phrasé",
+      ensemble: "Ensemble",
+    }
+  : {
+      right: "右手",
+      left: "左手",
+      reading: "读谱",
+      rhythm: "节奏",
+      tone: "音色",
+      phrasing: "乐句",
+      ensemble: "合奏",
+    };
+
+const eraLabels: Record<string, string> = isFr
+  ? { renaissance: "Renaissance", baroque: "Baroque", classical: "Classique", romantic: "Romantique", modern: "Moderne", unknown: "Inconnu" }
+  : { renaissance: "文艺复兴", baroque: "巴洛克", classical: "古典", romantic: "浪漫", modern: "现代", unknown: "未知" };
+
+const t = isFr
+  ? {
+      searchPlaceholder: "Chercher un titre, un compositeur ou un objectif…",
+      searchLabel: "Chercher dans la bibliothèque de partitions",
+      levelLabel: "Niveau",
+      focusLabel: "Objectif",
+      all: "Tous",
+      count: (shown: number, total: number) => `${shown} / ${total} partitions`,
+      more: (step: number) => `Afficher ${step} partitions de plus`,
+      empty: "Aucune partition trouvée. Essaie un mot plus court ou enlève un filtre.",
+      open: "Voir la partition complète",
+      close: "Fermer",
+      loading: "Rendu de la partition…",
+      error: "Le rendu a échoué. Télécharge le MusicXML et ouvre-le dans MuseScore.",
+      zoomIn: "Agrandir",
+      zoomOut: "Réduire",
+      source: "Source",
+      download: "Télécharger le MusicXML",
+      tip: "Conseil",
+      note: "Les 200 partitions viennent des arrangements GuitarLoot, utilisés avec sa permission de réutilisation avec attribution. Le site héberge les fichiers MusicXML et les rend avec OpenSheetMusicDisplay.",
+      scoreArea: "Partition rendue",
+    }
+  : {
+      searchPlaceholder: "搜曲名、作曲家或练习重点…",
+      searchLabel: "在乐谱库中搜索",
+      levelLabel: "难度",
+      focusLabel: "练习重点",
+      all: "全部",
+      count: (shown: number, total: number) => `显示 ${shown} / ${total} 首`,
+      more: (step: number) => `再看 ${step} 首`,
+      empty: "没有找到。换个短一点的词，或者去掉一个筛选条件。",
+      open: "查看完整乐谱",
+      close: "关闭",
+      loading: "正在渲染乐谱…",
+      error: "乐谱渲染失败。可以下载 MusicXML，用 MuseScore 打开。",
+      zoomIn: "放大",
+      zoomOut: "缩小",
+      source: "来源",
+      download: "下载 MusicXML",
+      tip: "练习提示",
+      note: "200 首乐谱来自 GuitarLoot 的许可编配，按来源署名要求使用。本站托管 MusicXML 文件，并用 OpenSheetMusicDisplay 在页面内渲染。",
+      scoreArea: "乐谱渲染区域",
+    };
+
+const step = 24;
+const focusKeys = Object.keys(focusLabels) as ScoreLibraryFocus[];
+const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => score.level === level).length);
+---
+
+<div class="full-scores" data-full-scores data-lang={lang} data-step={step} data-base={import.meta.env.BASE_URL}>
+  <div class="score-toolbar">
+    <label class="score-search">
+      <Icon name="search" size={17} />
+      <span class="sr-only">{t.searchLabel}</span>
+      <input type="search" placeholder={t.searchPlaceholder} data-score-search />
+    </label>
+    <span class="score-count" data-score-count>{t.count(scores.length, scores.length)}</span>
+  </div>
+
+  <div class="score-filters">
+    <div class="score-filter-row" role="group" aria-label={t.levelLabel}>
+      <span class="score-filter-label">{t.levelLabel}</span>
+      <button type="button" class="score-chip is-active" data-score-level="all" aria-pressed="true">{t.all}</button>
+      {([1, 2, 3, 4, 5] as const).map((level) => (
+        <button type="button" class="score-chip" data-score-level={level} aria-pressed="false">{level} · {levelLabels[level]} ({levelCounts[level - 1]})</button>
+      ))}
+    </div>
+    <div class="score-filter-row" role="group" aria-label={t.focusLabel}>
+      <span class="score-filter-label">{t.focusLabel}</span>
+      <button type="button" class="score-chip is-active" data-score-focus="all" aria-pressed="true">{t.all}</button>
+      {focusKeys.map((focus) => (
+        <button type="button" class="score-chip" data-score-focus={focus} aria-pressed="false">{focusLabels[focus]}</button>
+      ))}
+    </div>
+  </div>
+
+  <div class="score-grid">
+    {
+      scores.map((score) => (
+        <article
+          class:list={["score-card", "card", `level-${score.level}`]}
+          data-score-item
+          data-level={score.level}
+          data-focus={score.focus}
+          data-search={`${score.title} ${score.composer} ${focusLabels[score.focus]} ${levelLabels[score.level]} ${eraLabels[score.era] ?? score.era}`.toLowerCase()}
+        >
+          <div class="score-top">
+            <span class="score-level">{score.level} · {levelLabels[score.level]}</span>
+            <span class="score-grade">G{score.grade}</span>
+          </div>
+          <h3>{score.title}</h3>
+          <p class="score-composer">{score.composer}</p>
+          <div class="score-meta">
+            <span class="score-focus">{focusLabels[score.focus]}</span>
+            <span class="score-era">{eraLabels[score.era] ?? score.era}</span>
+          </div>
+          <p class="score-tip"><strong>{t.tip}:</strong> {isFr ? score.tipFr : score.tipZh}</p>
+          <button
+            type="button"
+            class="score-open"
+            data-score-open
+            data-file={score.file}
+            data-title={score.title}
+            data-composer={score.composer}
+            data-level={`${score.level} · ${levelLabels[score.level]}`}
+            data-focus={focusLabels[score.focus]}
+            data-tip={isFr ? score.tipFr : score.tipZh}
+            data-source={score.source}
+            data-source-url={score.sourceUrl}
+          >
+            <Icon name="book" size={11} /> {t.open}
+          </button>
+        </article>
+      ))
+    }
+  </div>
+
+  <p class="score-empty" data-score-empty hidden>{t.empty}</p>
+  <div class="score-more-wrap" data-score-more-wrap>
+    <button type="button" class="btn btn-secondary btn-sm" data-score-more>{t.more(step)}</button>
+  </div>
+  <p class="score-note"><Icon name="info" size={13} /> {t.note}</p>
+
+  <dialog class="full-score-modal" data-score-modal aria-labelledby="full-score-modal-title">
+    <div class="full-score-panel">
+      <div class="full-score-head">
+        <span class="full-score-kicker" data-score-modal-kicker></span>
+        <button type="button" class="full-score-close" data-score-close aria-label={t.close}>×</button>
+      </div>
+      <h2 id="full-score-modal-title" data-score-modal-title></h2>
+      <p class="full-score-meta" data-score-modal-meta></p>
+      <div class="full-score-toolbar">
+        <button type="button" data-score-zoom-out aria-label={t.zoomOut}>−</button>
+        <button type="button" data-score-zoom-in aria-label={t.zoomIn}>+</button>
+        <a data-score-source-link target="_blank" rel="noopener noreferrer">{t.source} <Icon name="external" size={11} /></a>
+        <a data-score-download download>{t.download}</a>
+      </div>
+      <div class="full-score-stage" role="region" tabindex="0" aria-label={t.scoreArea}>
+        <div class="full-score-render" data-score-render></div>
+      </div>
+      <p class="full-score-tip" data-score-modal-tip></p>
+      <div class="full-score-actions">
+        <button class="btn btn-ghost btn-sm" type="button" data-score-close>{t.close}</button>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+<noscript>
+  <style>[data-score-more-wrap] { display: none; }</style>
+</noscript>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-full-scores]");
+  if (root) {
+    const items = Array.from(root.querySelectorAll<HTMLElement>("[data-score-item]"));
+    const search = root.querySelector<HTMLInputElement>("[data-score-search]");
+    const count = root.querySelector<HTMLElement>("[data-score-count]");
+    const empty = root.querySelector<HTMLElement>("[data-score-empty]");
+    const moreWrap = root.querySelector<HTMLElement>("[data-score-more-wrap]");
+    const more = root.querySelector<HTMLButtonElement>("[data-score-more]");
+    const levelButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-score-level]"));
+    const focusButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-score-focus]"));
+    const modal = root.querySelector<HTMLDialogElement>("[data-score-modal]");
+    const modalTitle = root.querySelector<HTMLElement>("[data-score-modal-title]");
+    const modalKicker = root.querySelector<HTMLElement>("[data-score-modal-kicker]");
+    const modalMeta = root.querySelector<HTMLElement>("[data-score-modal-meta]");
+    const modalTip = root.querySelector<HTMLElement>("[data-score-modal-tip]");
+    const renderEl = root.querySelector<HTMLElement>("[data-score-render]");
+    const sourceLink = root.querySelector<HTMLAnchorElement>("[data-score-source-link]");
+    const downloadLink = root.querySelector<HTMLAnchorElement>("[data-score-download]");
+    const zoomIn = root.querySelector<HTMLButtonElement>("[data-score-zoom-in]");
+    const zoomOut = root.querySelector<HTMLButtonElement>("[data-score-zoom-out]");
+    const isFr = root.dataset.lang === "fr";
+    const base = root.dataset.base ?? "/";
+    const step = Number(root.dataset.step || 24);
+    let level = "all";
+    let focus = "all";
+    let limit = step;
+    let lastFocus: HTMLElement | null = null;
+    let osmd: any = null;
+    let osmdCtor: any = null;
+
+    const labels = isFr
+      ? {
+          loading: "Rendu de la partition…",
+          error: "Le rendu a échoué. Télécharge le MusicXML et ouvre-le dans MuseScore.",
+        }
+      : {
+          loading: "正在渲染乐谱…",
+          error: "乐谱渲染失败。可以下载 MusicXML，用 MuseScore 打开。",
+        };
+
+    const countLabel = (shown: number, total: number) => isFr ? `${shown} / ${total} partitions` : `显示 ${shown} / ${total} 首`;
+    const moreLabel = (n: number) => isFr ? `Afficher ${n} partitions de plus` : `再看 ${n} 首`;
+
+    function apply(reset = false): void {
+      if (reset) limit = step;
+      const query = (search?.value ?? "").trim().toLowerCase();
+      let matching = 0;
+      items.forEach((item) => {
+        const matches =
+          (level === "all" || item.dataset.level === level) &&
+          (focus === "all" || item.dataset.focus === focus) &&
+          (!query || (item.dataset.search ?? "").includes(query));
+        const show = matches && matching < limit;
+        if (matches) matching += 1;
+        item.hidden = !show;
+      });
+      if (count) count.textContent = countLabel(Math.min(matching, limit), matching);
+      if (empty) empty.hidden = matching !== 0;
+      if (moreWrap) moreWrap.hidden = matching <= limit;
+      if (more) more.textContent = moreLabel(Math.min(step, Math.max(0, matching - limit)));
+    }
+
+    function selectChip(buttons: HTMLButtonElement[], activeButton: HTMLButtonElement): void {
+      buttons.forEach((button) => {
+        const active = button === activeButton;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+    }
+
+    levelButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        level = button.dataset.scoreLevel ?? "all";
+        selectChip(levelButtons, button);
+        apply(true);
+      });
+    });
+    focusButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        focus = button.dataset.scoreFocus ?? "all";
+        selectChip(focusButtons, button);
+        apply(true);
+      });
+    });
+    search?.addEventListener("input", () => apply(true));
+    more?.addEventListener("click", () => {
+      limit += step;
+      apply();
+    });
+
+    async function renderScore(file: string): Promise<void> {
+      if (!renderEl) return;
+      renderEl.innerHTML = `<p class="score-loading">${labels.loading}</p>`;
+      try {
+        if (!osmdCtor) {
+          const module = await import("opensheetmusicdisplay");
+          osmdCtor = module.OpenSheetMusicDisplay;
+        }
+        renderEl.innerHTML = "";
+        osmd = new osmdCtor(renderEl, {
+          autoResize: true,
+          drawingParameters: "compacttight",
+          backend: "svg",
+        });
+        await osmd.load(`${base}scores/${file}`);
+        osmd.Zoom = window.innerWidth < 640 ? 0.72 : 1;
+        osmd.render();
+      } catch (error) {
+        renderEl.innerHTML = `<p class="score-error">${labels.error}</p>`;
+      }
+    }
+
+    function openModal(button: HTMLButtonElement): void {
+      if (!modal) return;
+      if (modalTitle) modalTitle.textContent = button.dataset.title ?? "";
+      if (modalKicker) modalKicker.textContent = `${button.dataset.level ?? ""} · ${button.dataset.focus ?? ""}`;
+      if (modalMeta) modalMeta.textContent = button.dataset.composer ?? "";
+      if (modalTip) modalTip.textContent = button.dataset.tip ?? "";
+      if (sourceLink) sourceLink.href = button.dataset.sourceUrl ?? "https://guitarloot.org.uk/";
+      if (downloadLink) {
+        downloadLink.href = `${base}scores/${button.dataset.file ?? ""}`;
+        downloadLink.setAttribute("download", button.dataset.file ?? "score.mxl");
+      }
+      lastFocus = button;
+      if (!modal.open) modal.showModal();
+      document.body.classList.add("score-modal-open");
+      modal.querySelector<HTMLButtonElement>("[data-score-close]")?.focus();
+      void renderScore(button.dataset.file ?? "");
+    }
+
+    function closeModal(): void {
+      if (modal?.open) modal.close();
+    }
+
+    root.querySelectorAll<HTMLButtonElement>("[data-score-open]").forEach((button) => {
+      button.addEventListener("click", () => openModal(button));
+    });
+    root.querySelectorAll<HTMLElement>("[data-score-close]").forEach((button) => {
+      button.addEventListener("click", closeModal);
+    });
+    modal?.addEventListener("close", () => {
+      document.body.classList.remove("score-modal-open");
+      lastFocus?.focus();
+    });
+    modal?.addEventListener("click", (event) => {
+      if (event.target === modal) modal.close();
+    });
+
+    zoomIn?.addEventListener("click", () => {
+      if (!osmd) return;
+      osmd.Zoom = Math.min(2, Number(osmd.Zoom || 1) + 0.1);
+      osmd.render();
+    });
+    zoomOut?.addEventListener("click", () => {
+      if (!osmd) return;
+      osmd.Zoom = Math.max(0.4, Number(osmd.Zoom || 1) - 0.1);
+      osmd.render();
+    });
+
+    apply();
+  }
+</script>
+
+<style>
+  .score-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: 11px;
+  }
+
+  .score-search {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex: 1 1 280px;
+    min-width: 0;
+    min-height: 43px;
+    padding: 0 13px;
+    color: var(--muted);
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+  }
+
+  .score-search:focus-within {
+    border-color: var(--violet-500);
+    box-shadow: 0 0 0 3px var(--violet-wash);
+  }
+
+  .score-search input {
+    flex: 1;
+    min-width: 0;
+    min-height: 39px;
+    padding: 0;
+    color: var(--ink);
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 12px;
+  }
+
+  .score-search input::placeholder {
+    color: var(--faint);
+  }
+
+  .score-count {
+    margin-left: auto;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    white-space: nowrap;
+  }
+
+  .score-filters {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .score-filter-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .score-filter-label {
+    flex: 0 0 54px;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+  }
+
+  .score-chip {
+    min-height: 28px;
+    padding: 4px 8px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: 8.5px;
+    font-weight: 750;
+    white-space: nowrap;
+  }
+
+  .score-chip.is-active {
+    color: #fff;
+    border-color: #5b3fd4;
+    background: #5b3fd4;
+  }
+
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .score-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 230px;
+    padding: 14px;
+    border-top: 3px solid var(--score-accent, var(--violet-500));
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 30%), var(--surface);
+    transition: transform 180ms var(--ease), border-color 180ms ease;
+  }
+
+  .score-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .score-card[hidden] {
+    display: none;
+  }
+
+  .score-card.level-1 { --score-accent: var(--mint-500); }
+  .score-card.level-2 { --score-accent: var(--sky-500); }
+  .score-card.level-3 { --score-accent: var(--violet-500); }
+  .score-card.level-4 { --score-accent: var(--sun-500); }
+  .score-card.level-5 { --score-accent: var(--coral-500); }
+
+  .score-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+  }
+
+  .score-level {
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .score-grade {
+    flex: 0 0 auto;
+    padding: 2px 5px;
+    border-radius: 999px;
+    color: var(--muted);
+    background: var(--surface-2);
+    font-family: var(--font-mono);
+    font-size: 7px;
+    font-weight: 700;
+  }
+
+  .score-card h3 {
+    margin: 8px 0 1px;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .score-composer {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 8.5px;
+    line-height: 1.5;
+  }
+
+  .score-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 7px;
+  }
+
+  .score-focus,
+  .score-era {
+    padding: 2px 5px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    color: var(--muted);
+    font-size: 7px;
+    font-weight: 700;
+  }
+
+  .score-focus {
+    color: var(--violet-700);
+  }
+
+  .score-tip {
+    margin: 8px 0 0;
+    color: var(--ink-soft);
+    font-size: 8.5px;
+    line-height: 1.55;
+  }
+
+  .score-tip strong {
+    color: var(--ink);
+  }
+
+  .score-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    width: fit-content;
+    margin-top: auto;
+    padding: 9px 0 0;
+    color: var(--violet-700);
+    border: 0;
+    background: transparent;
+    font-size: 8.5px;
+    font-weight: 850;
+    cursor: pointer;
+  }
+
+  .score-open:hover {
+    color: var(--violet-800);
+  }
+
+  .score-empty {
+    padding: 24px 0;
+    color: var(--muted);
+    text-align: center;
+    font-size: 11px;
+  }
+
+  .score-more-wrap {
+    margin-top: 13px;
+    text-align: center;
+  }
+
+  .score-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin: 12px 0 0;
+    color: var(--faint);
+    font-size: 8px;
+    line-height: 1.55;
+  }
+
+  .score-note .icon {
+    margin-top: 1px;
+    color: var(--violet-700);
+  }
+
+  .full-score-modal {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 18px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+  }
+
+  .full-score-modal[open] {
+    display: grid;
+    place-items: center;
+  }
+
+  .full-score-modal::backdrop {
+    background: rgba(8, 5, 20, 0.76);
+    backdrop-filter: blur(4px);
+  }
+
+  .full-score-panel {
+    width: min(1000px, 100%);
+    max-height: 94vh;
+    overflow: auto;
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--surface);
+    box-shadow: 0 24px 80px rgba(8, 5, 20, 0.4);
+  }
+
+  .full-score-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .full-score-kicker {
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .full-score-close {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--surface-2);
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .full-score-close:hover {
+    color: var(--ink);
+    border-color: var(--line-strong);
+  }
+
+  .full-score-panel h2 {
+    margin: 7px 0 2px;
+    color: var(--ink);
+    font-size: clamp(22px, 3vw, 30px);
+    line-height: 1.2;
+  }
+
+  .full-score-meta {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .full-score-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 12px;
+  }
+
+  .full-score-toolbar button,
+  .full-score-toolbar a {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    min-height: 30px;
+    padding: 4px 8px;
+    color: var(--violet-700);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface-2);
+    font-size: 8.5px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .full-score-toolbar button:hover,
+  .full-score-toolbar a:hover {
+    border-color: var(--violet-300);
+    background: var(--violet-wash);
+  }
+
+  .full-score-stage {
+    min-height: 320px;
+    max-height: 65vh;
+    margin-top: 12px;
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fffdf8;
+  }
+
+  .full-score-render {
+    min-width: 720px;
+    padding: 10px;
+  }
+
+  .full-score-render svg {
+    display: block;
+    max-width: none;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .score-loading,
+  .score-error {
+    padding: 40px 20px;
+    color: #5c4a3a;
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .score-error {
+    color: #8a2f25;
+  }
+
+  .full-score-tip {
+    margin: 10px 0 0;
+    padding: 9px 11px;
+    border-radius: 9px;
+    background: var(--surface-2);
+    color: var(--ink-soft);
+    font-size: 9.5px;
+    line-height: 1.6;
+  }
+
+  .full-score-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+
+  :global(body.score-modal-open) {
+    overflow: hidden;
+  }
+
+  @media (max-width: 1100px) {
+    .score-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 850px) {
+    .score-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .score-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .score-filter-label {
+      flex-basis: 100%;
+    }
+
+    .score-count {
+      margin-left: 0;
+    }
+
+    .full-score-modal {
+      padding: 8px;
+    }
+
+    .full-score-panel {
+      padding: 14px;
+      border-radius: 15px;
+    }
+
+    .full-score-stage {
+      max-height: 55vh;
+    }
+
+    .full-score-render {
+      min-width: 640px;
+      padding: 6px;
+    }
+  }
+</style>

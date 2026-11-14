@@ -2,9 +2,9 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHero from "../../components/PageHero.astro";
 import SectionHead from "../../components/SectionHead.astro";
-import ScoreLibrary from "../../components/ScoreLibrary.astro";
+import FullScoreLibrary from "../../components/FullScoreLibrary.astro";
 import Icon from "../../components/Icon.astro";
-import { SCORES, SCORE_LEVELS } from "../../data/scores";
+import { SCORE_LIBRARY, SCORE_LIBRARY_LEVELS } from "../../data/score-library";
 import { url } from "../../lib/url";
 
 const levels = [
@@ -23,18 +23,17 @@ const steps = [
 ];
 
 const sources = [
-  { name: "IMSLP", url: "https://imslp.org/wiki/Category:For_guitar", note: "Partitions du domaine public, par œuvre et par édition." },
-  { name: "Mutopia", url: "https://www.mutopiaproject.org/", note: "Partitions libres, prêtes à imprimer." },
-  { name: "This is Classical Guitar", url: "https://www.thisisclassicalguitar.com/free-classical-guitar-method-book-pdf/", note: "Méthode gratuite et exercices de débutant." },
-  { name: "8notes", url: "https://www.8notes.com/guitar/", note: "Mélodies simples et arrangements pour la première année." },
-  { name: "WorldCat", url: "https://search.worldcat.org/", note: "Trouver une édition chez un éditeur ou une bibliothèque." },
+  { name: "GuitarLoot", url: "https://guitarloot.org.uk/", note: "Source des 200 arrangements. La licence permet l'usage et l'adaptation avec attribution." },
+  { name: "OpenSheetMusicDisplay", url: "https://github.com/opensheetmusicdisplay/opensheetmusicdisplay", note: "Moteur de rendu MusicXML dans la page, avec zoom et pages multiples." },
+  { name: "IMSLP", url: "https://imslp.org/wiki/Category:For_guitar", note: "D'autres partitions du domaine public, par œuvre et par édition." },
+  { name: "Mutopia", url: "https://www.mutopiaproject.org/", note: "D'autres partitions libres, prêtes à imprimer." },
 ];
 ---
 
 <BaseLayout
   lang="fr"
   title="Partitions"
-  description="Une bibliothèque de partitions de guitare classique pour enfants : 200 pièces classées en 5 niveaux, avec objectifs de travail, sources légales et conseils pour les parents."
+  description="Une bibliothèque de 200 partitions complètes en MusicXML pour enfants, classées en 5 niveaux, rendues dans la page, avec zoom, téléchargement et conseils de travail."
 >
   <PageHero
     kicker="Partitions · 200 pièces"
@@ -64,7 +63,7 @@ const sources = [
               <h3>{level.title}</h3>
               <p>{level.body}</p>
               <span class="level-check"><Icon name="check" size={11} /> {level.check}</span>
-              <span class="level-count">{SCORE_LEVELS[index]?.count ?? 0} pièces</span>
+              <span class="level-count">{SCORE_LIBRARY_LEVELS[index]?.count ?? 0} pièces</span>
             </article>
           ))
         }
@@ -77,9 +76,9 @@ const sources = [
       <SectionHead
         kicker="200 partitions"
         title="Chercher par niveau et par <em>objectif</em>"
-        lead="Filtre d'abord par niveau, puis regarde « ce que l'on travaille ». Les partitions libres et les œuvres protégées sont clairement séparées."
+        lead="Les 200 partitions s'ouvrent dans la page et sont rendues avec OpenSheetMusicDisplay. Filtre par niveau et par objectif, puis clique sur « Voir la partition complète »."
       />
-      <ScoreLibrary scores={SCORES} lang="fr" />
+      <FullScoreLibrary scores={SCORE_LIBRARY} lang="fr" />
     </div>
   </section>
 
@@ -105,7 +104,7 @@ const sources = [
 
   <section class="section section-wash">
     <div class="container">
-      <SectionHead kicker="Sources et droits" title="Libre, mais <em>pas n'importe comment</em>" lead="Ce site n'héberge pas de PDF. Les œuvres du domaine public renvoient vers IMSLP ; les œuvres protégées vers un éditeur ou une bibliothèque." />
+      <SectionHead kicker="Sources et droits" title="Ouvert, mais <em>avec attribution</em>" lead="Les 200 pièces viennent des arrangements GuitarLoot. Le site héberge les fichiers MusicXML, pas les PDF ; la licence GuitarLoot demande de conserver le nom de la source." />
       <div class="source-grid">
         {sources.map((source) => (
           <a class="source-card card card-hover" href={source.url} target="_blank" rel="noopener noreferrer">
@@ -116,7 +115,7 @@ const sources = [
       </div>
       <div class="copyright-note">
         <Icon name="shield" size={17} />
-        <p><strong>Important :</strong> le statut des droits sur IMSLP varie selon les pays. Les œuvres modernes, les arrangements et les méthodes peuvent encore être protégés. Demandez à un adulte ou à un professeur avant de télécharger. Une partition libre ne signifie pas que l'enregistrement est libre.</p>
+        <p><strong>Important :</strong> la licence GuitarLoot permet l'usage et l'adaptation avec attribution. Le MusicXML est un format standard éditable ; les droits d'interprétation, d'enregistrement et de vidéo restent ceux de leurs auteurs. Pour une audition publique ou un usage commercial, vérifie les droits.</p>
       </div>
     </div>
   </section>

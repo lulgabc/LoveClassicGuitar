@@ -224,7 +224,7 @@ export const RESOURCES: Resource[] = [
   {
     id: "rcm",
     name: "The Royal Conservatory · Classical Guitar",
-    url: "https://www.rcmusic.com/",
+    url: "https://www.rcmusic.com/learning",
     kind: "考级",
     price: "付费",
     lang: "英文",
@@ -537,7 +537,7 @@ export const EXAM_BOARDS: ExamBoard[] = [
   },
   {
     name: "RCM 加拿大皇家音乐学院",
-    url: "https://www.rcmusic.com/",
+    url: "https://www.rcmusic.com/learning",
     what: "分级教材、曲集和考级体系，从预备级到高级。",
     why: "分级曲集和练习曲编排清楚，很多老师直接把它当曲目库。",
     caveat: "不是每个国家都方便参加考试；教材和考纲也会更新。",
