@@ -45,7 +45,8 @@ const t = isFr
       empty: "Aucune pièce trouvée. Essaie un mot plus court ou enlève un filtre.",
       play: "Écouter dans le lecteur",
       search: "Chercher sur YouTube",
-      note: "18 pièces sont jouables directement dans le lecteur ci-dessus. Les autres ouvrent une recherche YouTube : les vidéos disponibles changent selon les pays et les droits.",
+      watch: "Voir sur YouTube",
+      note: "18 pièces sont jouables directement dans le lecteur ci-dessus. Les autres ouvrent la vidéo correspondante sur YouTube. Les vignettes viennent de ces vidéos ; leur disponibilité change selon les pays et les droits.",
       original: "Titre original",
     }
   : {
@@ -60,7 +61,8 @@ const t = isFr
       empty: "没有找到。换个短一点的词，或者去掉一个筛选条件。",
       play: "在播放器中听",
       search: "在 YouTube 找",
-      note: "18 首可以在上面的播放器里直接听；其余曲目一键去 YouTube 找演奏。视频是否可嵌入由平台和版权方决定。",
+      watch: "在 YouTube 看",
+      note: "18 首可以在上面的播放器里直接听；其余曲目一键去 YouTube 看对应视频。封面来自这些视频，视频是否可嵌入由平台和版权方决定。",
       original: "原文曲名",
     };
 
@@ -103,40 +105,44 @@ const step = 24;
 
   <div class="rep-grid">
     {
-      pieces.map((piece) => (
-        <article
-          class="rep-card card"
-          data-rep-item
-          data-era={piece.era}
-          data-level={piece.level}
-          data-playable={piece.videoId ? "true" : "false"}
-          data-search={`${piece.title} ${piece.titleZh ?? ""} ${piece.composer}`.toLowerCase()}
-        >
-          <div class="rep-top">
-            <span class="rep-era">{eraLabels[piece.era]}</span>
-            <span class:list={["rep-level", `is-${piece.level}`]}>{levelLabels[piece.level]}</span>
-          </div>
-          <h3>{isFr ? piece.title : piece.titleZh ?? piece.title}</h3>
-          {!isFr && piece.titleZh && <p class="rep-original">{piece.title}</p>}
-          <p class="rep-composer">{piece.composer}</p>
-          <div class="rep-actions">
-            {piece.videoId ? (
-              <>
-                <button type="button" class="rep-play" data-rep-play={piece.videoId}>
-                  <Icon name="play" size={11} /> {t.play}
-                </button>
-                <a class="rep-link" href={`https://www.youtube.com/watch?v=${piece.videoId}`} target="_blank" rel="noopener noreferrer" aria-label={`${t.search} : ${piece.title}`}>
-                  <Icon name="external" size={11} />
+      pieces.map((piece) => {
+        const coverId = piece.coverVideoId ?? piece.videoId;
+        return (
+          <article
+            class:list={["rep-card", "card", { "has-cover": Boolean(coverId) }]}
+            style={coverId ? `--rep-cover:url(https://i.ytimg.com/vi/${coverId}/hqdefault.jpg)` : undefined}
+            data-rep-item
+            data-era={piece.era}
+            data-level={piece.level}
+            data-playable={piece.videoId ? "true" : "false"}
+            data-search={`${piece.title} ${piece.titleZh ?? ""} ${piece.composer}`.toLowerCase()}
+          >
+            <div class="rep-top">
+              <span class="rep-era">{eraLabels[piece.era]}</span>
+              <span class:list={["rep-level", `is-${piece.level}`]}>{levelLabels[piece.level]}</span>
+            </div>
+            <h3>{isFr ? piece.title : piece.titleZh ?? piece.title}</h3>
+            {!isFr && piece.titleZh && <p class="rep-original">{piece.title}</p>}
+            <p class="rep-composer">{piece.composer}</p>
+            <div class="rep-actions">
+              {piece.videoId ? (
+                <>
+                  <button type="button" class="rep-play" data-rep-play={piece.videoId}>
+                    <Icon name="play" size={11} /> {t.play}
+                  </button>
+                  <a class="rep-link" href={`https://www.youtube.com/watch?v=${piece.videoId}`} target="_blank" rel="noopener noreferrer" aria-label={`${t.search} : ${piece.title}`}>
+                    <Icon name="external" size={11} />
+                  </a>
+                </>
+              ) : (
+                <a class="rep-link" href={piece.coverVideoId ? `https://www.youtube.com/watch?v=${piece.coverVideoId}` : youtubeSearch(piece)} target="_blank" rel="noopener noreferrer">
+                  {t.watch} <Icon name="external" size={11} />
                 </a>
-              </>
-            ) : (
-              <a class="rep-link" href={youtubeSearch(piece)} target="_blank" rel="noopener noreferrer">
-                {t.search} <Icon name="external" size={11} />
-              </a>
-            )}
-          </div>
-        </article>
-      ))
+              )}
+            </div>
+          </article>
+        );
+      })
     }
   </div>
 
@@ -224,7 +230,7 @@ const step = 24;
 
     function openFromHash(): void {
       if (window.location.hash !== "#repertoire") return;
-      const details = root.closest("details");
+      const details = root?.closest("details");
       if (details) details.open = true;
     }
 
@@ -401,11 +407,63 @@ const step = 24;
   }
 
   .rep-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     min-width: 0;
-    padding: 13px;
+    min-height: 190px;
+    padding: 14px;
+    overflow: hidden;
     background: var(--surface);
+    transition: transform 180ms var(--ease), border-color 180ms ease;
+  }
+
+  .rep-card::before,
+  .rep-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .rep-card::before {
+    background-image: var(--rep-cover);
+    background-position: center;
+    background-size: cover;
+    filter: blur(1.2px) brightness(0.74) saturate(0.9);
+    opacity: 0;
+    transform: scale(1.04);
+    transition: opacity 260ms ease, transform 500ms ease;
+  }
+
+  .rep-card::after {
+    background:
+      linear-gradient(90deg, rgba(10, 7, 28, 0.72) 0%, rgba(10, 7, 28, 0.28) 64%, rgba(10, 7, 28, 0.5) 100%),
+      linear-gradient(180deg, rgba(10, 7, 28, 0.72) 0%, rgba(10, 7, 28, 0.5) 45%, rgba(10, 7, 28, 0.97) 100%);
+    opacity: 0;
+  }
+
+  .rep-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .rep-card.has-cover::before,
+  .rep-card.has-cover::after {
+    opacity: 1;
+  }
+
+  .rep-card.has-cover {
+    border-color: rgba(255, 255, 255, 0.16);
+    background: linear-gradient(145deg, #2b1a67, #140d36);
+  }
+
+  .rep-card.has-cover:hover::before {
+    transform: scale(1.08);
+  }
+
+  .rep-card:hover {
+    transform: translateY(-2px);
   }
 
   .rep-card[hidden] {
@@ -533,6 +591,53 @@ const step = 24;
   .rep-note .icon {
     margin-top: 1px;
     color: var(--violet-700);
+  }
+
+  .rep-card.has-cover .rep-era {
+    color: #ffe7a8;
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.6);
+  }
+
+  .rep-card.has-cover h3 {
+    color: #fffaf0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.65);
+  }
+
+  .rep-card.has-cover .rep-original {
+    color: rgba(255, 245, 230, 0.7);
+  }
+
+  .rep-card.has-cover .rep-composer {
+    color: rgba(255, 245, 230, 0.84);
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.55);
+  }
+
+  .rep-card.has-cover .rep-play {
+    color: #ffd86f;
+  }
+
+  .rep-card.has-cover .rep-link {
+    color: #e8ddff;
+  }
+
+  .rep-card.has-cover .rep-play:hover,
+  .rep-card.has-cover .rep-link:hover {
+    color: #fff;
+  }
+
+  .rep-card.has-cover .rep-level.is-beginner {
+    color: #c9ffe9;
+    background: rgba(5, 55, 42, 0.74);
+  }
+
+  .rep-card.has-cover .rep-level.is-intermediate {
+    color: #ffe9a8;
+    background: rgba(80, 55, 5, 0.74);
+  }
+
+  .rep-card.has-cover .rep-level.is-advanced {
+    color: #ffc9c2;
+    background: rgba(90, 25, 20, 0.74);
   }
 
   html[data-theme="night"] .rep-level.is-beginner {
