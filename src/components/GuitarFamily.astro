@@ -1,5 +1,7 @@
 ---
 import GuitarTypeIcon from "./GuitarTypeIcon.astro";
+import Icon from "./Icon.astro";
+import { url } from "../lib/url";
 import type { GuitarType } from "../data/basics";
 
 interface Props {
@@ -12,9 +14,22 @@ const isFr = lang === "fr";
 const note = isFr
   ? "Il existe aussi des guitares à douze cordes, des ukulélés et bien d'autres cousins."
   : "还有十二弦吉他、尤克里里等亲戚，声音也各有各的性格。";
+const labels = isFr
+  ? {
+      listen: "Écouter 20 s",
+      pause: "Pause",
+      credits: "Crédits audio",
+      creditNote: "Chaque extrait dure environ 20 secondes et a été légèrement normalisé.",
+    }
+  : {
+      listen: "试听 20 秒",
+      pause: "暂停",
+      credits: "试听音频来源",
+      creditNote: "每段截取约 20 秒，并做了轻微音量平衡。",
+    };
 ---
 
-<div class="guitar-family">
+<div class="guitar-family" data-guitar-family data-lang={lang}>
   <div class="family-grid">
     {
       types.map((type) => (
@@ -27,13 +42,122 @@ const note = isFr
             <h3>{type.name}</h3>
             <p class="family-tagline">{type.tagline}</p>
             <p class="family-detail">{type.detail}</p>
+            <div class="family-audio">
+              <button
+                class="family-play"
+                type="button"
+                data-family-play={url(type.audio)}
+                data-family-name={type.name}
+                data-label-play={labels.listen}
+                data-label-pause={labels.pause}
+                aria-label={`${labels.listen} · ${type.name}`}
+                aria-pressed="false"
+              >
+                <span class="family-icon-play"><Icon name="play" size={13} /></span>
+                <span class="family-icon-pause"><Icon name="pause" size={13} /></span>
+                <span class="family-play-label">{labels.listen}</span>
+              </button>
+              <span class="family-progress" aria-hidden="true"><span data-family-progress></span></span>
+            </div>
           </div>
         </article>
       ))
     }
   </div>
   <p class="family-note">{note}</p>
+  <details class="family-credits">
+    <summary>{labels.credits}</summary>
+    <ul>
+      {
+        types.map((type) => (
+          <li>
+            <strong>{type.name}</strong>
+            {isFr ? " : " : "："}
+            <a href={type.audioUrl} target="_blank" rel="noopener noreferrer">{type.audioCredit}</a>
+            {isFr ? " (" : "（"}
+            <a href={type.audioLicenseUrl} target="_blank" rel="noopener noreferrer">{type.audioLicense}</a>
+            {isFr ? ")" : "）"}
+          </li>
+        ))
+      }
+    </ul>
+    <p>{labels.creditNote}</p>
+  </details>
+  <audio data-family-audio preload="none" hidden></audio>
+  <p class="sr-only" data-family-status aria-live="polite"></p>
 </div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-guitar-family]");
+  if (root) {
+    const audio = root.querySelector<HTMLAudioElement>("[data-family-audio]");
+    const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-family-play]"));
+    const status = root.querySelector<HTMLElement>("[data-family-status]");
+    const isFr = root.dataset.lang === "fr";
+    let active: HTMLButtonElement | null = null;
+
+    const progressFor = (button: HTMLButtonElement) =>
+      button.closest(".family-card")?.querySelector<HTMLElement>("[data-family-progress]") ?? null;
+
+    function reset(button: HTMLButtonElement): void {
+      button.setAttribute("aria-pressed", "false");
+      const label = button.querySelector<HTMLElement>(".family-play-label");
+      if (label) label.textContent = button.dataset.labelPlay ?? "";
+      button.setAttribute("aria-label", `${button.dataset.labelPlay ?? ""} · ${button.dataset.familyName ?? ""}`);
+      const progress = progressFor(button);
+      if (progress) progress.style.width = "0%";
+    }
+
+    function markPlaying(button: HTMLButtonElement): void {
+      button.setAttribute("aria-pressed", "true");
+      const label = button.querySelector<HTMLElement>(".family-play-label");
+      if (label) label.textContent = button.dataset.labelPause ?? "";
+      button.setAttribute("aria-label", `${button.dataset.labelPause ?? ""} · ${button.dataset.familyName ?? ""}`);
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", async () => {
+        if (!audio) return;
+        const same = active === button;
+        if (same && !audio.paused) {
+          audio.pause();
+          reset(button);
+          active = null;
+          if (status) status.textContent = "";
+          return;
+        }
+        if (active) reset(active);
+        active = button;
+        audio.pause();
+        audio.currentTime = 0;
+        audio.src = button.dataset.familyPlay ?? "";
+        try {
+          await audio.play();
+          markPlaying(button);
+          if (status) {
+            status.textContent = `${isFr ? "Lecture" : "正在播放"}${isFr ? " : " : "："}${button.dataset.familyName ?? ""}`;
+          }
+        } catch {
+          reset(button);
+          active = null;
+          if (status) status.textContent = "";
+        }
+      });
+    });
+
+    audio?.addEventListener("timeupdate", () => {
+      if (!active || !audio.duration) return;
+      const progress = progressFor(active);
+      if (progress) progress.style.width = `${Math.min(100, (audio.currentTime / audio.duration) * 100)}%`;
+    });
+
+    audio?.addEventListener("ended", () => {
+      if (active) reset(active);
+      active = null;
+      if (status) status.textContent = "";
+    });
+  }
+</script>
 
 <style>
   .family-grid {
@@ -44,7 +168,7 @@ const note = isFr
 
   .family-card {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 14px;
     min-width: 0;
     padding: 16px;
@@ -59,6 +183,7 @@ const note = isFr
   }
 
   .family-copy {
+    flex: 1;
     min-width: 0;
   }
 
@@ -94,11 +219,121 @@ const note = isFr
     line-height: 1.55;
   }
 
+  .family-audio {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 9px;
+  }
+
+  .family-play {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 34px;
+    padding: 6px 10px;
+    color: var(--violet-700);
+    border: 1.5px solid color-mix(in srgb, var(--violet-500) 26%, var(--line));
+    border-radius: 999px;
+    background: var(--violet-wash);
+    font-size: 11px;
+    font-weight: 850;
+    line-height: 1.2;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .family-play:hover {
+    border-color: var(--violet-500);
+    background: var(--violet-wash-2);
+  }
+
+  .family-play:focus-visible {
+    outline: 3px solid var(--sun-500);
+    outline-offset: 2px;
+  }
+
+  .family-play[aria-pressed="true"] {
+    color: #fff;
+    border-color: var(--violet-600);
+    background: var(--violet-600);
+  }
+
+  .family-icon-play,
+  .family-icon-pause {
+    display: inline-flex;
+  }
+
+  .family-icon-pause {
+    display: none;
+  }
+
+  .family-play[aria-pressed="true"] .family-icon-play {
+    display: none;
+  }
+
+  .family-play[aria-pressed="true"] .family-icon-pause {
+    display: inline-flex;
+  }
+
+  .family-progress {
+    flex: 1;
+    min-width: 34px;
+    height: 4px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--surface-3);
+  }
+
+  .family-progress > span {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--violet-500), var(--sky-500));
+    transition: width 80ms linear;
+  }
+
   .family-note {
     margin: 12px 0 0;
     color: var(--faint);
     font-size: 10.5px;
     line-height: 1.55;
+  }
+
+  .family-credits {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.55;
+  }
+
+  .family-credits summary {
+    cursor: pointer;
+    color: var(--violet-700);
+    font-weight: 800;
+  }
+
+  .family-credits ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 18px;
+    margin: 8px 0 0;
+    padding-left: 18px;
+  }
+
+  .family-credits li {
+    line-height: 1.5;
+  }
+
+  .family-credits a {
+    color: var(--violet-700);
+    text-decoration: underline;
+  }
+
+  .family-credits p {
+    margin: 8px 0 0;
   }
 
   .family-sun { --family-accent: var(--sun-500); }
@@ -127,6 +362,10 @@ const note = isFr
       flex-basis: 68px;
       width: 68px;
       height: 106px;
+    }
+
+    .family-credits ul {
+      grid-template-columns: 1fr;
     }
   }
 </style>

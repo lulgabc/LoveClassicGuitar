@@ -140,6 +140,11 @@ export type GuitarType = {
   tagline: string;
   detail: string;
   color: "sun" | "sky" | "violet" | "coral" | "mint" | "pink";
+  audio: string;
+  audioCredit: string;
+  audioLicense: string;
+  audioLicenseUrl: string;
+  audioUrl: string;
 };
 
 export const GUITAR_TYPES: GuitarType[] = [
@@ -150,6 +155,11 @@ export const GUITAR_TYPES: GuitarType[] = [
     tagline: "尼龙弦，声音温柔",
     detail: "用手指弹，声音圆润。你正在学的就是它。",
     color: "sun",
+    audio: "audio/guitars/classical.mp3",
+    audioCredit: "Elmatute / Freesound",
+    audioLicense: "CC0",
+    audioLicenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
+    audioUrl: "https://freesound.org/people/Elmatute/sounds/679746/",
   },
   {
     id: "acoustic",
@@ -158,6 +168,11 @@ export const GUITAR_TYPES: GuitarType[] = [
     tagline: "钢弦，声音明亮",
     detail: "常用来弹唱，扫弦会发出清脆的声音。",
     color: "sky",
+    audio: "audio/guitars/acoustic.mp3",
+    audioCredit: "Jason Shaw / Wikimedia Commons",
+    audioLicense: "CC BY 3.0 US",
+    audioLicenseUrl: "https://creativecommons.org/licenses/by/3.0/us/",
+    audioUrl: "https://commons.wikimedia.org/wiki/File:Jason_Shaw_-_SOLO_ACOUSTIC_GUITAR.ogg",
   },
   {
     id: "electric",
@@ -166,6 +181,11 @@ export const GUITAR_TYPES: GuitarType[] = [
     tagline: "插上音箱，声音可以很酷",
     detail: "摇滚、流行和电影音乐里都能听到它。",
     color: "violet",
+    audio: "audio/guitars/electric.mp3",
+    audioCredit: "afgbeveridge / Freesound",
+    audioLicense: "CC BY 4.0",
+    audioLicenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    audioUrl: "https://freesound.org/people/afgbeveridge/sounds/758469/",
   },
   {
     id: "jazz",
@@ -174,6 +194,11 @@ export const GUITAR_TYPES: GuitarType[] = [
     tagline: "圆润、温暖的“嗡嗡”声",
     detail: "琴身像一把小提琴，适合爵士和布鲁斯。",
     color: "coral",
+    audio: "audio/guitars/jazz.mp3",
+    audioCredit: "Serolillo / Wikimedia Commons",
+    audioLicense: "CC BY 2.5",
+    audioLicenseUrl: "https://creativecommons.org/licenses/by/2.5/",
+    audioUrl: "https://commons.wikimedia.org/wiki/File:Jazz-Guitar.ogg",
   },
   {
     id: "bass",
@@ -182,6 +207,11 @@ export const GUITAR_TYPES: GuitarType[] = [
     tagline: "四根粗弦，稳住低音",
     detail: "和鼓一起打底，让音乐站得更稳。",
     color: "mint",
+    audio: "audio/guitars/bass.mp3",
+    audioCredit: "Serolillo / Wikimedia Commons",
+    audioLicense: "CC BY 2.5",
+    audioLicenseUrl: "https://creativecommons.org/licenses/by/2.5/",
+    audioUrl: "https://commons.wikimedia.org/wiki/File:Funky_Slap_Bass_line.ogg",
   },
   {
     id: "flamenco",
@@ -190,6 +220,11 @@ export const GUITAR_TYPES: GuitarType[] = [
     tagline: "更轻、更亮，会跳舞",
     detail: "和古典吉他是亲戚，常为歌唱和舞蹈伴奏。",
     color: "pink",
+    audio: "audio/guitars/flamenco.mp3",
+    audioCredit: "Manitas de Plata / Mi espacio Flamenco",
+    audioLicense: "CC0",
+    audioLicenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
+    audioUrl: "https://archive.org/details/ManitasDePlata",
   },
 ];
 
