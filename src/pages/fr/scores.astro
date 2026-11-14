@@ -1,0 +1,389 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import ScoreLibrary from "../../components/ScoreLibrary.astro";
+import Icon from "../../components/Icon.astro";
+import { SCORES, SCORE_LEVELS } from "../../data/scores";
+import { url } from "../../lib/url";
+
+const levels = [
+  { n: 1, title: "Éveil", body: "Cordes à vide, première position, 8–16 mesures. Écouter avant de lire.", check: "Rester assis 10 minutes sans crispation." },
+  { n: 2, title: "Débutant", body: "Mélodies en première position, deux voix simples, rythmes de base.", check: "Trouver 3–5 notes sur une corde." },
+  { n: 3, title: "Intermédiaire", body: "Démanchés, arpèges, trois voix, phrasé et son.", check: "Jouer 16–32 mesures lentement, sans s'arrêter." },
+  { n: 4, title: "Avancé", body: "Pièces plus longues, barrés, trémolo, rythmes complexes.", check: "Repérer les passages difficiles et les travailler par sections." },
+  { n: 5, title: "Concert", body: "Répertoire de concert, polyphonie, style et présence scénique.", check: "Avoir une pièce préférée et un plan de travail." },
+];
+
+const steps = [
+  { n: "01", title: "Choisir une pièce", body: "Regarde le niveau et l'objectif. Ne prends pas trois pièces à la fois : une seule pour aujourd'hui." },
+  { n: "02", title: "Lire le conseil", body: "Dis le rythme, puis cherche les notes. Entoure les deux mesures les plus difficiles." },
+  { n: "03", title: "Travailler lentement", body: "2–4 mesures, trois fois juste, puis relie la phrase. Lentement, mais avec un beau son." },
+  { n: "04", title: "Noter", body: "Écris une découverte ou colle une étoile sur la fiche de la semaine. Demain, reprends là." },
+];
+
+const sources = [
+  { name: "IMSLP", url: "https://imslp.org/wiki/Category:For_guitar", note: "Partitions du domaine public, par œuvre et par édition." },
+  { name: "Mutopia", url: "https://www.mutopiaproject.org/", note: "Partitions libres, prêtes à imprimer." },
+  { name: "This is Classical Guitar", url: "https://www.thisisclassicalguitar.com/free-classical-guitar-method-book-pdf/", note: "Méthode gratuite et exercices de débutant." },
+  { name: "8notes", url: "https://www.8notes.com/guitar/", note: "Mélodies simples et arrangements pour la première année." },
+  { name: "WorldCat", url: "https://search.worldcat.org/", note: "Trouver une édition chez un éditeur ou une bibliothèque." },
+];
+---
+
+<BaseLayout
+  lang="fr"
+  title="Partitions"
+  description="Une bibliothèque de partitions de guitare classique pour enfants : 200 pièces classées en 5 niveaux, avec objectifs de travail, sources légales et conseils pour les parents."
+>
+  <PageHero
+    kicker="Partitions · 200 pièces"
+    title="Une page à la fois,<br /><em>tout doucement</em>."
+    lead="Des cordes à vide au répertoire de concert, classé en 5 niveaux. Chaque pièce a un objectif de travail, une source légale et un conseil pour l'enfant."
+  >
+    <div class="slug">
+      <span><Icon name="book" size={12} /> 200 pièces</span>
+      <span><Icon name="map" size={12} /> 5 niveaux</span>
+      <span><Icon name="shield" size={12} /> pas de PDF hébergé</span>
+      <span><Icon name="printer" size={12} /> fiche à imprimer</span>
+    </div>
+  </PageHero>
+
+  <section class="section-tight">
+    <div class="container">
+      <SectionHead
+        kicker="Cinq niveaux"
+        title="Des cordes à vide au <em>concert</em>"
+        lead="Le niveau est un repère, pas un examen. On peut sauter, revenir, ou rester longtemps sur une pièce."
+      />
+      <div class="level-grid">
+        {
+          levels.map((level, index) => (
+            <article class="level-card card">
+              <span class="level-number">{level.n}</span>
+              <h3>{level.title}</h3>
+              <p>{level.body}</p>
+              <span class="level-check"><Icon name="check" size={11} /> {level.check}</span>
+              <span class="level-count">{SCORE_LEVELS[index]?.count ?? 0} pièces</span>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="library">
+    <div class="container">
+      <SectionHead
+        kicker="200 partitions"
+        title="Chercher par niveau et par <em>objectif</em>"
+        lead="Filtre d'abord par niveau, puis regarde « ce que l'on travaille ». Les partitions libres et les œuvres protégées sont clairement séparées."
+      />
+      <ScoreLibrary scores={SCORES} lang="fr" />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container how-grid">
+      <div>
+        <SectionHead kicker="Mode d'emploi" title="10 minutes, <em>une pièce</em>" lead="Une partition n'est pas une liste de devoirs. Choisis une pièce, lis un conseil, commence doucement." />
+        <div class="parent-note card">
+          <Icon name="heart" size={18} />
+          <p><strong>Pour les parents / le professeur :</strong> vérifiez d'abord la posture et la taille de la guitare, puis écoutez le son. Ne corrigez pas cinq choses à la fois : un seul objectif aujourd'hui, et une remarque précise après la pièce.</p>
+        </div>
+      </div>
+      <div class="how-steps">
+        {steps.map((step) => (
+          <article class="how-step card">
+            <span>{step.n}</span>
+            <div><h3>{step.title}</h3><p>{step.body}</p></div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container">
+      <SectionHead kicker="Sources et droits" title="Libre, mais <em>pas n'importe comment</em>" lead="Ce site n'héberge pas de PDF. Les œuvres du domaine public renvoient vers IMSLP ; les œuvres protégées vers un éditeur ou une bibliothèque." />
+      <div class="source-grid">
+        {sources.map((source) => (
+          <a class="source-card card card-hover" href={source.url} target="_blank" rel="noopener noreferrer">
+            <span class="source-name">{source.name} <Icon name="external" size={11} /></span>
+            <p>{source.note}</p>
+          </a>
+        ))}
+      </div>
+      <div class="copyright-note">
+        <Icon name="shield" size={17} />
+        <p><strong>Important :</strong> le statut des droits sur IMSLP varie selon les pays. Les œuvres modernes, les arrangements et les méthodes peuvent encore être protégés. Demandez à un adulte ou à un professeur avant de télécharger. Une partition libre ne signifie pas que l'enregistrement est libre.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container score-bottom">
+      <div>
+        <span class="eyebrow"><Icon name="printer" size={13} /> La semaine</span>
+        <h2>Faire d'une pièce<br />une petite étoile.</h2>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href={url("/fr/print/weekly/")}>Imprimer la fiche <Icon name="arrow-right" size={14} /></a>
+        <a class="btn btn-ghost" href={url("/fr/practice/")}>Aller au studio</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .slug {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .slug span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 9px;
+    color: #d7caf4;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+
+  .slug .icon {
+    color: #ffd86f;
+  }
+
+  .level-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .level-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 190px;
+    padding: 15px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .level-number {
+    color: var(--violet-700);
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .level-card h3 {
+    margin: 8px 0 4px;
+    color: var(--ink);
+    font-size: 16px;
+  }
+
+  .level-card > p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 9.5px;
+    line-height: 1.6;
+  }
+
+  .level-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    margin-top: 9px;
+    color: var(--ink-soft);
+    font-size: 8px;
+    line-height: 1.5;
+  }
+
+  .level-check .icon {
+    margin-top: 1px;
+    color: var(--mint-500);
+  }
+
+  .level-count {
+    margin-top: auto;
+    padding-top: 10px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 8px;
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(26px, 5vw, 65px);
+    align-items: start;
+  }
+
+  .parent-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 17px;
+    padding: 13px 15px;
+    background: var(--pink-wash);
+  }
+
+  .parent-note > .icon {
+    margin-top: 1px;
+    color: #a33470;
+  }
+
+  .parent-note p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 9.5px;
+    line-height: 1.65;
+  }
+
+  .parent-note strong {
+    color: var(--ink);
+  }
+
+  .how-steps {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .how-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 14px;
+    background: var(--surface);
+  }
+
+  .how-step > span {
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 800;
+    line-height: 1.7;
+  }
+
+  .how-step h3 {
+    margin: 0 0 3px;
+    color: var(--ink);
+    font-size: 13px;
+  }
+
+  .how-step p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1.6;
+  }
+
+  .source-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .source-card {
+    padding: 14px;
+    color: var(--ink);
+    text-decoration: none;
+    background: var(--surface);
+  }
+
+  .source-name {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--violet-700);
+    font-size: 10px;
+    font-weight: 850;
+  }
+
+  .source-card p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 8.5px;
+    line-height: 1.55;
+  }
+
+  .copyright-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 13px;
+    padding: 13px 15px;
+    border-left: 3px solid var(--sun-500);
+    border-radius: 0 11px 11px 0;
+    background: var(--sun-wash);
+  }
+
+  .copyright-note > .icon {
+    margin-top: 1px;
+    color: var(--sun-700);
+  }
+
+  .copyright-note p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 9px;
+    line-height: 1.6;
+  }
+
+  .score-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: clamp(22px, 4vw, 32px);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: radial-gradient(circle at 90% 10%, rgba(255, 216, 111, 0.2), transparent 25%), var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .score-bottom h2 {
+    margin-top: 10px;
+    font-size: clamp(23px, 3vw, 31px);
+  }
+
+  @media (max-width: 1100px) {
+    .level-grid,
+    .source-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 850px) {
+    .level-grid,
+    .source-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .how-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .level-grid,
+    .source-grid,
+    .how-steps {
+      grid-template-columns: 1fr;
+    }
+
+    .score-bottom {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

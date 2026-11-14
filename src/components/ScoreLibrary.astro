@@ -1,0 +1,561 @@
+---
+import { SCORES, type ScoreEntry, type ScoreFocus, type ScoreLevel } from "../data/scores";
+import Icon from "./Icon.astro";
+
+interface Props {
+  scores?: ScoreEntry[];
+  lang?: "zh" | "fr";
+}
+
+const { scores = SCORES, lang = "zh" } = Astro.props;
+const isFr = lang === "fr";
+
+const levelLabels: Record<ScoreLevel, string> = isFr
+  ? { 1: "Éveil", 2: "Débutant", 3: "Intermédiaire", 4: "Avancé", 5: "Concert" }
+  : { 1: "启蒙", 2: "初级", 3: "中级", 4: "进阶", 5: "高级" };
+
+const focusLabels: Record<ScoreFocus, string> = isFr
+  ? {
+      right: "Main droite",
+      left: "Main gauche",
+      reading: "Lecture",
+      rhythm: "Rythme",
+      tone: "Son",
+      phrasing: "Phrasé",
+      ensemble: "Ensemble",
+    }
+  : {
+      right: "右手",
+      left: "左手",
+      reading: "读谱",
+      rhythm: "节奏",
+      tone: "音色",
+      phrasing: "乐句",
+      ensemble: "合奏",
+    };
+
+const t = isFr
+  ? {
+      searchPlaceholder: "Chercher un titre, un compositeur ou un objectif…",
+      searchLabel: "Chercher dans la bibliothèque de partitions",
+      levelLabel: "Niveau",
+      focusLabel: "Objectif",
+      all: "Tous",
+      freeOnly: "Seulement les partitions libres",
+      count: (shown: number, total: number) => `${shown} / ${total} partitions`,
+      more: (step: number) => `Afficher ${step} partitions de plus`,
+      empty: "Aucune partition trouvée. Essaie un mot plus court ou enlève un filtre.",
+      free: "Libre",
+      copyright: "Sous droits",
+      tip: "Conseil",
+      imslp: "Chercher sur IMSLP",
+      library: "Éditeur / bibliothèque",
+      note: "Ce site n'héberge pas de PDF. Les œuvres du domaine public renvoient vers IMSLP ; les œuvres protégées vers WorldCat, un éditeur ou une bibliothèque. Le statut des droits varie selon les pays.",
+    }
+  : {
+      searchPlaceholder: "搜曲名、作曲家或练习重点…",
+      searchLabel: "在乐谱库中搜索",
+      levelLabel: "难度",
+      focusLabel: "练习重点",
+      all: "全部",
+      freeOnly: "只看免费乐谱",
+      count: (shown: number, total: number) => `显示 ${shown} / ${total} 首`,
+      more: (step: number) => `再看 ${step} 首`,
+      empty: "没有找到。换个短一点的词，或者去掉一个筛选条件。",
+      free: "免费",
+      copyright: "版权作品",
+      tip: "练习提示",
+      imslp: "在 IMSLP 找乐谱",
+      library: "出版社 / 图书馆",
+      note: "本站不托管 PDF。公共领域作品链接到 IMSLP；现代版权作品链接到 WorldCat、出版社或图书馆。版权状态因国家而异，请家长或老师确认。",
+    };
+
+const step = 24;
+const focusKeys = Object.keys(focusLabels) as ScoreFocus[];
+---
+
+<div class="scores" data-scores data-lang={lang} data-step={step}>
+  <div class="score-toolbar">
+    <label class="score-search">
+      <Icon name="search" size={17} />
+      <span class="sr-only">{t.searchLabel}</span>
+      <input type="search" placeholder={t.searchPlaceholder} data-score-search />
+    </label>
+    <label class="score-free-toggle">
+      <input type="checkbox" data-score-free />
+      <span class="score-check" aria-hidden="true"></span>
+      <span>{t.freeOnly}</span>
+    </label>
+    <span class="score-count" data-score-count>{t.count(scores.length, scores.length)}</span>
+  </div>
+
+  <div class="score-filters">
+    <div class="score-filter-row" role="group" aria-label={t.levelLabel}>
+      <span class="score-filter-label">{t.levelLabel}</span>
+      <button type="button" class="score-chip is-active" data-score-level="all" aria-pressed="true">{t.all}</button>
+      {([1, 2, 3, 4, 5] as ScoreLevel[]).map((level) => (
+        <button type="button" class="score-chip" data-score-level={level} aria-pressed="false">{level} · {levelLabels[level]}</button>
+      ))}
+    </div>
+    <div class="score-filter-row" role="group" aria-label={t.focusLabel}>
+      <span class="score-filter-label">{t.focusLabel}</span>
+      <button type="button" class="score-chip is-active" data-score-focus="all" aria-pressed="true">{t.all}</button>
+      {focusKeys.map((focus) => (
+        <button type="button" class="score-chip" data-score-focus={focus} aria-pressed="false">{focusLabels[focus]}</button>
+      ))}
+    </div>
+  </div>
+
+  <div class="score-grid">
+    {
+      scores.map((score) => (
+        <article
+          class:list={["score-card", "card", `level-${score.level}`]}
+          data-score-item
+          data-level={score.level}
+          data-focus={score.focus}
+          data-free={score.free ? "true" : "false"}
+          data-search={`${score.title} ${score.titleZh ?? ""} ${score.composer} ${focusLabels[score.focus]} ${levelLabels[score.level]}`.toLowerCase()}
+        >
+          <div class="score-top">
+            <span class="score-level">{score.level} · {levelLabels[score.level]}</span>
+            <span class:list={["score-price", score.free ? "is-free" : "is-paid"]}>{score.free ? t.free : t.copyright}</span>
+          </div>
+          <h3>{isFr ? score.title : score.titleZh ?? score.title}</h3>
+          {!isFr && score.titleZh && <p class="score-original">{score.title}</p>}
+          <p class="score-composer">{score.composer}</p>
+          <div class="score-meta">
+            <span class="score-focus">{focusLabels[score.focus]}</span>
+            <span class="score-era">{score.era}</span>
+          </div>
+          <p class="score-tip"><strong>{t.tip}:</strong> {isFr ? score.tipFr : score.tipZh}</p>
+          <a class="score-link" href={score.url} target="_blank" rel="noopener noreferrer">
+            {score.source === "IMSLP" ? t.imslp : t.library} <Icon name="external" size={11} />
+          </a>
+        </article>
+      ))
+    }
+  </div>
+
+  <p class="score-empty" data-score-empty hidden>{t.empty}</p>
+  <div class="score-more-wrap" data-score-more-wrap>
+    <button type="button" class="btn btn-secondary btn-sm" data-score-more>{t.more(step)}</button>
+  </div>
+  <p class="score-note"><Icon name="info" size={13} /> {t.note}</p>
+</div>
+
+<noscript>
+  <style>[data-score-more-wrap] { display: none; }</style>
+</noscript>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-scores]");
+  if (root) {
+    const items = Array.from(root.querySelectorAll<HTMLElement>("[data-score-item]"));
+    const search = root.querySelector<HTMLInputElement>("[data-score-search]");
+    const free = root.querySelector<HTMLInputElement>("[data-score-free]");
+    const count = root.querySelector<HTMLElement>("[data-score-count]");
+    const empty = root.querySelector<HTMLElement>("[data-score-empty]");
+    const moreWrap = root.querySelector<HTMLElement>("[data-score-more-wrap]");
+    const more = root.querySelector<HTMLButtonElement>("[data-score-more]");
+    const levelButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-score-level]"));
+    const focusButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-score-focus]"));
+    const isFr = root.dataset.lang === "fr";
+    const step = Number(root.dataset.step || 24);
+    let level = "all";
+    let focus = "all";
+    let limit = step;
+
+    const countLabel = (shown: number, total: number) => isFr ? `${shown} / ${total} partitions` : `显示 ${shown} / ${total} 首`;
+    const moreLabel = (n: number) => isFr ? `Afficher ${n} partitions de plus` : `再看 ${n} 首`;
+
+    function apply(reset = false): void {
+      if (reset) limit = step;
+      const query = (search?.value ?? "").trim().toLowerCase();
+      const onlyFree = free?.checked ?? false;
+      let matching = 0;
+      items.forEach((item) => {
+        const matches =
+          (level === "all" || item.dataset.level === level) &&
+          (focus === "all" || item.dataset.focus === focus) &&
+          (!onlyFree || item.dataset.free === "true") &&
+          (!query || (item.dataset.search ?? "").includes(query));
+        const show = matches && matching < limit;
+        if (matches) matching += 1;
+        item.hidden = !show;
+      });
+      if (count) count.textContent = countLabel(Math.min(matching, limit), matching);
+      if (empty) empty.hidden = matching !== 0;
+      if (moreWrap) moreWrap.hidden = matching <= limit;
+      if (more) more.textContent = moreLabel(Math.min(step, Math.max(0, matching - limit)));
+    }
+
+    function selectChip(buttons: HTMLButtonElement[], activeButton: HTMLButtonElement): void {
+      buttons.forEach((button) => {
+        const active = button === activeButton;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+    }
+
+    levelButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        level = button.dataset.scoreLevel ?? "all";
+        selectChip(levelButtons, button);
+        apply(true);
+      });
+    });
+    focusButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        focus = button.dataset.scoreFocus ?? "all";
+        selectChip(focusButtons, button);
+        apply(true);
+      });
+    });
+    search?.addEventListener("input", () => apply(true));
+    free?.addEventListener("change", () => apply(true));
+    more?.addEventListener("click", () => {
+      limit += step;
+      apply();
+    });
+
+    apply();
+  }
+</script>
+
+<style>
+  .score-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: 11px;
+  }
+
+  .score-search {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex: 1 1 280px;
+    min-width: 0;
+    min-height: 43px;
+    padding: 0 13px;
+    color: var(--muted);
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+  }
+
+  .score-search:focus-within {
+    border-color: var(--violet-500);
+    box-shadow: 0 0 0 3px var(--violet-wash);
+  }
+
+  .score-search input {
+    flex: 1;
+    min-width: 0;
+    min-height: 39px;
+    padding: 0;
+    color: var(--ink);
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 12px;
+  }
+
+  .score-search input::placeholder {
+    color: var(--faint);
+  }
+
+  .score-free-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .score-free-toggle input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .score-check {
+    position: relative;
+    pointer-events: none;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 6px;
+    background: var(--surface);
+    transition: background 150ms ease, border-color 150ms ease;
+  }
+
+  .score-free-toggle input:checked + .score-check {
+    border-color: var(--violet-600);
+    background: var(--violet-600);
+  }
+
+  .score-free-toggle input:checked + .score-check::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .score-free-toggle input:focus-visible + .score-check {
+    outline: 3px solid var(--sun-500);
+    outline-offset: 2px;
+  }
+
+  .score-count {
+    margin-left: auto;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    white-space: nowrap;
+  }
+
+  .score-filters {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .score-filter-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .score-filter-label {
+    flex: 0 0 54px;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+  }
+
+  .score-chip {
+    min-height: 28px;
+    padding: 4px 8px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: 8.5px;
+    font-weight: 750;
+    white-space: nowrap;
+  }
+
+  .score-chip.is-active {
+    color: #fff;
+    border-color: #5b3fd4;
+    background: #5b3fd4;
+  }
+
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .score-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 225px;
+    padding: 14px;
+    border-top: 3px solid var(--score-accent, var(--violet-500));
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 30%),
+      var(--surface);
+    transition: transform 180ms var(--ease), border-color 180ms ease;
+  }
+
+  .score-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .score-card[hidden] {
+    display: none;
+  }
+
+  .score-card.level-1 { --score-accent: var(--mint-500); }
+  .score-card.level-2 { --score-accent: var(--sky-500); }
+  .score-card.level-3 { --score-accent: var(--violet-500); }
+  .score-card.level-4 { --score-accent: var(--sun-500); }
+  .score-card.level-5 { --score-accent: var(--coral-500); }
+
+  .score-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+  }
+
+  .score-level {
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .score-price {
+    flex: 0 0 auto;
+    padding: 2px 5px;
+    border-radius: 999px;
+    font-size: 7px;
+    font-weight: 800;
+  }
+
+  .score-price.is-free {
+    color: #0d6b52;
+    background: var(--mint-wash);
+  }
+
+  .score-price.is-paid {
+    color: var(--sun-700);
+    background: var(--sun-wash);
+  }
+
+  .score-card h3 {
+    margin: 8px 0 1px;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .score-original {
+    margin: 0;
+    color: var(--faint);
+    font-size: 7.5px;
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  .score-composer {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 8.5px;
+    line-height: 1.5;
+  }
+
+  .score-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 7px;
+  }
+
+  .score-focus,
+  .score-era {
+    padding: 2px 5px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    color: var(--muted);
+    font-size: 7px;
+    font-weight: 700;
+  }
+
+  .score-focus {
+    color: var(--violet-700);
+  }
+
+  .score-tip {
+    margin: 8px 0 0;
+    color: var(--ink-soft);
+    font-size: 8.5px;
+    line-height: 1.55;
+  }
+
+  .score-tip strong {
+    color: var(--ink);
+  }
+
+  .score-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    width: fit-content;
+    margin-top: auto;
+    padding-top: 9px;
+    color: var(--violet-700);
+    font-size: 8.5px;
+    font-weight: 850;
+    text-decoration: none;
+  }
+
+  .score-link:hover {
+    color: var(--violet-800);
+  }
+
+  .score-empty {
+    padding: 24px 0;
+    color: var(--muted);
+    text-align: center;
+    font-size: 11px;
+  }
+
+  .score-more-wrap {
+    margin-top: 13px;
+    text-align: center;
+  }
+
+  .score-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin: 12px 0 0;
+    color: var(--faint);
+    font-size: 8px;
+    line-height: 1.55;
+  }
+
+  .score-note .icon {
+    margin-top: 1px;
+    color: var(--violet-700);
+  }
+
+  html[data-theme="night"] .score-price.is-free {
+    color: var(--mint-500);
+  }
+
+  @media (max-width: 1100px) {
+    .score-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 850px) {
+    .score-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .score-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .score-filter-label {
+      flex-basis: 100%;
+    }
+
+    .score-count {
+      margin-left: 0;
+    }
+  }
+</style>

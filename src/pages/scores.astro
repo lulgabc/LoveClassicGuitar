@@ -1,0 +1,391 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import SectionHead from "../components/SectionHead.astro";
+import ScoreLibrary from "../components/ScoreLibrary.astro";
+import Icon from "../components/Icon.astro";
+import { SCORES, SCORE_LEVELS } from "../data/scores";
+import { url } from "../lib/url";
+
+const levels = [
+  { n: 1, title: "启蒙", body: "空弦、第一把位、8–16 小节。先听声音，再读谱。", check: "能坐稳 10 分钟，手指不紧张。" },
+  { n: 2, title: "初级", body: "第一把位旋律、简单双声部、基本节奏。", check: "能在一根弦上找到 3–5 个音。" },
+  { n: 3, title: "中级", body: "换把、琶音、三声部、分句和音色。", check: "能慢速完整弹完 16–32 小节。" },
+  { n: 4, title: "进阶", body: "较长作品、横按、轮指、复杂节奏。", check: "能自己标出难点并分段练习。" },
+  { n: 5, title: "高级", body: "音乐会曲目、复调、风格和舞台表达。", check: "有自己喜欢的曲目和练习计划。" },
+];
+
+const steps = [
+  { n: "01", title: "选一首", body: "先看级别和练习重点，不要一次选三首。今天只和一首曲子做朋友。" },
+  { n: "02", title: "读提示", body: "先唱节奏，再找音；把最难的两小节圈出来，先不从头弹。" },
+  { n: "03", title: "慢练", body: "2–4 小节，连续三次正确，再连接下一句。慢到能听见每个音。" },
+  { n: "04", title: "记录", body: "写下一个发现，或者在本周练习卡上贴一颗星。明天从那里继续。" },
+];
+
+const sources = [
+  { name: "IMSLP", url: "https://imslp.org/wiki/Category:For_guitar", note: "公共领域乐谱，按作品和版本查找。" },
+  { name: "Mutopia", url: "https://www.mutopiaproject.org/", note: "自由授权的排版乐谱，适合打印。" },
+  { name: "This is Classical Guitar", url: "https://www.thisisclassicalguitar.com/free-classical-guitar-method-book-pdf/", note: "免费入门方法与练习。" },
+  { name: "8notes", url: "https://www.8notes.com/guitar/", note: "简单的旋律和改编曲，适合第一年。" },
+  { name: "WorldCat", url: "https://search.worldcat.org/", note: "查找出版社版本或附近图书馆。" },
+];
+---
+
+<BaseLayout
+  title="乐谱库"
+  description="给孩子的古典吉他乐谱库：200 首按 5 个难度级别整理的练习曲与小品，附练习重点、合法乐谱来源和家长/老师说明。"
+>
+  <PageHero
+    kicker="Partitions · 200 首"
+    title="一张一张，<br /><em>慢慢练</em>。"
+    lead="从空弦到音乐会曲目，按 5 个难度级别整理。每首都有练习重点、合法乐谱入口和一句给孩子的提示。"
+  >
+    <div class="slug">
+      <span><Icon name="book" size={12} /> 200 首</span>
+      <span><Icon name="map" size={12} /> 5 个级别</span>
+      <span><Icon name="shield" size={12} /> 不托管 PDF</span>
+      <span><Icon name="printer" size={12} /> 可打印练习卡</span>
+    </div>
+  </PageHero>
+
+  <section class="section-tight">
+    <div class="container">
+      <SectionHead
+        kicker="五个级别"
+        title="从空弦到<em>音乐会</em>"
+        lead="级别只是路标，不是考试。可以跳着选，也可以在一首曲子里待很久。"
+      />
+      <div class="level-grid">
+        {
+          levels.map((level, index) => (
+            <article class="level-card card">
+              <span class="level-number">{level.n}</span>
+              <h3>{level.title}</h3>
+              <p>{level.body}</p>
+              <span class="level-check"><Icon name="check" size={11} /> {level.check}</span>
+              <span class="level-count">{SCORE_LEVELS[index]?.count ?? 0} 首</span>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="library">
+    <div class="container">
+      <SectionHead
+        kicker="200 首练习乐谱"
+        title="按难度和<em>练习重点</em>找一首"
+        lead="先用级别缩小范围，再看“练什么”。免费乐谱和版权作品分开标注，不会把买不到的谱子说成免费。"
+      />
+      <ScoreLibrary scores={SCORES} lang="zh" />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container how-grid">
+      <div>
+        <SectionHead kicker="怎么用" title="10 分钟，<em>一首就够</em>" lead="乐谱不是任务清单。选一首，读一句提示，慢慢开始。" />
+        <div class="parent-note card">
+          <Icon name="heart" size={18} />
+          <p><strong>给家长/老师：</strong>先看手型和坐姿，再听声音。不要一次纠正五个问题；今天只选一个重点，弹完说一句具体的“我听到了什么”。</p>
+        </div>
+      </div>
+      <div class="how-steps">
+        {steps.map((step) => (
+          <article class="how-step card">
+            <span>{step.n}</span>
+            <div><h3>{step.title}</h3><p>{step.body}</p></div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container">
+      <SectionHead kicker="来源与版权" title="免费，但不<em>随便</em>" lead="本站不存储或分发 PDF。公共领域作品链接到 IMSLP；现代版权作品请通过出版社或图书馆获取。" />
+      <div class="source-grid">
+        {sources.map((source) => (
+          <a class="source-card card card-hover" href={source.url} target="_blank" rel="noopener noreferrer">
+            <span class="source-name">{source.name} <Icon name="external" size={11} /></span>
+            <p>{source.note}</p>
+          </a>
+        ))}
+      </div>
+      <div class="copyright-note">
+        <Icon name="shield" size={17} />
+        <p><strong>重要：</strong>IMSLP 的版权状态因国家而异；现代作品、改编版和教材可能仍受版权保护。请家长或老师确认后再下载。免费乐谱不等于免费录音，演奏视频版权归演奏者。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container score-bottom">
+      <div>
+        <span class="eyebrow"><Icon name="printer" size={13} /> 本周练习</span>
+        <h2>把一首曲子，<br />练成一颗小星星。</h2>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href={url("/print/weekly/")}>打印练习卡 <Icon name="arrow-right" size={14} /></a>
+        <a class="btn btn-ghost" href={url("/practice/")}>去练习室</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .slug {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .slug span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 9px;
+    color: #d7caf4;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+
+  .slug .icon {
+    color: #ffd86f;
+  }
+
+  .level-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .level-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 190px;
+    padding: 15px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .level-number {
+    color: var(--violet-700);
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .level-card h3 {
+    margin: 8px 0 4px;
+    color: var(--ink);
+    font-size: 16px;
+  }
+
+  .level-card > p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 9.5px;
+    line-height: 1.6;
+  }
+
+  .level-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    margin-top: 9px;
+    color: var(--ink-soft);
+    font-size: 8px;
+    line-height: 1.5;
+  }
+
+  .level-check .icon {
+    margin-top: 1px;
+    color: var(--mint-500);
+  }
+
+  .level-count {
+    margin-top: auto;
+    padding-top: 10px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 8px;
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(26px, 5vw, 65px);
+    align-items: start;
+  }
+
+  .parent-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 17px;
+    padding: 13px 15px;
+    background: var(--pink-wash);
+  }
+
+  .parent-note > .icon {
+    margin-top: 1px;
+    color: #a33470;
+  }
+
+  .parent-note p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 9.5px;
+    line-height: 1.65;
+  }
+
+  .parent-note strong {
+    color: var(--ink);
+  }
+
+  .how-steps {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .how-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 14px;
+    background: var(--surface);
+  }
+
+  .how-step > span {
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 800;
+    line-height: 1.7;
+  }
+
+  .how-step h3 {
+    margin: 0 0 3px;
+    color: var(--ink);
+    font-size: 13px;
+  }
+
+  .how-step p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1.6;
+  }
+
+  .source-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .source-card {
+    padding: 14px;
+    color: var(--ink);
+    text-decoration: none;
+    background: var(--surface);
+  }
+
+  .source-name {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--violet-700);
+    font-size: 10px;
+    font-weight: 850;
+  }
+
+  .source-card p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 8.5px;
+    line-height: 1.55;
+  }
+
+  .copyright-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 13px;
+    padding: 13px 15px;
+    border-left: 3px solid var(--sun-500);
+    border-radius: 0 11px 11px 0;
+    background: var(--sun-wash);
+  }
+
+  .copyright-note > .icon {
+    margin-top: 1px;
+    color: var(--sun-700);
+  }
+
+  .copyright-note p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 9px;
+    line-height: 1.6;
+  }
+
+  .score-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: clamp(22px, 4vw, 32px);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: radial-gradient(circle at 90% 10%, rgba(255, 216, 111, 0.2), transparent 25%), var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .score-bottom h2 {
+    margin-top: 10px;
+    font-size: clamp(23px, 3vw, 31px);
+  }
+
+  @media (max-width: 1100px) {
+    .level-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .source-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 850px) {
+    .level-grid,
+    .source-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .how-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .level-grid,
+    .source-grid,
+    .how-steps {
+      grid-template-columns: 1fr;
+    }
+
+    .score-bottom {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

@@ -11,7 +11,7 @@ export const SITE = {
   url: "https://lulgabc.github.io/LoveClassicGuitar",
   repo: "https://github.com/lulgabc/LoveClassicGuitar",
   author: "lulgabc",
-  updated: "2026-11-13",
+  updated: "2026-11-14",
 };
 
 export const NAV = [
@@ -20,6 +20,7 @@ export const NAV = [
   { href: "/roadmap/", label: "学习地图", short: "地图" },
   { href: "/practice/", label: "练习室", short: "练习" },
   { href: "/concert/", label: "音乐厅", short: "音乐" },
+  { href: "/scores/", label: "乐谱库", short: "乐谱" },
   { href: "/library/", label: "资源宝库", short: "资源" },
   { href: "/parents/", label: "给爸妈", short: "爸妈" },
 ] as const;
@@ -30,6 +31,7 @@ export const NAV_FR = [
   { href: "/fr/roadmap/", label: "Parcours", short: "Parcours" },
   { href: "/fr/practice/", label: "Pratique", short: "Pratique" },
   { href: "/fr/concert/", label: "Écouter", short: "Écouter" },
+  { href: "/fr/scores/", label: "Partitions", short: "Partitions" },
   { href: "/fr/library/", label: "Ressources", short: "Ressources" },
   { href: "/fr/parents/", label: "Parents", short: "Parents" },
 ] as const;

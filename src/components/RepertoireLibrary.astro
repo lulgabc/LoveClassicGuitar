@@ -193,7 +193,7 @@ const step = 24;
         if (matches) matching += 1;
         item.hidden = !show;
       });
-      if (count) count.textContent = countLabel(Math.min(matching, limit), items.length);
+      if (count) count.textContent = countLabel(Math.min(matching, limit), matching);
       if (empty) empty.hidden = matching !== 0;
       if (moreWrap) moreWrap.hidden = matching <= limit;
       if (more) more.textContent = moreLabel(Math.min(step, matching - limit));
