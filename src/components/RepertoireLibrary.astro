@@ -1,0 +1,571 @@
+---
+import { REPERTOIRE_ERAS, type RepertoireEra, type RepertoireLevel, type RepertoirePiece } from "../data/repertoire";
+import Icon from "./Icon.astro";
+
+interface Props {
+  pieces: RepertoirePiece[];
+  lang?: "zh" | "fr";
+}
+
+const { pieces, lang = "zh" } = Astro.props;
+const isFr = lang === "fr";
+
+const eraLabels: Record<RepertoireEra, string> = isFr
+  ? {
+      Renaissance: "Renaissance",
+      Baroque: "Baroque",
+      Classical: "Classique",
+      Romantic: "Romantique",
+      Modern: "Moderne",
+      Contemporary: "Contemporain",
+    }
+  : {
+      Renaissance: "文艺复兴",
+      Baroque: "巴洛克",
+      Classical: "古典",
+      Romantic: "浪漫",
+      Modern: "现代",
+      Contemporary: "当代",
+    };
+
+const levelLabels: Record<RepertoireLevel, string> = isFr
+  ? { beginner: "Débutant", intermediate: "Intermédiaire", advanced: "Avancé" }
+  : { beginner: "入门", intermediate: "进阶", advanced: "高级" };
+
+const t = isFr
+  ? {
+      searchPlaceholder: "Chercher un titre ou un compositeur…",
+      searchLabel: "Chercher dans la bibliothèque",
+      eraLabel: "Époque",
+      levelLabel: "Niveau",
+      all: "Toutes",
+      onlyPlayable: "Seulement les pièces jouables ici",
+      count: (shown: number, total: number) => `${shown} / ${total} pièces`,
+      more: (step: number) => `Afficher ${step} pièces de plus`,
+      empty: "Aucune pièce trouvée. Essaie un mot plus court ou enlève un filtre.",
+      play: "Écouter dans le lecteur",
+      search: "Chercher sur YouTube",
+      note: "18 pièces sont jouables directement dans le lecteur ci-dessus. Les autres ouvrent une recherche YouTube : les vidéos disponibles changent selon les pays et les droits.",
+      original: "Titre original",
+    }
+  : {
+      searchPlaceholder: "搜曲名或作曲家…",
+      searchLabel: "在曲库中搜索",
+      eraLabel: "时期",
+      levelLabel: "难度",
+      all: "全部",
+      onlyPlayable: "只看页面内可播放",
+      count: (shown: number, total: number) => `显示 ${shown} / ${total} 首`,
+      more: (step: number) => `再看 ${step} 首`,
+      empty: "没有找到。换个短一点的词，或者去掉一个筛选条件。",
+      play: "在播放器中听",
+      search: "在 YouTube 找",
+      note: "18 首可以在上面的播放器里直接听；其余曲目一键去 YouTube 找演奏。视频是否可嵌入由平台和版权方决定。",
+      original: "原文曲名",
+    };
+
+const youtubeSearch = (piece: RepertoirePiece): string =>
+  `https://www.youtube.com/results?search_query=${encodeURIComponent(`${piece.title} ${piece.composer} classical guitar`)}`;
+const step = 24;
+---
+
+<div class="repertoire" data-repertoire data-lang={lang} data-step={step}>
+  <div class="rep-toolbar">
+    <label class="rep-search">
+      <Icon name="search" size={17} />
+      <span class="sr-only">{t.searchLabel}</span>
+      <input type="search" placeholder={t.searchPlaceholder} data-rep-search />
+    </label>
+    <label class="rep-playable">
+      <input type="checkbox" data-rep-playable />
+      <span class="rep-check" aria-hidden="true"></span>
+      <span>{t.onlyPlayable}</span>
+    </label>
+    <span class="rep-count" data-rep-count>{t.count(pieces.length, pieces.length)}</span>
+  </div>
+
+  <div class="rep-filters">
+    <div class="rep-filter-row" role="group" aria-label={t.eraLabel}>
+      <span class="rep-filter-label">{t.eraLabel}</span>
+      <button type="button" class="rep-chip is-active" data-rep-era="all" aria-pressed="true">{t.all}</button>
+      {REPERTOIRE_ERAS.map((era) => (
+        <button type="button" class="rep-chip" data-rep-era={era} aria-pressed="false">{eraLabels[era]}</button>
+      ))}
+    </div>
+    <div class="rep-filter-row" role="group" aria-label={t.levelLabel}>
+      <span class="rep-filter-label">{t.levelLabel}</span>
+      <button type="button" class="rep-chip is-active" data-rep-level="all" aria-pressed="true">{t.all}</button>
+      {(["beginner", "intermediate", "advanced"] as RepertoireLevel[]).map((level) => (
+        <button type="button" class="rep-chip" data-rep-level={level} aria-pressed="false">{levelLabels[level]}</button>
+      ))}
+    </div>
+  </div>
+
+  <div class="rep-grid">
+    {
+      pieces.map((piece) => (
+        <article
+          class="rep-card card"
+          data-rep-item
+          data-era={piece.era}
+          data-level={piece.level}
+          data-playable={piece.videoId ? "true" : "false"}
+          data-search={`${piece.title} ${piece.titleZh ?? ""} ${piece.composer}`.toLowerCase()}
+        >
+          <div class="rep-top">
+            <span class="rep-era">{eraLabels[piece.era]}</span>
+            <span class:list={["rep-level", `is-${piece.level}`]}>{levelLabels[piece.level]}</span>
+          </div>
+          <h3>{isFr ? piece.title : piece.titleZh ?? piece.title}</h3>
+          {!isFr && piece.titleZh && <p class="rep-original">{piece.title}</p>}
+          <p class="rep-composer">{piece.composer}</p>
+          <div class="rep-actions">
+            {piece.videoId ? (
+              <>
+                <button type="button" class="rep-play" data-rep-play={piece.videoId}>
+                  <Icon name="play" size={11} /> {t.play}
+                </button>
+                <a class="rep-link" href={`https://www.youtube.com/watch?v=${piece.videoId}`} target="_blank" rel="noopener noreferrer" aria-label={`${t.search} : ${piece.title}`}>
+                  <Icon name="external" size={11} />
+                </a>
+              </>
+            ) : (
+              <a class="rep-link" href={youtubeSearch(piece)} target="_blank" rel="noopener noreferrer">
+                {t.search} <Icon name="external" size={11} />
+              </a>
+            )}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+
+  <p class="rep-empty" data-rep-empty hidden>{t.empty}</p>
+  <div class="rep-more-wrap" data-rep-more-wrap>
+    <button type="button" class="btn btn-secondary btn-sm" data-rep-more>{t.more(step)}</button>
+  </div>
+  <p class="rep-note"><Icon name="info" size={13} /> {t.note}</p>
+</div>
+
+<noscript>
+  <style>[data-rep-more-wrap] { display: none; }</style>
+</noscript>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-repertoire]");
+  if (root) {
+    const items = Array.from(root.querySelectorAll<HTMLElement>("[data-rep-item]"));
+    const search = root.querySelector<HTMLInputElement>("[data-rep-search]");
+    const playable = root.querySelector<HTMLInputElement>("[data-rep-playable]");
+    const count = root.querySelector<HTMLElement>("[data-rep-count]");
+    const empty = root.querySelector<HTMLElement>("[data-rep-empty]");
+    const moreWrap = root.querySelector<HTMLElement>("[data-rep-more-wrap]");
+    const more = root.querySelector<HTMLButtonElement>("[data-rep-more]");
+    const eraButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-rep-era]"));
+    const levelButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-rep-level]"));
+    const isFr = root.dataset.lang === "fr";
+    const step = Number(root.dataset.step || 24);
+    let era = "all";
+    let level = "all";
+    let limit = step;
+
+    const countLabel = (shown: number, total: number) => isFr ? `${shown} / ${total} pièces` : `显示 ${shown} / ${total} 首`;
+    const moreLabel = (n: number) => isFr ? `Afficher ${n} pièces de plus` : `再看 ${n} 首`;
+
+    function apply(reset = false): void {
+      if (reset) limit = step;
+      const query = (search?.value ?? "").trim().toLowerCase();
+      const onlyPlayable = playable?.checked ?? false;
+      let matching = 0;
+      items.forEach((item) => {
+        const matches =
+          (era === "all" || item.dataset.era === era) &&
+          (level === "all" || item.dataset.level === level) &&
+          (!onlyPlayable || item.dataset.playable === "true") &&
+          (!query || (item.dataset.search ?? "").includes(query));
+        const show = matches && matching < limit;
+        if (matches) matching += 1;
+        item.hidden = !show;
+      });
+      if (count) count.textContent = countLabel(Math.min(matching, limit), items.length);
+      if (empty) empty.hidden = matching !== 0;
+      if (moreWrap) moreWrap.hidden = matching <= limit;
+      if (more) more.textContent = moreLabel(Math.min(step, matching - limit));
+    }
+
+    eraButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        era = button.dataset.repEra ?? "all";
+        eraButtons.forEach((item) => {
+          const active = item === button;
+          item.classList.toggle("is-active", active);
+          item.setAttribute("aria-pressed", String(active));
+        });
+        apply(true);
+      });
+    });
+    levelButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        level = button.dataset.repLevel ?? "all";
+        levelButtons.forEach((item) => {
+          const active = item === button;
+          item.classList.toggle("is-active", active);
+          item.setAttribute("aria-pressed", String(active));
+        });
+        apply(true);
+      });
+    });
+    search?.addEventListener("input", () => apply(true));
+    playable?.addEventListener("change", () => apply(true));
+    more?.addEventListener("click", () => {
+      limit += step;
+      apply();
+    });
+
+    function openFromHash(): void {
+      if (window.location.hash !== "#repertoire") return;
+      const details = root.closest("details");
+      if (details) details.open = true;
+    }
+
+    window.addEventListener("hashchange", openFromHash);
+    openFromHash();
+
+    root.querySelectorAll<HTMLButtonElement>("[data-rep-play]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const id = button.dataset.repPlay;
+        const jukebox = document.querySelector<HTMLElement>("[data-jukebox]");
+        if (!id || !jukebox) return;
+        const showAll = jukebox.querySelector<HTMLButtonElement>("[data-jukebox-show-all]");
+        if (showAll && showAll.getAttribute("aria-pressed") !== "true") showAll.click();
+        const track = Array.from(jukebox.querySelectorAll<HTMLButtonElement>("[data-jukebox-track]")).find(
+          (item) => item.dataset.youtubeId === id,
+        );
+        track?.click();
+        jukebox.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    });
+
+    apply();
+  }
+</script>
+
+<style>
+  .repertoire {
+    margin-top: 4px;
+  }
+
+  .rep-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: 11px;
+  }
+
+  .rep-search {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex: 1 1 280px;
+    min-width: 0;
+    min-height: 43px;
+    padding: 0 13px;
+    color: var(--muted);
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+  }
+
+  .rep-search:focus-within {
+    border-color: var(--violet-500);
+    box-shadow: 0 0 0 3px var(--violet-wash);
+  }
+
+  .rep-search input {
+    flex: 1;
+    min-width: 0;
+    min-height: 39px;
+    padding: 0;
+    color: var(--ink);
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 12px;
+  }
+
+  .rep-search input::placeholder {
+    color: var(--faint);
+  }
+
+  .rep-playable {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .rep-playable input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .rep-check {
+    position: relative;
+    pointer-events: none;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 6px;
+    background: var(--surface);
+    transition: background 150ms ease, border-color 150ms ease;
+  }
+
+  .rep-playable input:checked + .rep-check {
+    border-color: var(--violet-600);
+    background: var(--violet-600);
+  }
+
+  .rep-playable input:checked + .rep-check::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .rep-playable input:focus-visible + .rep-check {
+    outline: 3px solid var(--sun-500);
+    outline-offset: 2px;
+  }
+
+  .rep-count {
+    margin-left: auto;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    white-space: nowrap;
+  }
+
+  .rep-filters {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .rep-filter-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .rep-filter-label {
+    flex: 0 0 34px;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 800;
+  }
+
+  .rep-chip {
+    min-height: 28px;
+    padding: 4px 8px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: 8.5px;
+    font-weight: 750;
+  }
+
+  .rep-chip.is-active {
+    color: #fff;
+    border-color: #5b3fd4;
+    background: #5b3fd4;
+  }
+
+  .rep-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .rep-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 13px;
+    background: var(--surface);
+  }
+
+  .rep-card[hidden] {
+    display: none;
+  }
+
+  .rep-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+  }
+
+  .rep-era {
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .rep-level {
+    flex: 0 0 auto;
+    padding: 2px 5px;
+    border-radius: 999px;
+    font-size: 7px;
+    font-weight: 800;
+  }
+
+  .rep-level.is-beginner {
+    color: #0d6b52;
+    background: var(--mint-wash);
+  }
+
+  .rep-level.is-intermediate {
+    color: var(--sun-700);
+    background: var(--sun-wash);
+  }
+
+  .rep-level.is-advanced {
+    color: #a44538;
+    background: var(--coral-wash);
+  }
+
+  .rep-card h3 {
+    margin: 7px 0 1px;
+    color: var(--ink);
+    font-size: 13.5px;
+    line-height: 1.35;
+  }
+
+  .rep-original {
+    margin: 0;
+    color: var(--faint);
+    font-size: 7.5px;
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  .rep-composer {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 8.5px;
+    line-height: 1.5;
+  }
+
+  .rep-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 9px;
+  }
+
+  .rep-play,
+  .rep-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    color: var(--violet-700);
+    font-size: 8px;
+    font-weight: 850;
+    line-height: 1.4;
+    text-decoration: none;
+  }
+
+  .rep-play {
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .rep-play:hover,
+  .rep-link:hover {
+    color: var(--violet-800);
+  }
+
+  .rep-link {
+    margin-left: auto;
+  }
+
+  .rep-empty {
+    padding: 24px 0;
+    color: var(--muted);
+    text-align: center;
+    font-size: 11px;
+  }
+
+  .rep-more-wrap {
+    margin-top: 13px;
+    text-align: center;
+  }
+
+  .rep-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin: 12px 0 0;
+    color: var(--faint);
+    font-size: 8px;
+    line-height: 1.55;
+  }
+
+  .rep-note .icon {
+    margin-top: 1px;
+    color: var(--violet-700);
+  }
+
+  html[data-theme="night"] .rep-level.is-beginner {
+    color: var(--mint-500);
+  }
+
+  html[data-theme="night"] .rep-level.is-advanced {
+    color: var(--coral-500);
+  }
+
+  @media (max-width: 1100px) {
+    .rep-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 850px) {
+    .rep-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .rep-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .rep-filter-label {
+      flex-basis: 100%;
+    }
+
+    .rep-count {
+      margin-left: 0;
+    }
+  }
+</style>

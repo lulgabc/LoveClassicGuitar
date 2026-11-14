@@ -3,16 +3,18 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHero from "../../components/PageHero.astro";
 import SectionHead from "../../components/SectionHead.astro";
 import Jukebox from "../../components/Jukebox.astro";
+import RepertoireLibrary from "../../components/RepertoireLibrary.astro";
 import MascotBubble from "../../components/MascotBubble.astro";
 import Icon from "../../components/Icon.astro";
 import { ARTISTS_FR, COMPOSERS_FR, ETIQUETTE_FR, LISTENING_GAMES_FR, PERFORMANCES_FR } from "../../data/fr/concert";
+import { REPERTOIRE } from "../../data/repertoire";
 import { url } from "../../lib/url";
 ---
 
 <BaseLayout
   lang="fr"
   title="La salle de concert"
-  description="Une salle de concert pour enfants : des pièces de guitare classique à écouter directement dans la page, des missions d'écoute et des portraits de guitaristes."
+  description="Une salle de concert pour enfants : 18 pièces jouables dans la page, une bibliothèque de 200 pièces à filtrer par époque et niveau, des missions d'écoute et des portraits de guitaristes."
 >
   <PageHero
     kicker="Salle de concert · Sous les étoiles"
@@ -21,19 +23,46 @@ import { url } from "../../lib/url";
   >
     <div class="slug">
       <span><Icon name="play" size={12} /> lecture dans la page</span>
-      <span><Icon name="headphones" size={12} /> {PERFORMANCES_FR.length} pièces</span>
+      <span><Icon name="headphones" size={12} /> {PERFORMANCES_FR.length} pièces jouables</span>
+      <span><Icon name="book" size={12} /> 200 pièces</span>
       <span><Icon name="users" size={12} /> {ARTISTS_FR.length} guitaristes</span>
       <span><Icon name="youtube" size={12} /> YouTube intégré</span>
     </div>
   </PageHero>
 
-  <section class="section">
+  <section class="section" id="jukebox">
     <div class="container">
       <div class="section-head-row">
         <SectionHead kicker="Écouter maintenant" title="Le programme de ce soir" lead={`Chaque soir, six pièces choisies parmi ${PERFORMANCES_FR.length}. Tire à nouveau ou ouvre toute la liste.`} />
         <a class="btn btn-ghost" href="#artists">Les guitaristes <Icon name="chevron-down" size={14} /></a>
       </div>
       <Jukebox items={PERFORMANCES_FR} lang="fr" daily dailySize={6} />
+      <div class="rep-jump-row">
+        <a class="btn btn-ghost btn-sm" href="#repertoire"><Icon name="book" size={14} /> Ouvrir les 200 pièces <Icon name="chevron-down" size={13} /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash" id="repertoire">
+    <div class="container">
+      <div class="section-head-row">
+        <SectionHead
+          kicker="La bibliothèque · 200 pièces"
+          title="Une bibliothèque à <em>explorer</em>."
+          lead="De la Renaissance à aujourd'hui : cherche par époque, niveau ou mot-clé. 18 pièces sont jouables dans le lecteur ci-dessus ; les autres ouvrent YouTube."
+        />
+        <a class="btn btn-ghost" href="#jukebox">Retour au lecteur <Icon name="arrow-up" size={13} /></a>
+      </div>
+      <details class="rep-fold card">
+        <summary>
+          <span><Icon name="book" size={18} /> Ouvrir les 200 pièces</span>
+          <span class="fold-hint">Par époque et par niveau</span>
+          <Icon name="chevron-down" size={17} />
+        </summary>
+        <div class="rep-fold-body">
+          <RepertoireLibrary pieces={REPERTOIRE} lang="fr" />
+        </div>
+      </details>
     </div>
   </section>
 
@@ -177,6 +206,21 @@ import { url } from "../../lib/url";
   .artist-listen { min-height: 26px; margin-top: auto; padding-top: 9px; color: var(--violet-700); font-size: 8.5px; font-weight: 800; text-decoration: none; }
   .artist-note { display: flex; align-items: center; gap: 15px; margin-top: 14px; }
   .artist-note :global(.mascot-bubble) { flex: 1; }
+
+  #jukebox,
+  #repertoire {
+    scroll-margin-top: calc(var(--header-h) + 18px);
+  }
+
+  .rep-jump-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+
+  .rep-fold-body {
+    padding: 0 18px 18px;
+  }
 
   .folds { display: grid; gap: 9px; }
   .fold { padding: 0; overflow: hidden; background: var(--surface); }

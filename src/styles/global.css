@@ -919,6 +919,56 @@ summary::marker {
   }
 }
 
+
+.rep-fold {
+  padding: 0;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.rep-fold > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 18px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 800;
+  list-style: none;
+  cursor: pointer;
+}
+
+.rep-fold > summary::-webkit-details-marker {
+  display: none;
+}
+
+.rep-fold > summary > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.rep-fold > summary > .icon {
+  margin-left: auto;
+  color: var(--faint);
+  transition: transform 150ms ease;
+}
+
+.rep-fold > summary > .fold-hint {
+  margin-left: auto;
+  color: var(--faint);
+  font-size: 8px;
+  font-weight: 650;
+}
+
+.rep-fold > summary > .fold-hint + .icon {
+  margin-left: 8px;
+}
+
+.rep-fold[open] > summary > .icon {
+  transform: rotate(180deg);
+}
+
 @media print {
   .site-header,
   .site-footer,

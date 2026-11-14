@@ -33,6 +33,9 @@ for (const file of htmlFiles) {
     if (raw.startsWith("http://") || raw.startsWith("https://")) {
       const url = raw.replace(/#.*$/, "");
       if (url.startsWith("https://lulgabc.github.io/LoveClassicGuitar")) continue;
+      // YouTube search URLs are generated from the repertoire catalog; they are
+      // stable entry points, not individual videos to validate.
+      if (url.includes("youtube.com/results?search_query=")) continue;
       if (!external.has(url)) external.set(url, new Set());
       external.get(url).add(page);
       const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube-nocookie\.com\/embed\/)([A-Za-z0-9_-]{6,})/);
