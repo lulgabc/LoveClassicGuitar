@@ -53,8 +53,10 @@ const t = isFr
       open: "Voir la partition",
       close: "Fermer",
       previewNote: "Aperçu de la première page · partition complète sur IMSLP",
-      noPreviewImslp: "L'aperçu de la première page n'est pas disponible pour cette pièce. Utilise le bouton ci-dessous pour chercher la partition complète sur IMSLP.",
-      noPreviewLibrary: "Œuvre sous droits. Ce site n'héberge pas la partition complète ; passe par un éditeur ou une bibliothèque.",
+      practiceNoteImslp: "Page d'exercice : retrouve la partition complète sur IMSLP avec le bouton ci-dessous.",
+      practiceNoteLibrary: "Page d'exercice : la partition complète est disponible chez un éditeur ou dans une bibliothèque.",
+      practiceCaption: "Page d'exercice · pas la partition complète",
+      previewArea: "Aperçu de la partition",
       imslpFull: "Voir la partition complète sur IMSLP",
       libraryFull: "Éditeur / bibliothèque",
       imageAlt: "Aperçu de la première page de la partition",
@@ -79,8 +81,10 @@ const t = isFr
       open: "查看乐谱",
       close: "关闭",
       previewNote: "第一页预览 · 完整乐谱请在 IMSLP 查看",
-      noPreviewImslp: "这首曲子的第一页预览暂时不可用。请点击下方按钮，在 IMSLP 查找完整乐谱。",
-      noPreviewLibrary: "这是一首版权作品。本站不托管完整乐谱，请通过出版社或图书馆获取。",
+      practiceNoteImslp: "这是练习页示例；完整乐谱请用下方按钮在 IMSLP 查看。",
+      practiceNoteLibrary: "这是练习页示例；完整版请通过出版社或图书馆获取。",
+      practiceCaption: "练习页示例 · 不是原曲完整乐谱",
+      previewArea: "乐谱预览",
       imslpFull: "在 IMSLP 查看完整版",
       libraryFull: "出版社 / 图书馆",
       imageAlt: "乐谱第一页预览",
@@ -155,6 +159,7 @@ const focusKeys = Object.keys(focusLabels) as ScoreFocus[];
             data-composer={score.composer}
             data-level={`${score.level} · ${levelLabels[score.level]}`}
             data-focus={focusLabels[score.focus]}
+            data-focus-key={score.focus}
             data-tip={isFr ? score.tipFr : score.tipZh}
             data-preview={score.previewUrl ?? ""}
             data-url={score.url}
@@ -181,37 +186,15 @@ const focusKeys = Object.keys(focusLabels) as ScoreFocus[];
       </div>
       <h2 id="score-modal-title" data-score-modal-title></h2>
       <p class="score-modal-meta" data-score-modal-meta></p>
-      <div class="score-modal-stage">
+      <div class="score-modal-stage" tabindex="0" aria-label={t.previewArea}>
         <img data-score-modal-image alt="" hidden />
         <div class="score-modal-placeholder" data-score-modal-placeholder hidden>
           <div class="score-placeholder-sheet" aria-hidden="true">
-            <span class="score-placeholder-label">{t.practicePage}</span>
-            <svg viewBox="0 0 560 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g stroke="currentColor" stroke-width="1" opacity="0.35">
-                <line x1="18" y1="48" x2="542" y2="48"></line>
-                <line x1="18" y1="66" x2="542" y2="66"></line>
-                <line x1="18" y1="84" x2="542" y2="84"></line>
-                <line x1="18" y1="102" x2="542" y2="102"></line>
-                <line x1="18" y1="120" x2="542" y2="120"></line>
-              </g>
-              <g fill="currentColor" opacity="0.7">
-                <ellipse cx="158" cy="84" rx="8" ry="6" transform="rotate(-18 158 84)"></ellipse>
-                <ellipse cx="218" cy="75" rx="8" ry="6" transform="rotate(-18 218 75)"></ellipse>
-                <ellipse cx="278" cy="93" rx="8" ry="6" transform="rotate(-18 278 93)"></ellipse>
-                <ellipse cx="338" cy="66" rx="8" ry="6" transform="rotate(-18 338 66)"></ellipse>
-                <ellipse cx="398" cy="84" rx="8" ry="6" transform="rotate(-18 398 84)"></ellipse>
-              </g>
-              <g stroke="currentColor" stroke-width="2" opacity="0.7">
-                <line x1="164" y1="84" x2="164" y2="48"></line>
-                <line x1="224" y1="75" x2="224" y2="39"></line>
-                <line x1="284" y1="93" x2="284" y2="57"></line>
-                <line x1="344" y1="66" x2="344" y2="30"></line>
-                <line x1="404" y1="84" x2="404" y2="48"></line>
-              </g>
-              <text x="24" y="110" fill="currentColor" opacity="0.6" font-family="Georgia, serif" font-size="58">𝄞</text>
-            </svg>
+            <span class="score-placeholder-label" data-score-practice-label>{t.practicePage}</span>
+            <div class="score-practice-render" data-score-practice-render></div>
           </div>
-          <p data-score-modal-placeholder-text>{t.noPreviewLibrary}</p>
+          <p class="score-placeholder-caption">{t.practiceCaption}</p>
+          <p data-score-modal-placeholder-text>{t.practiceNoteLibrary}</p>
         </div>
       </div>
       <p class="score-modal-preview-note" data-score-modal-preview-note hidden>{t.previewNote}</p>
@@ -311,22 +294,67 @@ const focusKeys = Object.keys(focusLabels) as ScoreFocus[];
     const modalExternal = root.querySelector<HTMLAnchorElement>("[data-score-modal-external]");
     const labels = isFr
       ? {
-          noPreviewImslp: "L'aperçu de la première page n'est pas disponible pour cette pièce. Utilise le bouton ci-dessous pour chercher la partition complète sur IMSLP.",
-          noPreviewLibrary: "Œuvre sous droits. Ce site n'héberge pas la partition complète ; passe par un éditeur ou une bibliothèque.",
+          practiceNoteImslp: "Page d'exercice : retrouve la partition complète sur IMSLP avec le bouton ci-dessous.",
+          practiceNoteLibrary: "Page d'exercice : la partition complète est disponible chez un éditeur ou dans une bibliothèque.",
           previewNote: "Aperçu de la première page · partition complète sur IMSLP",
           imslpFull: "Voir la partition complète sur IMSLP",
           libraryFull: "Éditeur / bibliothèque",
           imageAlt: "Aperçu de la première page de la partition",
+          practicePage: "Page d'exercice",
         }
       : {
-          noPreviewImslp: "这首曲子的第一页预览暂时不可用。请点击下方按钮，在 IMSLP 查找完整乐谱。",
-          noPreviewLibrary: "这是一首版权作品。本站不托管完整乐谱，请通过出版社或图书馆获取。",
+          practiceNoteImslp: "这是练习页示例；完整乐谱请用下方按钮在 IMSLP 查看。",
+          practiceNoteLibrary: "这是练习页示例；完整版请通过出版社或图书馆获取。",
           previewNote: "第一页预览 · 完整乐谱请在 IMSLP 查看",
           imslpFull: "在 IMSLP 查看完整版",
           libraryFull: "出版社 / 图书馆",
           imageAlt: "乐谱第一页预览",
+          practicePage: "练习页",
         };
+    const practiceRender = root.querySelector<HTMLElement>("[data-score-practice-render]");
+    const practiceLabel = root.querySelector<HTMLElement>("[data-score-practice-label]");
     let lastFocus: HTMLElement | null = null;
+
+    function practiceSvg(focus: string, level: number, seedText: string): string {
+      const patterns: Record<string, number[]> = {
+        right: [84, 75, 66, 75, 84, 93, 102, 93],
+        left: [84, 84, 75, 75, 66, 66, 75, 75],
+        reading: [84, 75, 66, 75, 84, 93, 84, 75],
+        rhythm: [84, 84, 75, 75, 66, 66, 75, 75],
+        tone: [84, 75, 66, 75],
+        phrasing: [84, 75, 66, 75, 84, 75, 66, 75],
+        ensemble: [84, 75, 66, 75, 102, 93, 84, 93],
+      };
+      const base = patterns[focus] ?? patterns.reading;
+      const count = Math.min(base.length, 4 + Math.min(level, 4));
+      const notes = base.slice(0, count);
+      const seed = [...seedText].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+      const shift = (seed % 3) * 3;
+      const heads = notes
+        .map((y, index) => {
+          const x = 158 + index * 52;
+          const yy = y + shift;
+          return `<g><ellipse cx="${x}" cy="${yy}" rx="8" ry="6" transform="rotate(-18 ${x} ${yy})"></ellipse><line x1="${x + 6}" y1="${yy}" x2="${x + 6}" y2="${yy - 36}"></line></g>`;
+        })
+        .join("");
+      return `<svg viewBox="0 0 560 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g stroke="currentColor" stroke-width="1" opacity="0.35">
+          <line x1="18" y1="48" x2="542" y2="48"></line>
+          <line x1="18" y1="66" x2="542" y2="66"></line>
+          <line x1="18" y1="84" x2="542" y2="84"></line>
+          <line x1="18" y1="102" x2="542" y2="102"></line>
+          <line x1="18" y1="120" x2="542" y2="120"></line>
+        </g>
+        <g stroke="currentColor" stroke-width="1" opacity="0.4">
+          <line x1="140" y1="48" x2="140" y2="120"></line>
+          <line x1="348" y1="48" x2="348" y2="120"></line>
+          <line x1="540" y1="48" x2="540" y2="120"></line>
+        </g>
+        <text x="24" y="110" fill="currentColor" opacity="0.6" font-family="Georgia, serif" font-size="58">𝄞</text>
+        <text x="94" y="88" fill="currentColor" opacity="0.55" font-family="Georgia, serif" font-size="16">4/4</text>
+        <g fill="currentColor" stroke="currentColor" opacity="0.72">${heads}</g>
+      </svg>`;
+    }
 
     function closeModal(): void {
       if (!modal || !modal.open) return;
@@ -367,7 +395,11 @@ const focusKeys = Object.keys(focusLabels) as ScoreFocus[];
           modalImage.removeAttribute("src");
           modalPlaceholder.hidden = false;
           modalPreviewNote.hidden = true;
-          if (modalPlaceholderText) modalPlaceholderText.textContent = source === "IMSLP" ? labels.noPreviewImslp : labels.noPreviewLibrary;
+          if (practiceRender) {
+            practiceRender.innerHTML = practiceSvg(button.dataset.focusKey ?? "reading", Number.parseInt(levelText, 10) || 3, title);
+          }
+          if (practiceLabel) practiceLabel.textContent = `${labels.practicePage} · ${focusText}`;
+          if (modalPlaceholderText) modalPlaceholderText.textContent = source === "IMSLP" ? labels.practiceNoteImslp : labels.practiceNoteLibrary;
         }
       }
       lastFocus = button;
@@ -832,6 +864,13 @@ const focusKeys = Object.keys(focusLabels) as ScoreFocus[];
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+  }
+
+  .score-placeholder-caption {
+    color: #8a6a3f !important;
+    font-family: var(--font-mono);
+    font-size: 7px !important;
+    font-weight: 700;
   }
 
   .score-placeholder-sheet svg {

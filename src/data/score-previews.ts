@@ -37,4 +37,9 @@ export const SCORE_PREVIEWS: Record<string, string> = {
   "rep-114": "https://cdn.imslp.org/images/thumb/pdfs/58/761b2d6441af74a9553741bfd81c10eddfc84879.png",
   "rep-118": "https://cdn.imslp.org/images/thumb/pdfs/df/0bf9b082467e9cf22fb2002c894fb419bbcdd975.png",
   "rep-182": "https://cdn.imslp.org/images/thumb/pdfs/bb/d2688a593f2f88be348a3b0abed48e2eb2c5b6bc.png",
+  "rep-001": "https://cdn.imslp.org/images/thumb/pdfs/6a/6c8059418e0bbe0cee6b34566d230fe22ef49adb.png",
+  "rep-012": "https://cdn.imslp.org/images/thumb/pdfs/cd/d02d2bee5b1776f84c28227c21a810dd4b6ddfae.png",
+  "rep-115": "https://cdn.imslp.org/images/thumb/pdfs/a2/3fc26b64c9beebd93f208f73e30264f035e6f83e.png",
+  "rep-116": "https://cdn.imslp.org/images/thumb/pdfs/e4/711dbdbad2c5747d0a75e8670a554fb7399ce411.png",
+  "rep-119": "https://cdn.imslp.org/images/thumb/pdfs/73/5854dc568fcd12b2d348fc73a9af4443ee6245f1.png",
 };

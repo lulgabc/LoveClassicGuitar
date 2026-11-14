@@ -37,4 +37,9 @@ export const SCORE_PAGE_URLS: Record<string, string> = {
   "rep-114": "https://imslp.org/wiki/Plany_(Llobet,_Miguel)",
   "rep-118": "https://imslp.org/wiki/Mallorca,_Op.202_(Alb%C3%A9niz,_Isaac)",
   "rep-182": "https://imslp.org/wiki/Sons_de_carrilh%C3%B5es_(Teixeira_Guimar%C3%A3es,_Jo%C3%A3o)",
+  "rep-001": "https://imslp.org/wiki/Suite_espa%C3%B1ola_No.1,_Op.47_(Alb%C3%A9niz,_Isaac)",
+  "rep-012": "https://imslp.org/wiki/Suite_espa%C3%B1ola_No.1,_Op.47_(Alb%C3%A9niz,_Isaac)",
+  "rep-115": "https://imslp.org/wiki/Suite_espa%C3%B1ola_No.1,_Op.47_(Alb%C3%A9niz,_Isaac)",
+  "rep-116": "https://imslp.org/wiki/Suite_espa%C3%B1ola_No.1,_Op.47_(Alb%C3%A9niz,_Isaac)",
+  "rep-119": "https://imslp.org/wiki/Recuerdos_de_viaje,_Op.71_(Alb%C3%A9niz,_Isaac)",
 };
