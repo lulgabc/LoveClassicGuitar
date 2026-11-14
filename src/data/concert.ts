@@ -286,6 +286,10 @@ export type Master = {
   piece: string;
   color: "violet" | "sky" | "pink" | "mint" | "sun" | "coral";
   initials: string;
+  photo: string;
+  photoUrl: string;
+  photoCredit: string;
+  photoLicense: string;
 };
 
 export const MASTERS: Master[] = [
@@ -301,6 +305,10 @@ export const MASTERS: Master[] = [
     piece: "巴赫《c 小调前奏曲》",
     color: "violet",
     initials: "AS",
+    photo: "artists/segovia.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Andr%C3%A9s_Segovia_(1962).jpg",
+    photoCredit: "Jack de Nijs / Anefo，荷兰国家档案馆",
+    photoLicense: "CC0",
   },
   {
     id: "bream",
@@ -314,6 +322,10 @@ export const MASTERS: Master[] = [
     piece: "塔雷加《阿尔罕布拉宫的回忆》",
     color: "sky",
     initials: "JB",
+    photo: "artists/bream.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Julian_Bream_1964.JPG",
+    photoCredit: "S. Hurok / Wikimedia Commons",
+    photoLicense: "公有领域",
   },
   {
     id: "john-williams",
@@ -327,6 +339,10 @@ export const MASTERS: Master[] = [
     piece: "迈尔斯《卡瓦蒂娜》",
     color: "mint",
     initials: "JW",
+    photo: "artists/john-williams.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Guitarist_John_Williams_in_performance_(Cordoba,_1986).jpg",
+    photoCredit: "Kealow / Wikimedia Commons",
+    photoLicense: "公有领域",
   },
   {
     id: "pepe-romero",
@@ -340,6 +356,10 @@ export const MASTERS: Master[] = [
     piece: "塔雷加《阿尔罕布拉宫的回忆》",
     color: "coral",
     initials: "PR",
+    photo: "artists/pepe-romero.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Pepe_Romero_2000.JPG",
+    photoCredit: "Hans Bernhard（Schnobby）/ Wikimedia Commons",
+    photoLicense: "CC BY-SA 3.0",
   },
   {
     id: "david-russell",
@@ -353,6 +373,10 @@ export const MASTERS: Master[] = [
     piece: "Aureo Puerta Carreño《Canción para ti》",
     color: "sun",
     initials: "DR",
+    photo: "artists/david-russell.jpg",
+    photoUrl: "https://www.youtube.com/watch?v=JiYnNTbFx4U",
+    photoCredit: "Guitar by Masters / YouTube 视频封面",
+    photoLicense: "视频封面",
   },
   {
     id: "sharon-isbin",
@@ -366,6 +390,10 @@ export const MASTERS: Master[] = [
     piece: "塔雷加《阿尔罕布拉宫的回忆》",
     color: "pink",
     initials: "SI",
+    photo: "artists/sharon-isbin.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Sharon_Isbin_2011.jpg",
+    photoCredit: "laembajada / Wikimedia Commons",
+    photoLicense: "CC BY 2.0",
   },
   {
     id: "ana-vidovic",
@@ -379,6 +407,10 @@ export const MASTERS: Master[] = [
     piece: "阿尔贝尼兹《阿斯图里亚斯》",
     color: "coral",
     initials: "AV",
+    photo: "artists/ana-vidovic.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Ana_Vidovic_with_Guitar_(cropped).jpg",
+    photoCredit: "ChuckQuintero / Wikimedia Commons",
+    photoLicense: "CC BY-SA 3.0",
   },
   {
     id: "milos",
@@ -392,6 +424,10 @@ export const MASTERS: Master[] = [
     piece: "皮亚佐拉《自由探戈》",
     color: "violet",
     initials: "MK",
+    photo: "artists/milos.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Milo%C5%A1_Karadagli%C4%87_(45235240994).jpg",
+    photoCredit: "英国外交、联邦及发展事务部 / Wikimedia Commons",
+    photoLicense: "CC BY 2.0",
   },
   {
     id: "xuefei-yang",
@@ -405,6 +441,10 @@ export const MASTERS: Master[] = [
     piece: "塔雷加《阿拉伯风格随想曲》",
     color: "sky",
     initials: "XY",
+    photo: "artists/xuefei-yang.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Yangxuefeiphoto.jpg",
+    photoCredit: "Alterna2 / Wikimedia Commons",
+    photoLicense: "CC BY 2.0",
   },
   {
     id: "alexandra",
@@ -418,6 +458,10 @@ export const MASTERS: Master[] = [
     piece: "塔雷加《阿拉伯风格随想曲》",
     color: "mint",
     initials: "AW",
+    photo: "artists/alexandra.jpg",
+    photoUrl: "https://www.youtube.com/watch?v=P7ZLcUYzvnc",
+    photoCredit: "Alexandra Whittingham / YouTube 视频封面",
+    photoLicense: "视频封面",
   },
 ];
 

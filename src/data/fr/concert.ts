@@ -221,6 +221,10 @@ export type FrArtist = {
   piece: string;
   initials: string;
   color: "violet" | "sky" | "pink" | "mint" | "sun" | "coral";
+  photo: string;
+  photoUrl: string;
+  photoCredit: string;
+  photoLicense: string;
 };
 
 export const ARTISTS_FR: FrArtist[] = [
@@ -233,6 +237,10 @@ export const ARTISTS_FR: FrArtist[] = [
     videoId: "KQP0c17tqg0",
     piece: "Prélude BWV 999",
     initials: "AS",
+    photo: "artists/segovia.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Andr%C3%A9s_Segovia_(1962).jpg",
+    photoCredit: "Jack de Nijs / Anefo, Nationaal Archief",
+    photoLicense: "CC0",
     color: "violet",
   },
   {
@@ -244,6 +252,10 @@ export const ARTISTS_FR: FrArtist[] = [
     videoId: "PqfkMgVaOeY",
     piece: "Souvenirs de l'Alhambra",
     initials: "JB",
+    photo: "artists/bream.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Julian_Bream_1964.JPG",
+    photoCredit: "S. Hurok / Wikimedia Commons",
+    photoLicense: "domaine public",
     color: "sky",
   },
   {
@@ -255,6 +267,10 @@ export const ARTISTS_FR: FrArtist[] = [
     videoId: "gGycDDqBuX8",
     piece: "Cavatina",
     initials: "JW",
+    photo: "artists/john-williams.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Guitarist_John_Williams_in_performance_(Cordoba,_1986).jpg",
+    photoCredit: "Kealow / Wikimedia Commons",
+    photoLicense: "domaine public",
     color: "mint",
   },
   {
@@ -266,6 +282,10 @@ export const ARTISTS_FR: FrArtist[] = [
     videoId: "inBKFMB-yPg",
     piece: "Asturias",
     initials: "AV",
+    photo: "artists/ana-vidovic.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Ana_Vidovic_with_Guitar_(cropped).jpg",
+    photoCredit: "ChuckQuintero / Wikimedia Commons",
+    photoLicense: "CC BY-SA 3.0",
     color: "coral",
   },
   {
@@ -277,6 +297,10 @@ export const ARTISTS_FR: FrArtist[] = [
     videoId: "bIa_-o2O1eQ",
     piece: "Souvenirs de l'Alhambra",
     initials: "PR",
+    photo: "artists/pepe-romero.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Pepe_Romero_2000.JPG",
+    photoCredit: "Hans Bernhard (Schnobby) / Wikimedia Commons",
+    photoLicense: "CC BY-SA 3.0",
     color: "coral",
   },
   {
@@ -288,6 +312,10 @@ export const ARTISTS_FR: FrArtist[] = [
     videoId: "XU4qm2Esj7o",
     piece: "Libertango",
     initials: "MK",
+    photo: "artists/milos.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Milo%C5%A1_Karadagli%C4%87_(45235240994).jpg",
+    photoCredit: "Foreign, Commonwealth & Development Office / Wikimedia Commons",
+    photoLicense: "CC BY 2.0",
     color: "violet",
   },
   {
@@ -299,6 +327,10 @@ export const ARTISTS_FR: FrArtist[] = [
     videoId: "2lAFKvJGcHA",
     piece: "Capricho Arabe",
     initials: "XY",
+    photo: "artists/xuefei-yang.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Yangxuefeiphoto.jpg",
+    photoCredit: "Alterna2 / Wikimedia Commons",
+    photoLicense: "CC BY 2.0",
     color: "sky",
   },
   {
@@ -310,7 +342,41 @@ export const ARTISTS_FR: FrArtist[] = [
     videoId: "1N77zyOXfIU",
     piece: "Souvenirs de l'Alhambra",
     initials: "SI",
+    photo: "artists/sharon-isbin.jpg",
+    photoUrl: "https://commons.wikimedia.org/wiki/File:Sharon_Isbin_2011.jpg",
+    photoCredit: "laembajada / Wikimedia Commons",
+    photoLicense: "CC BY 2.0",
     color: "pink",
+  },
+  {
+    name: "David Russell",
+    country: "Écosse",
+    keyword: "Chaque note comme un chant",
+    bio: "Guitariste écossais réputé pour son timbre chaleureux et ses phrases très naturelles. Il fait respirer même les pièces les plus simples.",
+    fun: "Il travaille souvent très lentement pour écouter la qualité de chaque note.",
+    videoId: "JiYnNTbFx4U",
+    piece: "Canción para ti",
+    initials: "DR",
+    photo: "artists/david-russell.jpg",
+    photoUrl: "https://www.youtube.com/watch?v=JiYnNTbFx4U",
+    photoCredit: "Guitar by Masters / vignette YouTube",
+    photoLicense: "vignette YouTube",
+    color: "sun",
+  },
+  {
+    name: "Alexandra Whittingham",
+    country: "Royaume-Uni",
+    keyword: "La guitare classique sur les écrans",
+    bio: "Jeune guitariste britannique qui partage la guitare classique sur YouTube et en concert. Ses arrangements donnent envie de découvrir l'instrument.",
+    fun: "Elle adapte des mélodies connues pour les faire découvrir à un nouveau public.",
+    videoId: "P7ZLcUYzvnc",
+    piece: "Capricho Arabe",
+    initials: "AW",
+    photo: "artists/alexandra.jpg",
+    photoUrl: "https://www.youtube.com/watch?v=P7ZLcUYzvnc",
+    photoCredit: "Alexandra Whittingham / vignette YouTube",
+    photoLicense: "vignette YouTube",
+    color: "mint",
   },
 ];
 

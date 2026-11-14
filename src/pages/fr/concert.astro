@@ -9,6 +9,15 @@ import Icon from "../../components/Icon.astro";
 import { ARTISTS_FR, COMPOSERS_FR, ETIQUETTE_FR, LISTENING_GAMES_FR, PERFORMANCES_FR } from "../../data/fr/concert";
 import { REPERTOIRE } from "../../data/repertoire";
 import { url } from "../../lib/url";
+
+const artistAccents: Record<string, string> = {
+  violet: "var(--violet-500)",
+  sky: "var(--sky-500)",
+  pink: "var(--pink-500)",
+  mint: "var(--mint-500)",
+  sun: "var(--sun-500)",
+  coral: "var(--coral-500)",
+};
 ---
 
 <BaseLayout
@@ -87,9 +96,12 @@ import { url } from "../../lib/url";
       <SectionHead kicker="Les guitaristes" title="Leurs doigts racontent <em>une histoire</em>" lead="Ouvre un portrait si tu veux en savoir plus, ou écoute simplement la pièce proposée." />
       <div class="artist-grid">
         {ARTISTS_FR.map((artist) => (
-          <article class="artist-card card">
+          <article
+            class:list={["artist-card", "card", { "has-photo": Boolean(artist.photo) }]}
+            style={artist.photo ? `--artist-photo:url(${url(artist.photo)}); --artist-accent:${artistAccents[artist.color]}` : undefined}
+          >
             <div class="artist-top">
-              <span class:list={["artist-avatar", `artist-${artist.color}`]}>{artist.initials}</span>
+              {!artist.photo && <span class:list={["artist-avatar", `artist-${artist.color}`]}>{artist.initials}</span>}
               <span class="artist-country">{artist.country}</span>
             </div>
             <h3>{artist.name}</h3>
@@ -107,6 +119,19 @@ import { url } from "../../lib/url";
         <MascotBubble who="momo" title="Momo te dit" text="Tu n'as pas besoin de ressembler à ces guitaristes. Tu peux devenir la première version de toi-même." tone="pink" />
         <a class="btn btn-ghost" href="#top">Retour au lecteur <Icon name="arrow-up" size={13} /></a>
       </div>
+      <details class="artist-credits">
+        <summary>Crédits photos</summary>
+        <ul>
+          {ARTISTS_FR.map((artist) => (
+            <li>
+              <strong>{artist.name}</strong> :{" "}
+              <a href={artist.photoUrl} target="_blank" rel="noopener noreferrer">{artist.photoCredit}</a>
+              {" "}({artist.photoLicense})
+            </li>
+          ))}
+        </ul>
+        <p>Photos utilisées pour présenter les guitaristes. Certaines viennent de Wikimedia Commons, d'autres des vidéos correspondantes ; les vignettes restent la propriété de leurs chaînes.</p>
+      </details>
     </div>
   </section>
 
@@ -183,27 +208,240 @@ import { url } from "../../lib/url";
   .mission h3 { margin: 0 0 4px; color: var(--ink); font-size: 13px; }
   .mission p { margin: 0; color: var(--muted); font-size: 9.5px; line-height: 1.6; }
 
-  .artist-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
-  .artist-card { display: flex; flex-direction: column; padding: 14px; background: var(--surface); }
-  .artist-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 7px; }
-  .artist-avatar { display: grid; place-items: center; width: 45px; height: 45px; color: #fff; border-radius: 14px; background: linear-gradient(145deg, #8b72ff, #4b2ab4); font-family: var(--font-display); font-size: 15px; font-weight: 900; transform: rotate(-3deg); }
+  .artist-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .artist-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 280px;
+    padding: 18px;
+    overflow: hidden;
+    border-top: 3px solid var(--artist-accent, var(--violet-500));
+    background: var(--surface);
+  }
+
+  .artist-card.has-photo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--artist-photo);
+    background-position: center;
+    background-size: cover;
+    transform: scale(1.02);
+    transition: transform 500ms ease;
+    pointer-events: none;
+  }
+
+  .artist-card.has-photo:hover::before {
+    transform: scale(1.06);
+  }
+
+  .artist-card.has-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(10, 7, 28, 0.28) 0%, rgba(10, 7, 28, 0.62) 45%, rgba(10, 7, 28, 0.96) 100%),
+      linear-gradient(90deg, rgba(10, 7, 28, 0.55) 0%, rgba(10, 7, 28, 0.12) 72%);
+    pointer-events: none;
+  }
+
+  .artist-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .artist-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .artist-card.has-photo .artist-top {
+    justify-content: flex-end;
+  }
+
+  .artist-avatar {
+    display: grid;
+    place-items: center;
+    width: 45px;
+    height: 45px;
+    color: #fff;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #8b72ff, #4b2ab4);
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 900;
+    transform: rotate(-3deg);
+  }
+
   .artist-sky { color: #08243a; background: linear-gradient(145deg, #67d0fa, #216fa8); }
   .artist-pink { background: linear-gradient(145deg, #ff9fda, #b43c83); }
   .artist-mint { color: #052e27; background: linear-gradient(145deg, #7be9c4, #218a72); }
   .artist-sun { color: #40280b; background: linear-gradient(145deg, #ffe28d, #d18a2f); }
   .artist-coral { background: linear-gradient(145deg, #ff9d90, #bf4b4b); }
-  .artist-country { padding: 3px 6px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--surface-2); font-size: 7.5px; white-space: nowrap; }
-  .artist-card h3 { margin: 10px 0 2px; color: var(--ink); font-size: 15px; }
-  .artist-keyword { margin: 0; color: var(--violet-700); font-size: 9.5px; font-weight: 800; line-height: 1.5; }
-  .artist-card details { margin-top: 7px; border: 0; border-top: 1px dashed var(--line); background: transparent; }
-  .artist-card summary { display: flex; align-items: center; gap: 3px; min-height: 26px; padding: 7px 0 2px; color: var(--muted); font-size: 8px; font-weight: 750; list-style: none; }
+
+  .artist-country {
+    padding: 3px 8px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    background: var(--surface-2);
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .artist-card.has-photo .artist-country {
+    color: #fffaf0;
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(10, 7, 28, 0.45);
+  }
+
+  .artist-card h3 {
+    margin: 11px 0 2px;
+    color: var(--ink);
+    font-size: 19px;
+    line-height: 1.35;
+  }
+
+  .artist-card.has-photo h3 {
+    color: #fffaf0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.65);
+  }
+
+  .artist-keyword {
+    margin: 0;
+    color: var(--violet-700);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.5;
+  }
+
+  .artist-card.has-photo .artist-keyword {
+    color: #ffe7a8;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+  }
+
+  .artist-card details {
+    margin-top: 8px;
+    border: 0;
+    border-top: 1px dashed var(--line);
+    background: transparent;
+  }
+
+  .artist-card.has-photo details {
+    border-top-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .artist-card summary {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    min-height: 32px;
+    padding: 8px 0 2px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 750;
+    list-style: none;
+  }
+
+  .artist-card.has-photo summary {
+    color: rgba(255, 245, 230, 0.88);
+  }
+
   .artist-card summary::-webkit-details-marker { display: none; }
   .artist-card summary .icon { margin-left: auto; transition: transform 150ms ease; }
   .artist-card details[open] summary .icon { transform: rotate(180deg); }
-  .artist-card details p { margin: 7px 0 0; color: var(--ink-soft); font-size: 8.5px; line-height: 1.6; }
-  .artist-fun { display: flex; align-items: flex-start; gap: 4px; color: var(--muted) !important; }
-  .artist-fun .icon { margin-top: 1px; color: var(--sun-700); }
-  .artist-listen { min-height: 26px; margin-top: auto; padding-top: 9px; color: var(--violet-700); font-size: 8.5px; font-weight: 800; text-decoration: none; }
+
+  .artist-card details p {
+    margin: 7px 0 0;
+    color: var(--ink-soft);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .artist-card.has-photo details p {
+    color: rgba(255, 245, 230, 0.92);
+  }
+
+  .artist-fun {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    color: var(--muted) !important;
+  }
+
+  .artist-fun .icon {
+    margin-top: 1px;
+    color: var(--sun-700);
+  }
+
+  .artist-card.has-photo .artist-fun {
+    color: rgba(255, 245, 230, 0.75) !important;
+  }
+
+  .artist-listen {
+    min-height: 32px;
+    margin-top: auto;
+    padding-top: 10px;
+    color: var(--violet-700);
+    font-size: 11.5px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .artist-card.has-photo .artist-listen {
+    color: #ffd86f;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.65);
+  }
+
+  .artist-listen:hover {
+    color: var(--violet-800);
+  }
+
+  .artist-card.has-photo .artist-listen:hover {
+    color: #fff;
+  }
+
+  .artist-credits {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.55;
+  }
+
+  .artist-credits summary {
+    cursor: pointer;
+    color: var(--violet-700);
+    font-weight: 800;
+  }
+
+  .artist-credits ul {
+    display: grid;
+    gap: 4px;
+    margin: 8px 0 0;
+    padding-left: 18px;
+  }
+
+  .artist-credits li {
+    line-height: 1.5;
+  }
+
+  .artist-credits a {
+    color: var(--violet-700);
+    text-decoration: underline;
+  }
+
+  .artist-credits p {
+    margin: 8px 0 0;
+  }
+
   .artist-note { display: flex; align-items: center; gap: 15px; margin-top: 14px; }
   .artist-note :global(.mascot-bubble) { flex: 1; }
 
