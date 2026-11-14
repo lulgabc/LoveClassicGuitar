@@ -17,9 +17,11 @@ interface Props {
   items: JukeboxItem[];
   lang?: "zh" | "fr";
   compact?: boolean;
+  daily?: boolean;
+  dailySize?: number;
 }
 
-const { items, lang = "zh", compact = false } = Astro.props;
+const { items, lang = "zh", compact = false, daily = false, dailySize = 6 } = Astro.props;
 const isFr = lang === "fr";
 const first = items[0];
 const initialSrc = first
@@ -36,6 +38,11 @@ const ui = isFr
       privacy: "Lecteur YouTube intégré. Le volume et les réglages restent sous la responsabilité de l'adulte.",
       empty: "Aucun morceau pour le moment.",
       open: "Ouvrir sur YouTube",
+      tonight: "Sélection du soir",
+      tonightNote: "Chaque soir, une petite sélection. Tire à nouveau si tu veux changer.",
+      shuffle: "Un autre tirage",
+      showAll: "Toutes les pièces",
+      showTonight: "Voir la sélection",
     }
   : {
       player: "嵌入式播放器",
@@ -47,13 +54,24 @@ const ui = isFr
       privacy: "视频直接嵌入自 YouTube。音量和观看设置请由家长确认。",
       empty: "暂时没有曲目。",
       open: "在 YouTube 打开",
+      tonight: "今晚推荐",
+      tonightNote: "每天从曲目里挑出几首。点“换一批”可以再抽一次。",
+      shuffle: "换一批",
+      showAll: "全部曲目",
+      showTonight: "只看今晚推荐",
     };
 const firstLink = first ? `https://www.youtube.com/watch?v=${first.youtubeId}` : "#";
 ---
 
 {
   items.length ? (
-    <div class:list={["jukebox", "card", { "is-compact": compact }]} data-jukebox data-lang={lang}>
+    <div
+      class:list={["jukebox", "card", { "is-compact": compact }]}
+      data-jukebox
+      data-lang={lang}
+      data-daily={daily ? "true" : undefined}
+      data-daily-size={dailySize}
+    >
       <div class="jukebox-main">
         <div class="jukebox-screen">
           <div class="screen-placeholder" aria-hidden="true">
@@ -72,7 +90,7 @@ const firstLink = first ? `https://www.youtube.com/watch?v=${first.youtubeId}` :
         <div class="now-playing">
           <span class="now-icon"><Icon name="headphones" size={18} /></span>
           <div class="now-copy" aria-live="polite">
-            <span class="now-label">{ui.current} · <span data-jukebox-number>01</span> / {String(items.length).padStart(2, "0")}</span>
+            <span class="now-label">{ui.current} · <span data-jukebox-number>01</span> / <span data-jukebox-total>{String(items.length).padStart(2, "0")}</span></span>
             <strong data-jukebox-title>{first?.title}</strong>
             <small data-jukebox-meta>{first?.composer} · {first?.performer}</small>
           </div>
@@ -93,11 +111,30 @@ const firstLink = first ? `https://www.youtube.com/watch?v=${first.youtubeId}` :
       <div class="jukebox-side">
         <div class="jukebox-side-head">
           <span class="mini-kicker">{ui.player}</span>
-          <h3>{ui.playlist}</h3>
+          <div class="jukebox-side-title">
+            <h3>{ui.playlist}</h3>
+            {daily && <span class="jukebox-tonight-pill"><Icon name="sparkle" size={10} /> {ui.tonight}</span>}
+          </div>
+          {daily && <p class="jukebox-tonight-note"><Icon name="sparkle" size={11} /> {ui.tonightNote}</p>}
         </div>
+        {daily && (
+          <div class="jukebox-tools">
+            <button type="button" data-jukebox-shuffle><Icon name="refresh" size={12} /> {ui.shuffle}</button>
+            <button
+              type="button"
+              data-jukebox-show-all
+              aria-pressed="false"
+              data-label-all={ui.showAll}
+              data-label-tonight={ui.showTonight}
+            >
+              <span data-jukebox-show-label>{ui.showAll} ({items.length})</span>
+              <Icon name="chevron-down" size={12} />
+            </button>
+          </div>
+        )}
         <ol class="track-list" aria-label={ui.playlist}>
           {items.map((item, index) => (
-            <li>
+            <li data-track-item>
               <button
                 type="button"
                 class:list={["track-button", { "is-active": index === 0 }]}
@@ -106,6 +143,7 @@ const firstLink = first ? `https://www.youtube.com/watch?v=${first.youtubeId}` :
                 data-title={item.title}
                 data-meta={`${item.composer} · ${item.performer}`}
                 data-listen={item.listenFor ?? ""}
+                data-tonight="false"
                 aria-pressed={index === 0 ? "true" : "false"}
               >
                 <span class="track-num">{String(index + 1).padStart(2, "0")}</span>
@@ -130,6 +168,7 @@ const firstLink = first ? `https://www.youtube.com/watch?v=${first.youtubeId}` :
 
 <noscript>
   <a class="jukebox-fallback" href={firstLink} target="_blank" rel="noopener noreferrer">{ui.open}</a>
+  <style>[data-jukebox-shuffle], [data-jukebox-show-all] { display: none; }</style>
 </noscript>
 
 <script>
@@ -140,23 +179,55 @@ const firstLink = first ? `https://www.youtube.com/watch?v=${first.youtubeId}` :
     const titleEl = root.querySelector<HTMLElement>("[data-jukebox-title]");
     const metaEl = root.querySelector<HTMLElement>("[data-jukebox-meta]");
     const numberEl = root.querySelector<HTMLElement>("[data-jukebox-number]");
+    const totalEl = root.querySelector<HTMLElement>("[data-jukebox-total]");
     const listenEl = root.querySelector<HTMLElement>("[data-jukebox-listen]");
     const listenWrap = root.querySelector<HTMLElement>("[data-jukebox-listen-wrap]");
     const prev = root.querySelector<HTMLButtonElement>("[data-jukebox-prev]");
     const next = root.querySelector<HTMLButtonElement>("[data-jukebox-next]");
+    const trackItems = Array.from(root.querySelectorAll<HTMLElement>("[data-track-item]"));
     const trackButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-jukebox-track]"));
+    const shuffleBtn = root.querySelector<HTMLButtonElement>("[data-jukebox-shuffle]");
+    const showAllBtn = root.querySelector<HTMLButtonElement>("[data-jukebox-show-all]");
+    const showAllLabel = root.querySelector<HTMLElement>("[data-jukebox-show-label]");
     const isFr = root.dataset.lang === "fr";
-    let index = 0;
+    const daily = root.dataset.daily === "true";
+    const dailySize = Math.max(1, Number(root.dataset.dailySize || 6));
+    const labelAll = showAllBtn?.dataset.labelAll ?? (isFr ? "Toutes les pièces" : "全部曲目");
+    const labelTonight = showAllBtn?.dataset.labelTonight ?? (isFr ? "Voir la sélection" : "只看今晚推荐");
+    let activeIndex = 0;
+    let tonight = new Set<number>();
+    let showAll = false;
 
     const embedUrl = (id: string, autoplay: boolean) =>
       `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?rel=0&modestbranding=1&playsinline=1${
         autoplay ? "&autoplay=1" : ""
       }`;
 
+    function visibleButtons(): HTMLButtonElement[] {
+      return trackButtons.filter((button) => {
+        const item = button.closest<HTMLElement>("[data-track-item]");
+        return !item || !item.hidden;
+      });
+    }
+
+    function renumber(): void {
+      let position = 0;
+      trackItems.forEach((item) => {
+        if (item.hidden) return;
+        position += 1;
+        const number = item.querySelector<HTMLElement>(".track-num");
+        if (number) number.textContent = String(position).padStart(2, "0");
+      });
+      if (totalEl) totalEl.textContent = String(position).padStart(2, "0");
+      const active = trackButtons[activeIndex];
+      const activePosition = active ? visibleButtons().indexOf(active) : -1;
+      if (numberEl) numberEl.textContent = String(activePosition >= 0 ? activePosition + 1 : 1).padStart(2, "0");
+    }
+
     function select(nextIndex: number, autoplay = true): void {
       if (!trackButtons.length) return;
-      index = (nextIndex + trackButtons.length) % trackButtons.length;
-      const button = trackButtons[index];
+      activeIndex = (nextIndex + trackButtons.length) % trackButtons.length;
+      const button = trackButtons[activeIndex];
       if (!button) return;
       const id = button.dataset.youtubeId ?? "";
       const title = button.dataset.title ?? "";
@@ -165,22 +236,105 @@ const firstLink = first ? `https://www.youtube.com/watch?v=${first.youtubeId}` :
       if (frame) frame.src = embedUrl(id, autoplay);
       if (titleEl) titleEl.textContent = title;
       if (metaEl) metaEl.textContent = meta;
-      if (numberEl) numberEl.textContent = String(index + 1).padStart(2, "0");
+      const position = visibleButtons().indexOf(button);
+      if (numberEl) numberEl.textContent = String(position >= 0 ? position + 1 : activeIndex + 1).padStart(2, "0");
       if (listenEl) listenEl.textContent = listen;
       if (listenWrap) listenWrap.hidden = !listen;
       trackButtons.forEach((item, itemIndex) => {
-        const active = itemIndex === index;
+        const active = itemIndex === activeIndex;
         item.classList.toggle("is-active", active);
         item.setAttribute("aria-pressed", String(active));
       });
       frame?.setAttribute("title", title || (isFr ? "Lecteur vidéo intégré" : "嵌入式视频播放器"));
     }
 
+    function step(delta: number): void {
+      const visible = visibleButtons();
+      if (!visible.length) return;
+      const current = trackButtons[activeIndex];
+      const position = Math.max(0, current ? visible.indexOf(current) : 0);
+      const nextButton = visible[(position + delta + visible.length) % visible.length];
+      if (nextButton) select(trackButtons.indexOf(nextButton));
+    }
+
+    function seededRandom(seed: number): () => number {
+      let value = seed >>> 0;
+      return () => {
+        value += 0x6d2b79f5;
+        let t = value;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function shuffledIndices(seed: number): number[] {
+      const indices = trackButtons.map((_, index) => index);
+      const random = seededRandom(seed);
+      for (let i = indices.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(random() * (i + 1));
+        const temp = indices[i]!;
+        indices[i] = indices[j]!;
+        indices[j] = temp;
+      }
+      return indices;
+    }
+
+    function todaySeed(): number {
+      const now = new Date();
+      return now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+    }
+
+    function updateShowAllLabel(): void {
+      if (showAllLabel) {
+        showAllLabel.textContent = showAll ? labelTonight : `${labelAll} (${trackButtons.length})`;
+      }
+    }
+
+    function applyTonight(indices: number[], autoplay = false): void {
+      tonight = new Set(indices);
+      trackItems.forEach((item, index) => {
+        const selected = tonight.has(index);
+        item.hidden = !showAll && !selected;
+        item.classList.toggle("is-tonight", selected);
+        const button = item.querySelector<HTMLButtonElement>("[data-jukebox-track]");
+        if (button) button.dataset.tonight = selected ? "true" : "false";
+      });
+      updateShowAllLabel();
+      renumber();
+      const first = indices[0];
+      if (first !== undefined) select(first, autoplay);
+    }
+
     trackButtons.forEach((button, buttonIndex) => {
       button.addEventListener("click", () => select(buttonIndex));
     });
-    prev?.addEventListener("click", () => select(index - 1));
-    next?.addEventListener("click", () => select(index + 1));
+    prev?.addEventListener("click", () => step(-1));
+    next?.addEventListener("click", () => step(1));
+
+    if (daily) {
+      applyTonight(shuffledIndices(todaySeed()).slice(0, Math.min(dailySize, trackButtons.length)));
+      showAllBtn?.addEventListener("click", () => {
+        showAll = !showAll;
+        showAllBtn.setAttribute("aria-pressed", String(showAll));
+        trackItems.forEach((item, index) => {
+          item.hidden = !showAll && !tonight.has(index);
+        });
+        updateShowAllLabel();
+        renumber();
+        if (!showAll && !tonight.has(activeIndex)) {
+          const first = [...tonight][0];
+          if (first !== undefined) select(first, false);
+        }
+      });
+      shuffleBtn?.addEventListener("click", () => {
+        showAll = false;
+        showAllBtn?.setAttribute("aria-pressed", "false");
+        const picks = shuffledIndices(Date.now()).slice(0, Math.min(dailySize, trackButtons.length));
+        if (picks.length > 1 && picks[0] === activeIndex) picks.push(picks.shift()!);
+        applyTonight(picks);
+      });
+    }
   });
 </script>
 
@@ -367,10 +521,86 @@ const firstLink = first ? `https://www.youtube.com/watch?v=${first.youtubeId}` :
     text-transform: uppercase;
   }
 
+  .jukebox-side-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
   .jukebox-side h3 {
-    margin: 3px 0 11px;
+    margin: 3px 0 8px;
     color: var(--ink);
     font-size: 20px;
+  }
+
+  .jukebox-tonight-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 6px;
+    color: var(--sun-700);
+    border: 1px solid var(--sun-500);
+    border-radius: 999px;
+    background: var(--sun-wash);
+    font-family: var(--font-mono);
+    font-size: 7px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .jukebox-tonight-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    margin: 0 0 9px;
+    color: var(--faint);
+    font-size: 8px;
+    line-height: 1.5;
+  }
+
+  .jukebox-tonight-note .icon {
+    margin-top: 1px;
+    color: var(--sun-700);
+  }
+
+  .jukebox-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+
+  .jukebox-tools button {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    min-height: 26px;
+    padding: 4px 7px;
+    color: var(--violet-700);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface-2);
+    font-size: 8px;
+    font-weight: 800;
+    transition: background 140ms ease, border-color 140ms ease;
+  }
+
+  .jukebox-tools button:hover {
+    border-color: var(--violet-300);
+    background: var(--violet-wash);
+  }
+
+  .track-list li[hidden] {
+    display: none;
+  }
+
+  .track-list li.is-tonight .track-button:not(.is-active) {
+    background: var(--sun-wash);
+  }
+
+  .track-list li.is-tonight .track-button:not(.is-active) .track-num {
+    color: var(--sun-700);
   }
 
   .track-list {

@@ -21,8 +21,8 @@ import { url } from "../../lib/url";
   >
     <div class="slug">
       <span><Icon name="play" size={12} /> lecture dans la page</span>
-      <span><Icon name="headphones" size={12} /> 8 pièces</span>
-      <span><Icon name="users" size={12} /> 8 guitaristes</span>
+      <span><Icon name="headphones" size={12} /> {PERFORMANCES_FR.length} pièces</span>
+      <span><Icon name="users" size={12} /> {ARTISTS_FR.length} guitaristes</span>
       <span><Icon name="youtube" size={12} /> YouTube intégré</span>
     </div>
   </PageHero>
@@ -30,10 +30,10 @@ import { url } from "../../lib/url";
   <section class="section">
     <div class="container">
       <div class="section-head-row">
-        <SectionHead kicker="Écouter maintenant" title="Le programme de ce soir" lead="Le lecteur est déjà là. Clique sur une pièce pour changer de morceau." />
+        <SectionHead kicker="Écouter maintenant" title="Le programme de ce soir" lead={`Chaque soir, six pièces choisies parmi ${PERFORMANCES_FR.length}. Tire à nouveau ou ouvre toute la liste.`} />
         <a class="btn btn-ghost" href="#artists">Les guitaristes <Icon name="chevron-down" size={14} /></a>
       </div>
-      <Jukebox items={PERFORMANCES_FR} lang="fr" />
+      <Jukebox items={PERFORMANCES_FR} lang="fr" daily dailySize={6} />
     </div>
   </section>
 

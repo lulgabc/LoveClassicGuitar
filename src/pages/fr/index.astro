@@ -139,7 +139,7 @@ const previewResources = RESOURCES_FR.filter((resource) => resource.featured).sl
   <section class="section">
     <div class="container">
       <div class="section-head-row">
-        <SectionHead kicker="Écouter maintenant" title="Une pièce, <em>directement ici</em>" lead="Choisis une étoile et appuie sur play. Le lecteur reste dans la page." />
+        <SectionHead kicker="Écouter maintenant" title="Une pièce, <em>directement ici</em>" lead={`Quatre pièces pour commencer ; la salle de concert en propose ${PERFORMANCES_FR.length}.`} />
         <a class="btn btn-secondary" href={url("/fr/concert/")}>Toute la salle de concert <Icon name="arrow-right" size={14} /></a>
       </div>
       <Jukebox items={homeTracks} lang="fr" compact />

@@ -30,8 +30,8 @@ const shortGames = LISTENING_GAMES.slice(0, 4);
   >
     <div class="slug">
       <span><Icon name="play" size={12} /> 页面内直接播放</span>
-      <span><Icon name="headphones" size={12} /> 10 首精选</span>
-      <span><Icon name="users" size={12} /> 10 位演奏家</span>
+      <span><Icon name="headphones" size={12} /> {PERFORMANCES.length} 首精选</span>
+      <span><Icon name="users" size={12} /> {MASTERS.length} 位演奏家</span>
       <span><Icon name="youtube" size={12} /> YouTube 嵌入</span>
     </div>
   </PageHero>
@@ -40,13 +40,13 @@ const shortGames = LISTENING_GAMES.slice(0, 4);
     <div class="container">
       <div class="section-head-row">
         <SectionHead
-          kicker="Écouter maintenant"
+          kicker="Listening room · 今晚推荐"
           title="今晚的<em>曲目单</em>"
-          lead="播放器会在页面里直接打开。点曲目切换，Momo 会在下面告诉你“可以听什么”。"
+          lead={`每天从 ${PERFORMANCES.length} 首曲目里挑出 6 首“今晚推荐”。点“换一批”再抽一次，也可以打开全部曲目。`}
         />
         <a class="btn btn-ghost" href="#masters">认识演奏家 <Icon name="chevron-down" size={14} /></a>
       </div>
-      <Jukebox items={PERFORMANCES} lang="zh" />
+      <Jukebox items={PERFORMANCES} lang="zh" daily dailySize={6} />
     </div>
   </section>
 
