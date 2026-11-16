@@ -57,3 +57,249 @@ export const BOOKS_FR: FrBook[] = [
 ];
 
 export const FR_KINDS = ["Tous", "Cours", "YouTube", "Partitions", "Examens", "Écoute", "Chinois"] as const;
+
+export type FrChannel = {
+  id: string;
+  name: string;
+  handle: string;
+  url: string;
+  focus: string;
+  description: string;
+  bestFor: string;
+  price: "Gratuit" | "Gratuit + payant";
+  lang: "Anglais" | "Français" | "Multilingue";
+  featured?: boolean;
+  note?: string;
+};
+
+export const CHANNELS_FR: FrChannel[] = [
+  {
+    id: "this-is-classical-guitar",
+    name: "This is Classical Guitar",
+    handle: "@Thisisclassicalguitar",
+    url: "https://www.youtube.com/@Thisisclassicalguitar",
+    focus: "Méthode / partitions / pièces",
+    description: "La chaîne de Bradford Werner : méthode gratuite, cours techniques, pièces expliquées et partitions. Une bonne colonne vertébrale.",
+    bestFor: "Les familles qui veulent suivre un ordre avec des exemples écrits",
+    price: "Gratuit + payant",
+    lang: "Anglais",
+    featured: true,
+  },
+  {
+    id: "classical-guitar-shed",
+    name: "Classical Guitar Shed",
+    handle: "@ClassicalGuitarShed",
+    url: "https://www.youtube.com/@ClassicalGuitarShed",
+    focus: "Débuter / suivre / routine",
+    description: "Les cours d'Allen Mathews, très accessibles, avec des séances guidées de 15 à 20 minutes.",
+    bestFor: "Les enfants et parents qui aiment être accompagnés pas à pas",
+    price: "Gratuit + payant",
+    lang: "Anglais",
+    featured: true,
+  },
+  {
+    id: "classical-guitar-corner",
+    name: "Classical Guitar Corner",
+    handle: "@ClassicalGuitarCorner",
+    url: "https://www.youtube.com/@ClassicalGuitarCorner",
+    focus: "Cours structurés / jeu / théorie",
+    description: "La plateforme de Simon Powis : courtes leçons gratuites, concerts et démonstrations, cours complets payants.",
+    bestFor: "Les familles qui cherchent une progression plus académique",
+    price: "Gratuit + payant",
+    lang: "Anglais",
+  },
+  {
+    id: "kids-guitar-dojo",
+    name: "Kids Guitar Dojo",
+    handle: "@kidsguitardojo",
+    url: "https://www.youtube.com/@kidsguitardojo",
+    focus: "Éveil des enfants",
+    description: "Des leçons courtes pour les enfants : posture, lecture et première guitare, sur un ton léger.",
+    bestFor: "Les petits qui ont besoin d'une voix et de formats très courts",
+    price: "Gratuit",
+    lang: "Anglais",
+    featured: true,
+  },
+  {
+    id: "tatyana",
+    name: "Tatyana Ryzhkova",
+    handle: "@tatyanaryzhkova",
+    url: "https://www.youtube.com/@tatyanaryzhkova",
+    focus: "Concerts / cours / pratique",
+    description: "La guitariste Tatyana Ryzhkova partage des concerts, des vidéos de travail et des conseils avec beaucoup de douceur.",
+    bestFor: "Écouter des œuvres complètes et voir le quotidien d'une guitariste",
+    price: "Gratuit",
+    lang: "Anglais",
+  },
+  {
+    id: "tonebase",
+    name: "tonebase Guitar",
+    handle: "@tonebase",
+    url: "https://www.youtube.com/@tonebase",
+    focus: "Masterclasses / guitaristes",
+    description: "Des masterclasses filmées avec de grands interprètes. Les extraits YouTube gratuits montrent leurs habitudes de travail.",
+    bestFor: "Les adultes qui veulent comprendre comment travaillent les professionnels",
+    price: "Gratuit + payant",
+    lang: "Anglais",
+  },
+  {
+    id: "siccas",
+    name: "Siccas Guitars",
+    handle: "@SiccasGuitars",
+    url: "https://www.youtube.com/@SiccasGuitars",
+    focus: "Concerts / belles guitares",
+    description: "Une maison allemande de guitares classiques : concerts bien enregistrés, interviews de luthiers et instruments rares.",
+    bestFor: "Plonger ses oreilles dans un beau son et découvrir des interprètes",
+    price: "Gratuit",
+    lang: "Anglais",
+    featured: true,
+  },
+  {
+    id: "guitar-salon",
+    name: "Guitar Salon International",
+    handle: "@Guitarsalon",
+    url: "https://www.youtube.com/@Guitarsalon",
+    focus: "Concerts / guitares de collection",
+    description: "Une maison de Los Angeles avec des vidéos propres, de nombreux guitaristes contemporains et des instruments précieux.",
+    bestFor: "Écouter des classiques et observer les mains et le timbre",
+    price: "Gratuit",
+    lang: "Anglais",
+  },
+  {
+    id: "kasey",
+    name: "Kasey's Music Method",
+    handle: "@KaseysMusicMethod",
+    url: "https://www.youtube.com/@KaseysMusicMethod",
+    focus: "Guitare pour enfants",
+    description: "Des jeux et des phrases courtes pour tenir l'instrument, pincer les cordes et jouer une première chanson.",
+    bestFor: "Installer d'abord l'idée que la guitare est amusante",
+    price: "Gratuit",
+    lang: "Anglais",
+    note: "Démonstrations souvent sur guitare folk (cordes acier) : faire vérifier la posture par un professeur de classique.",
+  },
+  {
+    id: "gohar",
+    name: "Gohar Vardanyan / Strings By Mail",
+    handle: "@StringsByMail",
+    url: "https://www.youtube.com/@StringsByMail",
+    focus: "Détails techniques / pratique",
+    description: "Les « Lessonettes » de Gohar Vardanyan : de très courtes vidéos précises sur la main droite, la main gauche et les gestes.",
+    bestFor: "Les parents ou professeurs qui veulent un détail technique, pas un enfant débutant seul",
+    price: "Gratuit",
+    lang: "Anglais",
+  },
+];
+
+export type FrSheetSource = {
+  name: string;
+  url: string;
+  description: string;
+  tags: string[];
+};
+
+export const SHEET_SOURCES_FR: FrSheetSource[] = [
+  {
+    name: "This is Classical Guitar · Partitions",
+    url: "https://www.thisisclassicalguitar.com/sheet-music-for-classical-guitar/",
+    description: "Des partitions gratuites et payantes classées par niveau, souvent accompagnées d'une vidéo.",
+    tags: ["Par niveau", "Vidéo", "Gratuit + payant"],
+  },
+  {
+    name: "IMSLP · Guitare",
+    url: "https://imslp.org/wiki/Category:For_guitar",
+    description: "Le grand trésor des éditions du domaine public ; demander au professeur de choisir la bonne version.",
+    tags: ["Domaine public", "Éditions", "Histoire"],
+  },
+  {
+    name: "Mutopia · Guitare",
+    url: "https://www.mutopiaproject.org/cgibin/make-table.cgi?Instrument=Guitar",
+    description: "Des partitions libres gravées par des bénévoles, en PDF propre et parfois en MIDI.",
+    tags: ["Libre", "PDF", "MIDI"],
+  },
+  {
+    name: "Delcamp Classical Guitar Forum",
+    url: "https://www.classicalguitardelcamp.com/",
+    description: "Des partitions classées par niveau et beaucoup d'échanges techniques ; lire les règles avant de télécharger.",
+    tags: ["Forum", "Niveaux", "Communauté"],
+  },
+  {
+    name: "8notes · Guitare",
+    url: "https://www.8notes.com/guitar/",
+    description: "Beaucoup de mélodies connues en versions simples, pour compléter le répertoire en s'amusant.",
+    tags: ["Simple", "Mélodies", "Gratuit"],
+  },
+  {
+    name: "MuseScore",
+    url: "https://musescore.com/",
+    description: "Une communauté de partitions ; la qualité et les droits varient, à utiliser avec l'aide d'un professeur.",
+    tags: ["Communauté", "Référence", "Droits à vérifier"],
+  },
+];
+
+export type FrExamBoard = {
+  name: string;
+  url: string;
+  what: string;
+  why: string;
+  caveat: string;
+};
+
+export const EXAM_BOARDS_FR: FrExamBoard[] = [
+  {
+    name: "ABRSM",
+    url: "https://www.abrsm.org/",
+    what: "De l'initiation au niveau 8 : pièces, gammes, déchiffrage et écoute.",
+    why: "Un répertoire bien établi, des objectifs clairs et une reconnaissance internationale.",
+    caveat: "Les programmes changent régulièrement. Ne sautez pas les bases pour courir après un grade ; l'examen n'est pas le seul chemin.",
+  },
+  {
+    name: "Trinity College London",
+    url: "https://www.trinitycollege.com/",
+    what: "De l'entrée au niveau avancé, avec jeu, technique et culture musicale.",
+    why: "Un choix de répertoire assez souple, utile pour montrer ses progrès avec des œuvres choisies.",
+    caveat: "Vérifiez toujours le programme actuel sur le site officiel. Le chemin compte plus que le certificat.",
+  },
+  {
+    name: "The Royal Conservatory (RCM)",
+    url: "https://www.rcmusic.com/learning",
+    what: "Des recueils classés par niveau et un système d'examens du préparatoire à l'avancé.",
+    why: "Des recueils et des études bien organisés, souvent utilisés comme banque de répertoire.",
+    caveat: "Les examens ne sont pas accessibles partout ; les recueils et programmes évoluent aussi.",
+  },
+];
+
+export const STARTER_PATHS_FR = [
+  {
+    icon: "compass" as const,
+    label: "Envie d'un ordre",
+    title: "Une méthode gratuite",
+    text: "Commence avec la méthode gratuite de This is Classical Guitar, puis avance avec le parcours du site, un petit morceau à la fois.",
+    href: "https://www.thisisclassicalguitar.com/free-classical-guitar-method-book-pdf/",
+    color: "violet",
+  },
+  {
+    icon: "youtube" as const,
+    label: "D'abord des vidéos pour enfants",
+    title: "Vidéos pour enfants",
+    text: "Kids Guitar Dojo et Kasey : de courtes leçons pour installer l'idée que la guitare est un jeu.",
+    href: "https://www.youtube.com/@kidsguitardojo",
+    color: "coral",
+  },
+  {
+    icon: "book" as const,
+    label: "Chercher en chinois",
+    title: "Ressources en chinois",
+    text: "Une recherche Bilibili à faire trier par un adulte : voix lente, chapitres clairs, pas de publicité agressive.",
+    href: "https://search.bilibili.com/all?keyword=%E5%84%BF%E7%AB%A5%E5%8F%A4%E5%85%B8%E5%90%89%E4%BB%96",
+    color: "sky",
+  },
+];
+
+export const CHOOSE_TIPS_FR = [
+  "Est-ce que la leçon apprend à écouter son propre son, pas seulement où poser les doigts ?",
+  "Le rythme est-il adapté à l'enfant : gros plans, démonstration lente, passages faciles à répéter ?",
+  "Les partitions et doigtés indiquent-ils leurs droits ? Ne pas diffuser de méthode commerciale sans autorisation.",
+  "La posture proposée évite-t-elle la douleur et les tensions ? Un bon cours parle d'abord de relâchement.",
+  "Y a-t-il un sommaire progressif ? Les vidéos isolées complètent une méthode, elles ne la remplacent pas.",
+  "Le gratuit est précieux, mais un professeur qui voit les mains et la taille de la guitare reste irremplaçable.",
+];

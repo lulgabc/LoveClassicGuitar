@@ -175,6 +175,76 @@ export const STAGES_FR: Stage[] = [
 export const TOTAL_QUESTS_FR = STAGES_FR.reduce((sum, stage) => sum + stage.quests.length, 0);
 
 
+export type WeeklyBlockFr = {
+  day: string;
+  title: string;
+  body: string;
+  color: "violet" | "sky" | "pink" | "mint" | "sun";
+};
+
+export const WEEKLY_RHYTHM_FR: WeeklyBlockFr[] = [
+  { day: "Lun", title: "Démarrage doux", body: "5 min de cordes à vide + 1 min d'écoute. Juste retrouver le contact.", color: "violet" },
+  { day: "Mar", title: "Petit défi technique", body: "10 min : alternance i–m ou pose des doigts, très lentement.", color: "pink" },
+  { day: "Mer", title: "Le repos compte aussi", body: "Écoute une pièce et fredonne la mélodie, sans toucher la guitare.", color: "sky" },
+  { day: "Jeu", title: "Le temps du morceau", body: "10–12 min : travaille seulement les 2 à 4 mesures les plus difficiles.", color: "mint" },
+  { day: "Ven", title: "Jouer pour le plaisir", body: "Improvisation de 4 mesures, nouvelle fin, ou concert pour une peluche.", color: "pink" },
+  { day: "Sam", title: "Mini-concert", body: "Joue une pièce entière à la famille : début, fin et petit salut.", color: "sun" },
+  { day: "Dim", title: "Regarder les étoiles", body: "Observe ce qui a été fait cette semaine et choisis un petit objectif pour la suivante.", color: "mint" },
+];
+
+export const HOW_FR = [
+  {
+    icon: "compass" as const,
+    title: "Une seule étape à la fois",
+    body: "Regarde seulement l'étape du moment. Si elle n'est pas terminée, ce n'est pas grave : chaque mission est un petit jeu à refaire.",
+  },
+  {
+    icon: "clock" as const,
+    title: "Quinze minutes, puis on s'arrête",
+    body: "Un temps court et concentré vaut mieux qu'une longue séance forcée. Si l'enfant rit encore à la fin, c'est parfait.",
+  },
+  {
+    icon: "heart" as const,
+    title: "Répéter et reculer, c'est permis",
+    body: "Une pièce aimée peut rester un mois. Oublier une note apprise avant-hier est normal. Revenir au simple n'est pas un échec.",
+  },
+  {
+    icon: "users" as const,
+    title: "Laisser le professeur ajuster",
+    body: "Chaque main, chaque guitare et chaque corps sont différents. Le parcours donne la direction ; le professeur règle les détails.",
+  },
+];
+
+export const PRINCIPLES_FR = [
+  {
+    title: "Court et concentré plutôt que long et fatigué",
+    body: "À 7 ans, l'attention dure souvent 10 à 15 minutes. Découpe le travail en petits blocs de 3 à 5 minutes, avec des pauses.",
+  },
+  {
+    title: "Écouter d'abord, jouer ensuite",
+    body: "Écoute la mélodie, chante le rythme, puis prends la guitare. Quand l'oreille sait où aller, les doigts se perdent moins.",
+  },
+  {
+    title: "L'erreur est un petit chemin sur la carte",
+    body: "Se tromper indique simplement où ralentir. Isole 2 à 4 mesures au lieu de tout reprendre depuis le début.",
+  },
+  {
+    title: "Se comparer à soi d'hier",
+    body: "Ni aux camarades, ni aux enfants prodiges des vidéos. Une seule question : est-ce que j'entends un peu mieux qu'hier ?",
+  },
+  {
+    title: "Faire sortir la musique du studio",
+    body: "Un concert, une vidéo, un dessin qui raconte la pièce, un petit récital pour la famille. La musique fait partie de la vie.",
+  },
+];
+
+export const MILESTONES_FR = [
+  { when: "1er mois", what: "Tenir la guitare confortablement, pincer les cordes à vide, compter à 60 BPM et connaître le nom des six cordes." },
+  { when: "2e–3e mois", what: "Trouver quelques notes sur les trois premières cordes et jouer une courte mélodie comme « Ode à la joie »." },
+  { when: "4e–6e mois", what: "Partager le travail entre le pouce et les doigts, jouer 8 à 16 mesures et oser jouer devant un petit public." },
+  { when: "7e–9e mois", what: "Jouer par cœur avec des nuances, entendre la mélodie et la basse, et offrir un petit concert de 2 à 3 minutes." },
+];
+
 export const WATCH_TITLES_FR: Record<string, string> = {
   "t-position-short": "La posture de base en 1 minute",
   "t-kids-posture": "La posture pour les enfants",

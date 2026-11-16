@@ -236,6 +236,7 @@ const step = 12;
 
     root.querySelectorAll<HTMLButtonElement>("[data-rep-play]").forEach((button) => {
       button.addEventListener("click", () => {
+        document.dispatchEvent(new CustomEvent("concert:listen"));
         const id = button.dataset.repPlay;
         const jukebox = document.querySelector<HTMLElement>("[data-jukebox]");
         if (!id || !jukebox) return;

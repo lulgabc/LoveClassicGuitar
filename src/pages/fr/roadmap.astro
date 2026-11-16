@@ -5,18 +5,15 @@ import RoadmapBoard from "../../components/RoadmapBoard.astro";
 import SectionHead from "../../components/SectionHead.astro";
 import MascotBubble from "../../components/MascotBubble.astro";
 import Icon from "../../components/Icon.astro";
-import { STAGES_FR, WATCH_TITLES_FR } from "../../data/fr/roadmap";
+import {
+  HOW_FR,
+  MILESTONES_FR,
+  PRINCIPLES_FR,
+  STAGES_FR,
+  WATCH_TITLES_FR,
+  WEEKLY_RHYTHM_FR,
+} from "../../data/fr/roadmap";
 import { url } from "../../lib/url";
-
-const week = [
-  { day: "Lun", title: "Démarrer doucement", body: "5 min de cordes à vide." },
-  { day: "Mar", title: "Un petit défi", body: "10 min d'un seul point." },
-  { day: "Mer", title: "Écouter", body: "Une pièce, sans guitare." },
-  { day: "Jeu", title: "Le morceau", body: "2 à 4 mesures lentes." },
-  { day: "Ven", title: "Inventer", body: "Quatre notes, un début et une fin." },
-  { day: "Sam", title: "Mini-concert", body: "Jouer pour quelqu'un." },
-  { day: "Dim", title: "Se reposer", body: "Regarder les étoiles allumées." },
-];
 ---
 
 <BaseLayout
@@ -27,7 +24,7 @@ const week = [
   <PageHero
     kicker="Une aventure en six étapes"
     title="D'un premier son<br />à un <em>petit concert</em>."
-    lead="Coche une mission quand tu l'as essayée. Rien ne se verrouille : reviens quand tu veux, répète ce que tu aimes."
+    lead="Ce parcours n'est ni un examen ni une compétition. C'est une carte : elle montre le prochain petit pas, et permet de rester plus longtemps dans un endroit que l'on aime."
   >
   </PageHero>
 
@@ -39,27 +36,98 @@ const week = [
 
   <section class="section section-wash">
     <div class="container">
-      <SectionHead kicker="Un rythme doux" title="Une semaine sans pression" lead="Ce n'est pas un planning à remplir. C'est une petite danse à adapter." />
-      <div class="week-strip">
-        {week.map((item) => (
-          <div class="week-item card">
-            <span>{item.day}</span>
-            <h3>{item.title}</h3>
-            <p>{item.body}</p>
-          </div>
-        ))}
+      <SectionHead
+        kicker="Un rythme doux"
+        title="Une semaine sans pression, <em>juste un rythme</em>"
+        lead="Voici un rythme très léger. Adapte-le à l'école, à l'humeur et à la famille : il n'y a rien à rattraper."
+      />
+      <div class="week-grid">
+        {
+          WEEKLY_RHYTHM_FR.map((day) => (
+            <article class:list={["week-card", `week-${day.color}`]}>
+              <span class="week-day">{day.day}</span>
+              <h3>{day.title}</h3>
+              <p>{day.body}</p>
+            </article>
+          ))
+        }
       </div>
-      <div class="roadmap-note">
-        <MascotBubble who="capi" title="Capi te rappelle" text="Si tu rates une semaine, rien n'est perdu. Tu reprends simplement avec une corde à vide." tone="sky" />
-        <a class="btn btn-ghost" href={url("/fr/parents/")}>Le guide des parents <Icon name="arrow-right" size={13} /></a>
+      <div class="week-note">
+        <Icon name="info" size={16} />
+        <p>Si une semaine ne contient qu'une seule séance, ce n'est pas grave. La musique n'est pas une facture : on ne « rattrape » pas. La prochaine fois, on recommence simplement avec une corde à vide.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead
+        kicker="Des repères, pas des délais"
+        title="Où peut-on arriver ? <em>Juste pour situer</em>"
+        lead="Chaque enfant part d'un point différent, avec un rythme et un professeur différents. Ces moments ne sont pas une norme : ils montrent seulement à quoi ressemble le progrès."
+      />
+      <div class="milestone-grid">
+        {
+          MILESTONES_FR.map((milestone, index) => (
+            <article class="milestone-card card">
+              <span class="milestone-index">{String(index + 1).padStart(2, "0")}</span>
+              <span class="milestone-when">{milestone.when}</span>
+              <p>{milestone.what}</p>
+            </article>
+          ))
+        }
+      </div>
+      <div class="milestone-note">
+        <MascotBubble who="capi" title="Capi te rappelle" text="Neuf mois n'est pas une date limite. Certains avancent vite, d'autres doucement, mais celles et ceux qui aiment la musique finissent par trouver leur scène." tone="sun" />
+        <a class="btn btn-ghost" href={url("/fr/parents/#milestones")}>Les repères expliqués aux parents <Icon name="arrow-right" size={13} /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container">
+      <SectionHead
+        kicker="Comment utiliser la carte"
+        title="Cette carte, <em>voilà comment s'en servir</em>"
+        lead="Ce n'est pas une liste de tâches à cocher. C'est un guide à rouvrir quand on en a besoin."
+      />
+      <div class="how-grid">
+        {
+          HOW_FR.map((item) => (
+            <article class="how-card card">
+              <span class:list={["how-icon", `how-icon-${item.icon === "clock" ? "sky" : item.icon === "heart" ? "pink" : item.icon === "users" ? "sun" : "violet"}`]}>
+                <Icon name={item.icon} size={22} />
+              </span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="principles-grid">
+        {
+          PRINCIPLES_FR.map((principle, index) => (
+            <div class="principle-item">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div><strong>{principle.title}</strong><p>{principle.body}</p></div>
+            </div>
+          ))
+        }
       </div>
     </div>
   </section>
 
   <section class="section-tight">
     <div class="container roadmap-end">
-      <div><span class="eyebrow"><Icon name="sparkle" size={13} /> Une étoile suffit</span><h2>Tu n'as pas à tout allumer aujourd'hui.</h2></div>
-      <div class="btn-row"><a class="btn btn-primary" href={url("/fr/practice/")}>Aller au studio <Icon name="arrow-right" size={14} /></a><a class="btn btn-ghost" href={url("/fr/concert/")}>Écouter une pièce</a></div>
+      <div>
+        <span class="eyebrow"><Icon name="sparkle" size={13} /> Pas de précipitation</span>
+        <h2>Tu n'as pas à allumer toutes les étoiles.<br />Une seule aujourd'hui, c'est déjà bien.</h2>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href={url("/fr/practice/")}><Icon name="timer" size={15} /> Aller au studio</a>
+        <a class="btn btn-ghost" href={url("/fr/parents/")}>Pour les parents</a>
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -87,70 +155,201 @@ const week = [
 
   .slug .icon { color: #ffd86f; }
 
-  .week-strip {
+  .week-grid {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
-    gap: 7px;
+    gap: 8px;
   }
 
-  .week-item {
-    padding: 13px 10px;
-    box-shadow: none;
+  .week-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 158px;
+    padding: 14px 12px;
+    border: 1px solid var(--line);
+    border-radius: 15px;
+    background: var(--week-bg);
+  }
+
+  .week-day {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 3px 7px;
+    border-radius: 999px;
+    color: var(--week-ink);
     background: var(--surface);
-  }
-
-  .week-item > span {
-    color: var(--violet-700);
     font-family: var(--font-mono);
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 800;
   }
 
-  .week-item h3 {
-    margin: 8px 0 4px;
+  .week-card h3 {
+    margin: 13px 0 5px;
     color: var(--ink);
-    font-size: 11px;
-    line-height: 1.35;
+    font-size: 13px;
+    line-height: 1.4;
   }
 
-  .week-item p {
+  .week-card p {
     margin: 0;
-    color: var(--muted);
-    font-size: 9px;
-    line-height: 1.55;
+    color: var(--ink-soft);
+    font-size: 10.5px;
+    line-height: 1.65;
   }
 
-  .roadmap-note {
+  .week-violet { --week-bg: var(--violet-wash); --week-ink: var(--violet-700); }
+  .week-sky { --week-bg: var(--sky-wash); --week-ink: var(--sky-700); }
+  .week-pink { --week-bg: var(--pink-wash); --week-ink: #a63672; }
+  .week-mint { --week-bg: var(--mint-wash); --week-ink: #18735b; }
+  .week-sun { --week-bg: var(--sun-wash); --week-ink: var(--sun-700); }
+
+  html[data-theme="night"] .week-pink { --week-ink: var(--pink-500); }
+  html[data-theme="night"] .week-mint { --week-ink: var(--mint-500); }
+
+  .week-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    margin-top: 14px;
+    padding: 11px 13px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 12px;
+    color: var(--muted);
+  }
+
+  .week-note .icon { margin-top: 1px; color: var(--violet-700); }
+  .week-note p { margin: 0; font-size: 10.5px; line-height: 1.65; }
+
+  .milestone-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .milestone-card { padding: 17px; background: var(--surface); }
+
+  .milestone-index {
+    display: block;
+    color: var(--violet-700);
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .milestone-when {
+    display: block;
+    margin-top: 10px;
+    color: var(--violet-700);
+    font-size: 10.5px;
+    font-weight: 850;
+    letter-spacing: 0.04em;
+  }
+
+  .milestone-card p {
+    margin: 4px 0 0;
+    color: var(--ink-soft);
+    font-size: 10.5px;
+    line-height: 1.7;
+  }
+
+  .milestone-note {
     display: flex;
     align-items: center;
-    gap: 15px;
-    margin-top: 14px;
+    gap: 17px;
+    margin-top: 16px;
   }
 
-  .roadmap-note :global(.mascot-bubble) { flex: 1; }
+  .milestone-note :global(.mascot-bubble) { flex: 1; }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .how-card { padding: 18px 17px; background: var(--surface); }
+
+  .how-icon {
+    display: grid;
+    place-items: center;
+    width: 43px;
+    height: 43px;
+    margin-bottom: 14px;
+    color: var(--violet-700);
+    border-radius: 14px;
+    background: var(--violet-wash);
+  }
+
+  .how-icon-sky { color: var(--sky-700); background: var(--sky-wash); }
+  .how-icon-pink { color: #aa3974; background: var(--pink-wash); }
+  .how-icon-sun { color: var(--sun-700); background: var(--sun-wash); }
+
+  .how-card h3 { margin: 0 0 6px; color: var(--ink); font-size: 14px; }
+  .how-card p { margin: 0; color: var(--muted); font-size: 10.5px; line-height: 1.7; }
+
+  .principles-grid {
+    display: grid;
+    gap: 8px;
+    max-width: 860px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .principle-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 9px 0;
+  }
+
+  .principle-item > span {
+    flex: 0 0 22px;
+    color: var(--violet-600);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.8;
+  }
+
+  .principle-item strong { display: block; color: var(--ink); font-size: 11.5px; }
+  .principle-item p { margin: 2px 0 0; color: var(--muted); font-size: 10.5px; line-height: 1.65; }
 
   .roadmap-end {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
-    padding: clamp(22px, 4vw, 32px);
+    gap: 26px;
+    padding: clamp(24px, 4vw, 36px);
     border: 1.5px solid var(--line);
     border-radius: var(--radius-lg);
-    background: var(--surface);
+    background:
+      radial-gradient(circle at 90% 10%, rgba(255, 216, 111, 0.2), transparent 25%),
+      var(--surface);
     box-shadow: var(--shadow);
   }
 
-  .roadmap-end h2 { margin-top: 10px; font-size: clamp(23px, 3vw, 31px); }
+  .roadmap-end h2 { margin-top: 11px; font-size: clamp(24px, 3.1vw, 33px); }
 
-  @media (max-width: 900px) {
-    .week-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .roadmap-note { align-items: flex-start; flex-direction: column; }
+  @media (max-width: 1000px) {
+    .week-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .week-card { min-height: 140px; }
+    .milestone-grid,
+    .how-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 720px) {
+    .week-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .week-card:last-child { grid-column: 1 / -1; min-height: auto; }
+    .milestone-grid,
+    .how-grid { grid-template-columns: 1fr; }
+    .milestone-note { align-items: flex-start; flex-direction: column; }
     .roadmap-end { align-items: flex-start; flex-direction: column; }
   }
 
-  @media (max-width: 580px) {
-    .week-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .week-item:last-child { grid-column: 1 / -1; }
+  @media (max-width: 500px) {
+    .week-grid { grid-template-columns: 1fr; }
+    .week-card:last-child { grid-column: auto; }
   }
 </style>

@@ -32,39 +32,41 @@ const artistAccents: Record<string, string> = {
   >
   </PageHero>
 
-  <section class="section" id="jukebox">
+  <section class="section" id="listen">
     <div class="container">
-      <div class="section-head-row">
-        <SectionHead kicker="Écouter maintenant" title="Le programme de ce soir" lead={`Chaque soir, six pièces choisies parmi ${PERFORMANCES_FR.length}. Tire à nouveau ou ouvre toute la liste.`} />
-        <a class="btn btn-ghost" href="#artists">Les guitaristes <Icon name="chevron-down" size={14} /></a>
+      <div class="listen-modes" role="group" aria-label="Choisir une façon d'écouter">
+        <button class="listen-mode is-active" type="button" data-listen-mode="now" aria-pressed="true">
+          <Icon name="play" size={18} />
+          <span><strong>Écouter maintenant</strong><small>18 pièces · un clic suffit</small></span>
+        </button>
+        <button class="listen-mode" type="button" data-listen-mode="library" aria-pressed="false">
+          <Icon name="book" size={18} />
+          <span><strong>Explorer 200 pièces</strong><small>Par époque, niveau, mot-clé</small></span>
+        </button>
       </div>
-      <Jukebox items={PERFORMANCES_FR} lang="fr" daily dailySize={6} />
-      <div class="rep-jump-row">
-        <a class="btn btn-ghost btn-sm" href="#repertoire"><Icon name="book" size={14} /> Ouvrir les 200 pièces <Icon name="chevron-down" size={13} /></a>
-      </div>
-    </div>
-  </section>
 
-  <section class="section section-wash" id="repertoire">
-    <div class="container">
-      <div class="section-head-row">
-        <SectionHead
-          kicker="La bibliothèque · 200 pièces"
-          title="Une bibliothèque à <em>explorer</em>."
-          lead="De la Renaissance à aujourd'hui : cherche par époque, niveau ou mot-clé. 18 pièces sont jouables dans le lecteur ci-dessus ; les autres ouvrent YouTube."
-        />
-        <a class="btn btn-ghost" href="#jukebox">Retour au lecteur <Icon name="arrow-up" size={13} /></a>
-      </div>
-      <details class="rep-fold card">
-        <summary>
-          <span><Icon name="book" size={18} /> Ouvrir les 200 pièces</span>
-          <span class="fold-hint">Par époque et par niveau</span>
-          <Icon name="chevron-down" size={17} />
-        </summary>
-        <div class="rep-fold-body">
-          <RepertoireLibrary pieces={REPERTOIRE} lang="fr" />
+      <div class="listen-panel" id="jukebox" data-listen-panel="now">
+        <div class="section-head-row">
+          <SectionHead kicker="Écouter maintenant" title="Le programme de ce soir" lead={`Chaque soir, six pièces choisies parmi ${PERFORMANCES_FR.length}. Tire à nouveau ou ouvre toute la liste.`} />
+          <a class="btn btn-ghost" href="#artists">Les guitaristes <Icon name="chevron-down" size={14} /></a>
         </div>
-      </details>
+        <Jukebox items={PERFORMANCES_FR} lang="fr" daily dailySize={6} />
+        <div class="rep-jump-row">
+          <button class="btn btn-ghost btn-sm" type="button" data-open-library><Icon name="book" size={14} /> Explorer les 200 pièces <Icon name="arrow-right" size={13} /></button>
+        </div>
+      </div>
+
+      <div class="listen-panel" id="repertoire" data-listen-panel="library" hidden>
+        <div class="section-head-row">
+          <SectionHead
+            kicker="La bibliothèque · 200 pièces"
+            title="Une bibliothèque à <em>explorer</em>."
+            lead="De la Renaissance à aujourd'hui : cherche par époque, niveau ou mot-clé. Les 18 pièces jouables ramènent à « Écouter maintenant » ; les autres ouvrent YouTube."
+          />
+          <button class="btn btn-ghost" type="button" data-open-now>Retour à l'écoute <Icon name="arrow-up" size={13} /></button>
+        </div>
+        <RepertoireLibrary pieces={REPERTOIRE} lang="fr" />
+      </div>
     </div>
   </section>
 
@@ -161,6 +163,50 @@ const artistAccents: Record<string, string> = {
   </section>
 </BaseLayout>
 
+<script>
+  const listenSection = document.querySelector<HTMLElement>("#listen");
+  const modeButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-listen-mode]"));
+  const listenPanels = Array.from(document.querySelectorAll<HTMLElement>("[data-listen-panel]"));
+
+  function setListenMode(mode: string, scroll = false): void {
+    modeButtons.forEach((button) => {
+      const active = button.dataset.listenMode === mode;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    listenPanels.forEach((panel) => {
+      panel.hidden = panel.dataset.listenPanel !== mode;
+    });
+    if (scroll) listenSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  modeButtons.forEach((button) => {
+    button.addEventListener("click", () => setListenMode(button.dataset.listenMode ?? "now", true));
+  });
+
+  document.querySelectorAll<HTMLButtonElement>("[data-open-library]").forEach((button) => {
+    button.addEventListener("click", () => setListenMode("library", true));
+  });
+
+  document.querySelectorAll<HTMLButtonElement>("[data-open-now]").forEach((button) => {
+    button.addEventListener("click", () => setListenMode("now", true));
+  });
+
+  function applyListenHash(): void {
+    if (location.hash === "#repertoire") {
+      setListenMode("library");
+      requestAnimationFrame(() => listenSection?.scrollIntoView({ block: "start" }));
+    } else if (location.hash === "#jukebox" || location.hash === "#listen") {
+      setListenMode("now");
+      requestAnimationFrame(() => listenSection?.scrollIntoView({ block: "start" }));
+    }
+  }
+
+  applyListenHash();
+  window.addEventListener("hashchange", applyListenHash);
+  document.addEventListener("concert:listen", () => setListenMode("now"));
+</script>
+
 <style>
   .slug {
     display: flex;
@@ -184,6 +230,71 @@ const artistAccents: Record<string, string> = {
 
   .slug .icon { color: #ffd86f; }
 
+  #listen {
+    scroll-margin-top: calc(var(--header-h) + 18px);
+  }
+
+  .listen-modes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 26px;
+  }
+
+  .listen-mode {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    padding: 12px 16px;
+    color: var(--muted);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+  }
+
+  .listen-mode .icon {
+    flex: 0 0 auto;
+    color: var(--violet-700);
+  }
+
+  .listen-mode span {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .listen-mode strong {
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.3;
+  }
+
+  .listen-mode small {
+    color: var(--faint);
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .listen-mode:hover {
+    border-color: var(--violet-300);
+    background: var(--violet-wash);
+  }
+
+  .listen-mode.is-active {
+    color: var(--ink);
+    border-color: var(--violet-500);
+    background:
+      radial-gradient(circle at 95% 0%, rgba(255, 216, 111, 0.16), transparent 40%),
+      var(--violet-wash);
+    box-shadow: 0 3px 0 rgba(102, 74, 215, 0.14);
+  }
+
+  .listen-mode.is-active .icon { color: var(--violet-700); }
+
   .missions {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -196,10 +307,10 @@ const artistAccents: Record<string, string> = {
     background: var(--surface);
   }
 
-  .mission-num { position: absolute; right: 11px; top: 10px; color: var(--faint); font-family: var(--font-mono); font-size: 8px; }
+  .mission-num { position: absolute; right: 11px; top: 10px; color: var(--faint); font-family: var(--font-mono); font-size: 10px; }
   .mission-icon { display: grid; place-items: center; width: 34px; height: 34px; margin-bottom: 10px; color: var(--violet-700); border-radius: 11px; background: var(--violet-wash); }
-  .mission h3 { margin: 0 0 4px; color: var(--ink); font-size: 13px; }
-  .mission p { margin: 0; color: var(--muted); font-size: 9.5px; line-height: 1.6; }
+  .mission h3 { margin: 0 0 4px; color: var(--ink); font-size: 15px; }
+  .mission p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
 
   .artist-grid {
     display: grid;
@@ -455,23 +566,23 @@ const artistAccents: Record<string, string> = {
 
   .folds { display: grid; gap: 9px; }
   .fold { padding: 0; overflow: hidden; background: var(--surface); }
-  .fold summary { display: flex; align-items: center; gap: 8px; padding: 15px 17px; color: var(--ink); font-size: 13px; font-weight: 800; list-style: none; }
+  .fold summary { display: flex; align-items: center; gap: 8px; padding: 15px 17px; color: var(--ink); font-size: 14px; font-weight: 800; list-style: none; }
   .fold summary::-webkit-details-marker { display: none; }
   .fold summary > span:first-child { display: inline-flex; align-items: center; gap: 6px; }
   .fold summary > .icon { margin-left: auto; color: var(--faint); transition: transform 150ms ease; }
   .fold[open] summary > .icon { transform: rotate(180deg); }
-  .fold-hint { margin-left: auto; color: var(--faint); font-size: 8px; }
+  .fold-hint { margin-left: auto; color: var(--faint); font-size: 10px; }
   .composer-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; padding: 0 17px 17px; }
   .composer-card { padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); }
-  .composer-card h3 { margin: 0; color: var(--ink); font-size: 11px; }
-  .composer-card > span { color: var(--faint); font-family: var(--font-mono); font-size: 6.5px; }
-  .composer-card p { margin: 6px 0 0; color: var(--muted); font-size: 8px; line-height: 1.55; }
-  .composer-card small { display: flex; align-items: flex-start; gap: 3px; margin-top: 6px; padding-top: 5px; border-top: 1px dashed var(--line); color: var(--sun-700); font-size: 7px; line-height: 1.4; }
+  .composer-card h3 { margin: 0; color: var(--ink); font-size: 13px; }
+  .composer-card > span { color: var(--faint); font-family: var(--font-mono); font-size: 10px; }
+  .composer-card p { margin: 6px 0 0; color: var(--muted); font-size: 10.5px; line-height: 1.55; }
+  .composer-card small { display: flex; align-items: flex-start; gap: 3px; margin-top: 6px; padding-top: 5px; border-top: 1px dashed var(--line); color: var(--sun-700); font-size: 10px; line-height: 1.4; }
   .etiquette { display: grid; gap: 5px; padding: 0 17px 17px; }
-  .etiquette p { display: flex; align-items: flex-start; gap: 8px; margin: 0; padding: 7px 0; border-bottom: 1px dashed var(--line); color: var(--ink-soft); font-size: 9.5px; line-height: 1.55; }
+  .etiquette p { display: flex; align-items: flex-start; gap: 8px; margin: 0; padding: 7px 0; border-bottom: 1px dashed var(--line); color: var(--ink-soft); font-size: 11px; line-height: 1.55; }
   .etiquette p:last-child { border-bottom: 0; }
-  .etiquette b { color: var(--violet-700); font-family: var(--font-mono); font-size: 7px; }
-  .privacy-note { display: flex; align-items: flex-start; gap: 5px; margin-top: 13px; color: var(--faint); font-size: 8.5px; line-height: 1.55; }
+  .etiquette b { color: var(--violet-700); font-family: var(--font-mono); font-size: 10px; }
+  .privacy-note { display: flex; align-items: flex-start; gap: 5px; margin-top: 13px; color: var(--faint); font-size: 10.5px; line-height: 1.55; }
   .privacy-note .icon { margin-top: 1px; color: var(--violet-700); }
   .concert-bottom { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: clamp(22px, 4vw, 32px); border: 1.5px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow); }
   .concert-bottom h2 { margin-top: 10px; font-size: clamp(23px, 3vw, 31px); }
@@ -487,6 +598,7 @@ const artistAccents: Record<string, string> = {
   }
 
   @media (max-width: 600px) {
+    .listen-modes { grid-template-columns: 1fr; }
     .missions, .artist-grid, .composer-grid { grid-template-columns: 1fr; }
     .artist-note, .concert-bottom { align-items: flex-start; flex-direction: column; }
     .fold-hint { display: none; }

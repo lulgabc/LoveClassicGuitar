@@ -5,106 +5,521 @@ import SectionHead from "../../components/SectionHead.astro";
 import MascotBubble from "../../components/MascotBubble.astro";
 import Icon from "../../components/Icon.astro";
 import { SITE } from "../../data/site";
+
+const principles = [
+  {
+    icon: "heart" as const,
+    title: "D'abord pour une petite musicienne",
+    body: "Ce n'est pas une usine à examens, mais un endroit qu'une enfant de 7 ans peut ouvrir seule, choisir seule et remplir d'étoiles. L'adulte reste à côté, sans devoir tout diriger.",
+  },
+  {
+    icon: "shield" as const,
+    title: "Pas de suivi, pas de classement",
+    body: "Aucun compte, aucune statistique de visite, aucune publicité ni classement. Le prénom et les progrès restent dans le navigateur et peuvent être effacés à tout moment.",
+  },
+  {
+    icon: "compass" as const,
+    title: "Une ressource est une porte",
+    body: "Les cours, vidéos, méthodes et partitions indiquent la langue, le prix et le niveau. Le but est de réduire l'anxiété de collection et d'augmenter le temps passé à jouer.",
+  },
+  {
+    icon: "sparkle" as const,
+    title: "Laisser une place à l'imparfait",
+    body: "Le parcours est un repère, pas une réponse unique. Ne pas suivre le plan ne retire aucun droit. La musique n'est pas un système de badges.",
+  },
+];
+
+const sources = [
+  {
+    title: "Cours et pédagogie",
+    items: [
+      { name: "This is Classical Guitar", url: "https://www.thisisclassicalguitar.com/" },
+      { name: "Classical Guitar Shed", url: "https://classicalguitarshed.com/" },
+      { name: "Classical Guitar Corner", url: "https://www.classicalguitarcorner.com/" },
+      { name: "tonebase Guitar", url: "https://www.tonebase.co/guitar" },
+    ],
+  },
+  {
+    title: "Partitions et histoire",
+    items: [
+      { name: "IMSLP · Petrucci Music Library", url: "https://imslp.org/wiki/Category:For_guitar" },
+      { name: "Mutopia Project", url: "https://www.mutopiaproject.org/" },
+      { name: "Classical Guitar Delcamp Forum", url: "https://www.classicalguitardelcamp.com/" },
+      { name: "Classical Guitar Magazine", url: "https://classicalguitarmagazine.com/" },
+    ],
+  },
+  {
+    title: "Concerts et vidéos",
+    items: [
+      { name: "Siccas Guitars · YouTube", url: "https://www.youtube.com/@SiccasGuitars" },
+      { name: "Guitar Salon International · YouTube", url: "https://www.youtube.com/@Guitarsalon" },
+      { name: "Tatyana Ryzhkova · YouTube", url: "https://www.youtube.com/@tatyanaryzhkova" },
+      { name: "Kids Guitar Dojo · YouTube", url: "https://www.youtube.com/@kidsguitardojo" },
+    ],
+  },
+  {
+    title: "Examens et répertoire (à titre indicatif)",
+    items: [
+      { name: "ABRSM", url: "https://www.abrsm.org/" },
+      { name: "Trinity College London", url: "https://www.trinitycollege.com/" },
+      { name: "The Royal Conservatory", url: "https://www.rcmusic.com/learning" },
+      { name: "MuseScore (communauté, droits à vérifier)", url: "https://musescore.com/" },
+    ],
+  },
+];
+
+const changelog = [
+  {
+    date: "2026-11-16",
+    title: "Parité bilingue et deux façons d'écouter",
+    body: "La bibliothèque, le parcours et la page À propos partagent désormais la même structure en chinois et en français. La salle de concert sépare « Écouter maintenant » et « Explorer 200 pièces ». Les pages françaises gagnent en lisibilité et en confort tactile.",
+  },
+  {
+    date: "2026-11-13",
+    title: "Première version : le studio sous les étoiles",
+    body: "Six étapes, 38 missions, un studio interactif, une salle de concert, une bibliothèque gratuite, un guide pour les parents et des fiches à imprimer. Tous les liens vidéo ont été vérifiés un par un.",
+  },
+];
 ---
 
 <BaseLayout
   lang="fr"
   title="À propos"
-  description="À propos de Love Classic Guitar : origine du projet, sources, confidentialité, droits et accessibilité."
+  description="À propos de Love Classic Guitar : origine du projet, sources, confidentialité, droits, accessibilité et journal des mises à jour."
 >
   <PageHero
-    kicker="À propos"
+    kicker="À propos de ce petit univers"
     title="Un petit monde<br />fait pour <em>une musicienne</em>."
-    lead="Ce n'est pas une école officielle ni une plateforme payante. C'est un endroit calme, fabriqué pour une enfant de 7 ans et les adultes qui l'accompagnent."
+    lead="Ce n'est pas une école officielle ni une plateforme payante. C'est le projet d'un parent, transformé en un endroit calme que l'on peut ouvrir ensemble."
   >
   </PageHero>
 
   <section class="section">
-    <div class="container about-grid">
-      <div>
-        <SectionHead kicker="Pourquoi" title="Pourquoi ce site existe" lead="Les bons cours ne manquent pas, mais ils sont souvent dispersés, en anglais et un peu intimidants pour une enfant." />
-        <p>Ici, on commence par une corde, un son, une posture confortable. Momo et Capi rappellent qu'on peut avancer sans se presser.</p>
-        <p>Le parcours, les exercices et les ressources s'inspirent de méthodes publiques et de pratiques courantes. Chaque enfant reste différent : un professeur doit adapter la taille, le rythme et les morceaux.</p>
-        <MascotBubble who="momo" title="Le mot de Momo" text="Si ce site t'aide seulement à pincer une corde aujourd'hui, il aura déjà fait son travail." tone="violet" />
-      </div>
-      <div class="about-card card">
-        <h3>Les principes</h3>
-        <ul>
-          <li>Pas de classement, pas de publicité, pas de pression.</li>
-          <li>Des outils interactifs avant de longs discours.</li>
-          <li>Le son et l'écoute avant la performance.</li>
-          <li>Une place pour les adultes, sans leur demander de devenir guitaristes.</li>
-        </ul>
+    <div class="container">
+      <SectionHead
+        kicker="Pourquoi ce site existe"
+        title="Pourquoi <em>ce site</em> ?"
+        lead="De petites mains de 7 ans, dix minutes d'attention, une enfant qui aime le violet et le bleu. Pas une « plateforme d'apprentissage », plutôt une petite chambre qu'elle a envie d'ouvrir seule."
+      />
+      <div class="about-intro">
+        <div class="about-intro-copy">
+          <p>
+            Les bonnes ressources de guitare classique ne manquent pas, mais elles sont souvent cachées dans des sites anglais, de longues vidéos et des sommaires très denses.
+            Ce site essaie de rendre le premier pas plus doux : découvrir l'instrument, écouter les six cordes, s'installer, pincer un premier son, puis arriver peu à peu à une pièce.
+          </p>
+          <p>
+            La petite chauve-souris <strong>Momo</strong> et le capybara <strong>Capi</strong> sont des personnages originaux. Momo pousse doucement quand on hésite ; Capi rappelle que ralentir est permis.
+            Les étoiles, la lune, les fiches de pratique et le petit concert sont pensés pour que la musique arrive d'abord.
+          </p>
+          <p>
+            Le parcours s'inspire de l'ordre habituel d'un début en guitare classique, de méthodes publiques et du rythme d'un enfant. Mais chaque enfant est différent : demandez au professeur d'adapter la guitare, les mains et le corps.
+          </p>
+        </div>
+        <div class="about-note">
+          <MascotBubble who="momo" title="Le mot de Momo" text="Si ce site ne t'aide qu'une seule fois, j'aimerais que ce soit pour t'asseoir aujourd'hui et pincer une corde." tone="violet" />
+          <div class="about-fact"><span>Pour qui</span><p>Les enfants de 6 à 10 ans qui commencent, et les adultes qui les accompagnent. Les grands sont bienvenus, avec un rythme plus long.</p></div>
+          <div class="about-fact"><span>Ce n'est pas</span><p>Ni un centre d'examen, ni un avis médical, ni un remplacement du professeur, ni une fabrique de petits prodiges.</p></div>
+        </div>
       </div>
     </div>
   </section>
 
   <section class="section section-wash">
     <div class="container">
-      <SectionHead kicker="Confidentialité & droits" title="Simple et transparent" />
-      <div class="columns">
-        <div class="info card">
-          <h3>Confidentialité</h3>
-          <p>Pas de compte, de commentaire, d'analyse d'audience ni de suivi entre sites. Le prénom, les missions et les séances restent dans le stockage local du navigateur.</p>
-          <p>Les vidéos sont lues dans un lecteur YouTube intégré (youtube-nocookie.com). Le navigateur se connecte à YouTube lorsque le lecteur arrive à l'écran ; les règles de confidentialité de YouTube s'appliquent ensuite, et des recommandations ou publicités peuvent apparaître.</p>
+      <SectionHead kicker="Comment c'est construit" title="Quatre choses que nous <em>prenons au sérieux</em>" />
+      <div class="about-principles">
+        {
+          principles.map((principle) => (
+            <article class="about-principle card">
+              <span class="about-icon"><Icon name={principle.icon} size={21} /></span>
+              <h3>{principle.title}</h3>
+              <p>{principle.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="privacy">
+    <div class="container">
+      <SectionHead
+        kicker="Confidentialité & accessibilité"
+        title="Vie privée, droits et <em>accessibilité</em>"
+        lead="Un site pour enfants doit rester simple, transparent et sans collecte cachée."
+      />
+      <div class="about-columns">
+        <div class="about-column card">
+          <span class="mini-kicker">Confidentialité</span>
+          <h3>Vie privée</h3>
+          <ul>
+            <li>Pas de compte, de connexion, de commentaire, de publicité, d'analyse d'audience ni de suivi entre sites.</li>
+            <li>Le prénom, les missions et les séances restent dans le localStorage du navigateur et ne sont envoyés à aucun serveur.</li>
+            <li>Effacer les données du navigateur supprime ces informations ; rien n'est synchronisé entre appareils.</li>
+            <li>La page d'accueil et la salle de concert intègrent le lecteur YouTube en mode confidentialité renforcée (youtube-nocookie.com). Lorsque le lecteur arrive à l'écran, le navigateur se connecte à YouTube ; les règles de YouTube s'appliquent ensuite, et des recommandations ou publicités peuvent apparaître.</li>
+            <li>Les liens externes quittent le site. Un adulte peut prévisualiser le contenu et régler l'appareil de l'enfant.</li>
+            <li>Évitez de publier le visage, l'école, l'adresse ou l'emploi du temps d'un enfant sans avoir longuement réfléchi et obtenu son accord.</li>
+          </ul>
         </div>
-        <div class="info card">
-          <h3>Droits</h3>
-          <p>Les textes, illustrations, fiches et interactions originales sont sous licence CC BY-NC-SA 4.0. Le code est sous licence MIT.</p>
-          <p>Les vidéos, méthodes, partitions et marques externes appartiennent à leurs auteurs. Le site ne distribue pas de PDF commercial protégé.</p>
+        <div class="about-column card">
+          <span class="mini-kicker">Droits</span>
+          <h3>Contenus et droits</h3>
+          <ul>
+            <li>Textes, illustrations, fiches et interactions originales : CC BY-NC-SA 4.0 (attribution — pas d'usage commercial — partage dans les mêmes conditions).</li>
+            <li>Code du site : licence MIT, visible dans le dépôt GitHub.</li>
+            <li>Vidéos, partitions, méthodes, marques et enregistrements appartiennent à leurs auteurs. Le site ne propose que des liens, des présentations et des notes originales.</li>
+            <li>Aucun téléchargement de méthode commerciale, d'arrangement protégé ou d'enregistrement sous droits.</li>
+            <li>YouTube est une marque de Google LLC. Le site n'est affilié ni à YouTube, ni à un organisme d'examen, ni à une plateforme de cours.</li>
+          </ul>
         </div>
-        <div class="info card">
-          <h3>Accessibilité</h3>
-          <p>Navigation au clavier, libellés explicites, contrastes vérifiés de jour comme de nuit, animations réduites si le système le demande.</p>
-          <p>Ce n'est pas une certification officielle. Si quelque chose ne va pas, le dépôt GitHub est ouvert aux retours.</p>
+        <div class="about-column card">
+          <span class="mini-kicker">Accessibilité</span>
+          <h3>Confort d'usage</h3>
+          <ul>
+            <li>Tous les contrôles interactifs se manipulent au clavier, avec des libellés et des styles de focus visibles.</li>
+            <li>Les animations respectent le réglage système « réduire les animations » ; le son ne démarre qu'après un clic.</li>
+            <li>Les zones tactiles sont larges, la hiérarchie claire et les libellés ne reposent pas seulement sur la couleur.</li>
+            <li>Ce n'est pas une certification officielle d'accessibilité, mais les vérifications continuent.</li>
+            <li>Si quelque chose est difficile à lire, cliquer ou écouter, une Issue GitHub est ouverte aux retours.</li>
+          </ul>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="section section-wash">
+    <div class="container">
+      <SectionHead
+        kicker="Sources"
+        title="Les ressources <em>publiques</em> consultées"
+        lead="Le choix des cours, les termes techniques et les informations sur les guitaristes et compositeurs s'appuient sur ces sites. Les liens servent à aller plus loin, sans partenariat ni approbation."
+      />
+      <div class="sources-grid">
+        {
+          sources.map((source) => (
+            <div class="source-group">
+              <h3>{source.title}</h3>
+              <ul>
+                {source.items.map((item) => (
+                  <li><a href={item.url} target="_blank" rel="noopener noreferrer">{item.name} <Icon name="external" size={11} /></a></li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+      <p class="source-note">
+        Les dates, les œuvres et les biographies s'appuient sur des encyclopédies publiques, les sites des interprètes, des livrets de disques et des institutions. Les liens de cours ont été vérifiés avant publication via YouTube oEmbed ou en visitant le site ; le contenu externe peut changer ou disparaître.
+      </p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
-      <SectionHead kicker="Sources" title="Quelques ressources de référence" lead="Les liens sont des portes vers les auteurs ; ils ne valent pas approbation." />
-      <div class="sources">
-        <a href="https://www.thisisclassicalguitar.com/" target="_blank" rel="noopener noreferrer">This is Classical Guitar <Icon name="external" size={11} /></a>
-        <a href="https://classicalguitarshed.com/" target="_blank" rel="noopener noreferrer">Classical Guitar Shed <Icon name="external" size={11} /></a>
-        <a href="https://www.classicalguitarcorner.com/" target="_blank" rel="noopener noreferrer">Classical Guitar Corner <Icon name="external" size={11} /></a>
-        <a href="https://imslp.org/wiki/Category:For_guitar" target="_blank" rel="noopener noreferrer">IMSLP <Icon name="external" size={11} /></a>
-        <a href="https://www.mutopiaproject.org/" target="_blank" rel="noopener noreferrer">Mutopia Project <Icon name="external" size={11} /></a>
-        <a href={SITE.repo} target="_blank" rel="noopener noreferrer">GitHub <Icon name="external" size={11} /></a>
+      <SectionHead kicker="Journal" title="Ce petit monde <em>grandit encore</em>" lead="Chaque mise à jour cherche à rendre le contenu plus juste, plus doux et plus facile à utiliser." />
+      <div class="changelog">
+        {
+          changelog.map((entry) => (
+            <article class="changelog-item">
+              <span class="changelog-date">{entry.date}</span>
+              <span class="changelog-dot"></span>
+              <div><h3>{entry.title}</h3><p>{entry.body}</p></div>
+            </article>
+          ))
+        }
       </div>
-      <p class="updated">Mise à jour : {SITE.updated} · Site réalisé avec Astro, hébergé sur GitHub Pages.</p>
+      <div class="about-contact">
+        <div>
+          <span class="mini-kicker">Dire bonjour</span>
+          <h2>Un problème, ou juste un mot ?</h2>
+          <p>C'est un petit projet open source. Un lien cassé, une erreur, un souci d'accessibilité ou une pièce que vous aimez : tout peut passer par une Issue GitHub.</p>
+        </div>
+        <div class="btn-row">
+          <a class="btn btn-primary" href={SITE.repo} target="_blank" rel="noopener noreferrer"><Icon name="external" size={15} /> Ouvrir le dépôt GitHub</a>
+          <a class="btn btn-ghost" href={SITE.repo + "/issues"} target="_blank" rel="noopener noreferrer">Créer une Issue</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container about-bottom">
+      <p>« Souviens-toi que la musique a commencé par un seul son. »</p>
+      <span>— Momo & Capi · {SITE.updated}</span>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .slug { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 20px; }
-  .slug span { display: inline-flex; align-items: center; gap: 4px; padding: 5px 9px; color: #d7caf4; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 999px; background: rgba(255, 255, 255, 0.06); font-size: 9.5px; font-weight: 700; }
+  .slug {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .slug span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 9px;
+    color: #d7caf4;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+
   .slug .icon { color: #ffd86f; }
 
-  .about-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr); gap: 30px; align-items: start; }
-  .about-grid > div > p { margin: 0 0 10px; color: var(--ink-soft); font-size: 12px; line-height: 1.8; }
-  .about-grid :global(.mascot-bubble) { margin-top: 15px; }
-  .about-card { padding: 20px; background: var(--surface); }
-  .about-card h3 { margin: 0 0 10px; color: var(--ink); font-size: 18px; }
-  .about-card ul { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
-  .about-card li { padding-left: 12px; color: var(--ink-soft); font-size: 10px; line-height: 1.6; position: relative; }
-  .about-card li::before { content: "✦"; position: absolute; left: 0; top: 0; color: var(--violet-500); font-size: 7px; }
+  .about-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+    gap: 25px;
+    align-items: start;
+  }
 
-  .columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-  .info { padding: 18px; background: var(--surface); }
-  .info h3 { margin: 0 0 7px; color: var(--ink); font-size: 16px; }
-  .info p { margin: 0 0 9px; color: var(--muted); font-size: 9.5px; line-height: 1.7; }
-  .info p:last-child { margin-bottom: 0; }
+  .about-intro-copy p {
+    margin: 0 0 13px;
+    color: var(--ink-soft);
+    font-size: 12px;
+    line-height: 1.85;
+  }
 
-  .sources { display: flex; flex-wrap: wrap; gap: 8px; }
-  .sources a { display: inline-flex; align-items: center; gap: 4px; padding: 6px 9px; color: var(--violet-700); border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-size: 9px; font-weight: 750; text-decoration: none; }
-  .sources a:hover { background: var(--violet-wash); }
-  .updated { margin-top: 13px; color: var(--faint); font-size: 8px; }
+  .about-intro-copy strong { color: var(--violet-700); }
 
-  @media (max-width: 900px) {
-    .about-grid { grid-template-columns: 1fr; }
-    .columns { grid-template-columns: 1fr; }
+  .about-note { display: grid; gap: 11px; }
+
+  .about-fact {
+    padding: 13px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+  }
+
+  .about-fact span {
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .about-fact p {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.65;
+  }
+
+  .about-principles {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 11px;
+  }
+
+  .about-principle { padding: 17px; background: var(--surface); }
+
+  .about-icon {
+    display: grid;
+    place-items: center;
+    width: 39px;
+    height: 39px;
+    color: var(--violet-700);
+    border-radius: 12px;
+    background: var(--violet-wash);
+  }
+
+  .about-principle h3 {
+    margin: 13px 0 5px;
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .about-principle p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.65;
+  }
+
+  .about-columns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .about-column { padding: 19px; background: var(--surface); }
+
+  .mini-kicker {
+    display: block;
+    color: var(--violet-700);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .about-column h3 { margin: 3px 0 9px; color: var(--ink); font-size: 17px; }
+
+  .about-column ul {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .about-column li {
+    position: relative;
+    padding-left: 10px;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.65;
+  }
+
+  .about-column li::before {
+    content: "✦";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--violet-300);
+    font-size: 8px;
+  }
+
+  .sources-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 17px;
+  }
+
+  .source-group h3 {
+    margin: 0 0 8px;
+    color: var(--ink);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .source-group ul {
+    display: grid;
+    gap: 5px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .source-group li a {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 3px;
+    color: var(--violet-700);
+    font-size: 10.5px;
+    line-height: 1.55;
+    text-decoration: none;
+  }
+
+  .source-group li a:hover { color: var(--violet-800); text-decoration: underline; }
+  .source-group li .icon { margin-top: 1px; }
+
+  .source-note {
+    max-width: 850px;
+    margin: 18px 0 0;
+    padding: 11px 13px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 10px;
+    color: var(--faint);
+    font-size: 10.5px;
+    line-height: 1.65;
+  }
+
+  .changelog { display: grid; gap: 7px; max-width: 780px; }
+
+  .changelog-item {
+    display: grid;
+    grid-template-columns: 82px 18px 1fr;
+    align-items: start;
+    gap: 9px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .changelog-date {
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1.8;
+  }
+
+  .changelog-dot {
+    width: 8px;
+    height: 8px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: var(--violet-500);
+    box-shadow: 0 0 0 4px var(--violet-wash);
+  }
+
+  .changelog-item h3 { margin: 0 0 3px; color: var(--ink); font-size: 12px; }
+  .changelog-item p { margin: 0; color: var(--muted); font-size: 10.5px; line-height: 1.65; }
+
+  .about-contact {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    margin-top: 27px;
+    padding: 21px;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    background:
+      radial-gradient(circle at 95% 0%, rgba(255, 216, 111, 0.16), transparent 26%),
+      var(--surface);
+  }
+
+  .about-contact h2 { margin: 3px 0 5px; color: var(--ink); font-size: 20px; }
+
+  .about-contact p {
+    max-width: 560px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.65;
+  }
+
+  .about-bottom { text-align: center; }
+
+  .about-bottom p {
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: clamp(17px, 2.4vw, 23px);
+    font-weight: 800;
+    line-height: 1.5;
+  }
+
+  .about-bottom span {
+    display: block;
+    margin-top: 5px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 10px;
+  }
+
+  @media (max-width: 1000px) {
+    .about-intro { grid-template-columns: 1fr; }
+    .about-note { max-width: 620px; }
+    .about-principles,
+    .sources-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .about-columns { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 650px) {
+    .about-principles,
+    .sources-grid { grid-template-columns: 1fr; }
+    .about-contact { align-items: flex-start; flex-direction: column; }
+    .changelog-item { grid-template-columns: 68px 14px 1fr; }
   }
 </style>
