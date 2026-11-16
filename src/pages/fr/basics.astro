@@ -184,7 +184,10 @@ E |-----------|</pre>
   <section class="section section-wash" id="glossary">
     <div class="container">
       <SectionHead kicker="06 · Mini-dictionnaire" title="Un mot inconnu ? Cherche ici" lead="Pas besoin d'apprendre par cœur. Un mot revient, puis devient familier." />
-      <GlossaryExplorer entries={GLOSSARY_FR} categories={["Tous", "Guitare & mains", "Lecture", "Son", "Pratique"]} lang="fr" />
+      <details class="content-fold" data-glossary-fold>
+        <summary>Ouvrir le mini-dico</summary>
+        <div class="content-fold-body"><GlossaryExplorer entries={GLOSSARY_FR} categories={["Tous", "Guitare & mains", "Lecture", "Son", "Pratique"]} lang="fr" /></div>
+      </details>
     </div>
   </section>
 
@@ -203,6 +206,17 @@ E |-----------|</pre>
       <div class="btn-row"><a class="btn btn-primary" href={url("/fr/roadmap/")}>Ouvrir le parcours <Icon name="arrow-right" size={14} /></a><a class="btn btn-ghost" href={url("/fr/practice/")}>Aller au studio</a></div>
     </div>
   </section>
+
+<script>
+  const glossaryFold = document.querySelector<HTMLDetailsElement>("[data-glossary-fold]");
+  if (glossaryFold) {
+    const openGlossary = () => {
+      if (location.hash === "#glossary") glossaryFold.open = true;
+    };
+    openGlossary();
+    window.addEventListener("hashchange", openGlossary);
+  }
+</script>
 </BaseLayout>
 
 <script>

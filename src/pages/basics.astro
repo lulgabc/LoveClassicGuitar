@@ -369,7 +369,10 @@ const chapters = [
         title="遇到不懂的词，<em>来这里查</em>"
         lead="不用背。听到一个陌生词，搜一搜、读一读，下次再见就认识了。"
       />
-      <GlossaryExplorer />
+      <details class="content-fold" data-glossary-fold>
+        <summary>展开小词典</summary>
+        <div class="content-fold-body"><GlossaryExplorer /></div>
+      </details>
     </div>
   </section>
 
@@ -397,6 +400,17 @@ const chapters = [
       <div class="btn-row"><a class="btn btn-primary" href={url("/roadmap/")}>打开学习地图 <Icon name="arrow-right" size={14} /></a><a class="btn btn-ghost" href={url("/practice/")}>先玩 15 分钟</a></div>
     </div>
   </section>
+
+<script>
+  const glossaryFold = document.querySelector<HTMLDetailsElement>("[data-glossary-fold]");
+  if (glossaryFold) {
+    const openGlossary = () => {
+      if (location.hash === "#glossary") glossaryFold.open = true;
+    };
+    openGlossary();
+    window.addEventListener("hashchange", openGlossary);
+  }
+</script>
 </BaseLayout>
 
 <script>

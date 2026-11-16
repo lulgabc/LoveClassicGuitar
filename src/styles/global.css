@@ -998,3 +998,238 @@ summary::marker {
     margin: 0;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Child readability & touch floor
+   These overrides raise tiny instructional/metadata text and primary touch
+   targets without changing the visual identity of each component.
+   -------------------------------------------------------------------------- */
+.icon-button,
+.header-stars,
+.lang-switch,
+.free-toggle,
+.rep-playable,
+.preset-btn,
+.timer-main-btn,
+.timer-icon-btn,
+.score-chip,
+.rep-chip,
+.kind-chip,
+.score-view-switch button,
+.tool-rail a,
+.rail-links a,
+.family-play,
+.rep-play,
+.rep-link,
+.score-open,
+.artist-card summary,
+.artist-listen {
+  min-height: 44px !important;
+}
+
+.icon-button,
+.timer-icon-btn,
+.score-view-switch button {
+  min-width: 44px !important;
+}
+
+.site-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.score-search,
+.rep-search {
+  min-height: 44px !important;
+}
+
+.family-en,
+.timeline-year,
+.board-kicker,
+.resource-kind,
+.resource-lang,
+.resource-tags span,
+.artist-en,
+.mini-kicker,
+.game-number,
+.string-number,
+.string-name small,
+.chant-label,
+.timer-kicker,
+.clock-label,
+.timer-steps-head,
+.step-index,
+.timer-progress-text,
+.complete-kicker,
+.sessions-label,
+.sessions-total,
+.timer-sound,
+.preset-btn span,
+.start-number,
+.first-lesson-steps span,
+.daily-time,
+.ritual-steps span,
+.privacy-item span,
+.parent-faq summary span,
+.medical-note,
+.teacher-questions li::marker {
+  font-size: 10.5px !important;
+}
+
+.preset-btn span {
+  white-space: normal !important;
+  line-height: 1.3 !important;
+}
+
+.track-num,
+.track-duration {
+  font-size: 9.5px !important;
+}
+
+.score-note,
+.source-note {
+  font-size: 10.5px !important;
+}
+
+.metro-presets button,
+.metro-toggle,
+.metro-options select,
+.play-all,
+.tuner-string,
+.now-controls button,
+.jukebox-tools button,
+.jukebox-open,
+.panel-controls button,
+.score-search input,
+.rep-search input,
+.library-search input {
+  min-height: 44px !important;
+}
+
+.posture-tag,
+.posture-num,
+.left-hand-palm,
+.tab-badge,
+.timeline-dot,
+.starter-label,
+.book-kind,
+.book-author,
+.book-tags span,
+.practice-tip-strip span,
+.step-dot,
+.tool-kicker,
+.tuner-num,
+.session-day,
+.session-day small,
+.score-stars,
+.metro-presets small,
+.bpm-display span,
+.track-copy small {
+  font-size: 9.5px !important;
+}
+
+.practice-tip-strip span,
+.tool-kicker,
+.tuner-num,
+.session-day,
+.session-day small,
+.metro-presets small {
+  font-size: 10px !important;
+}
+
+.vital-card strong small,
+.daily-dot,
+.pm-dot,
+.warmup-time,
+.fretboard-note,
+.ear-hint,
+.glossary-en,
+.glossary-card-top span,
+.sheet-tags span,
+.exam-label,
+.exam-number,
+.finger-name small,
+.left-hand-visual small,
+.book-tags span {
+  font-size: 9.5px !important;
+}
+
+.vital-card strong small,
+.warmup-time,
+.glossary-en,
+.glossary-card-top span,
+.sheet-tags span,
+.finger-name small,
+.left-hand-visual small {
+  font-size: 10px !important;
+}
+
+.game-score > span,
+.score-stars,
+.fret-header,
+.fret-row span,
+.fretboard-note,
+.game-progress,
+.game-options button small,
+.ear-progress,
+.ear-play small,
+.ear-options small,
+.ear-tip {
+  font-size: 10px !important;
+}
+
+.text-link,
+.family-credits summary,
+.artist-credits summary,
+.back-top {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.site-footer .footer-col a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+}
+
+
+.content-fold {
+  margin-top: 4px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.content-fold summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+  padding: 0 18px;
+  color: var(--violet-700);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  list-style: none;
+}
+
+.content-fold summary::-webkit-details-marker {
+  display: none;
+}
+
+.content-fold summary::after {
+  content: "＋";
+  margin-left: auto;
+  font-size: 18px;
+}
+
+.content-fold[open] summary::after {
+  content: "－";
+}
+
+.content-fold-body {
+  padding: 0 18px 18px;
+}

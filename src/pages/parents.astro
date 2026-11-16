@@ -281,6 +281,9 @@ const faqs = [
 
   <section class="section section-wash" id="teacher">
     <div class="container">
+      <details class="content-fold" data-parent-fold>
+        <summary>怎样找到一个合适的老师</summary>
+        <div class="content-fold-body">
       <SectionHead
         kicker="04 · Finding a teacher"
         title="怎样找到一个<em>合适的老师</em>"
@@ -312,11 +315,17 @@ const faqs = [
           <div><Icon name="headphones" size={17} /><strong>线上课</strong><p>可以作为补充，但对 7 岁孩子，设备和机位要求高。初次入门仍建议至少有一次线下姿势检查。</p></div>
         </div>
       </div>
+    
+        </div>
+      </details>
     </div>
   </section>
 
   <section class="section" id="milestones">
     <div class="container">
+      <details class="content-fold" data-parent-fold>
+        <summary>进步，不一定长成一张证书</summary>
+        <div class="content-fold-body">
       <SectionHead
         kicker="05 · What progress looks like"
         title="进步，不一定长成<em>一张证书</em>"
@@ -348,11 +357,17 @@ const faqs = [
           <li><Icon name="check" size={14} /> 练完琴，她还有力气笑，愿意明天再来。</li>
         </ul>
       </div>
+    
+        </div>
+      </details>
     </div>
   </section>
 
   <section class="section section-wash" id="privacy">
     <div class="container">
+      <details class="content-fold" data-parent-fold>
+        <summary>屏幕、耳朵和小小身体</summary>
+        <div class="content-fold-body">
       <SectionHead
         kicker="06 · Safety, privacy & screens"
         title="屏幕、耳朵和<em>小小身体</em>"
@@ -383,11 +398,17 @@ const faqs = [
         <span class="hearing-icon"><Icon name="volume" size={21} /></span>
         <div><h3>耳朵是一次性的礼物</h3><p>耳机音量不超过舒服的 60%，每 20–30 分钟休息。不要在很吵的环境里把音量越调越大。孩子说耳朵疼、耳鸣或听不清时，立刻停止并告诉大人。</p></div>
       </div>
+    
+        </div>
+      </details>
     </div>
   </section>
 
   <section class="section" id="faq">
     <div class="container">
+      <details class="content-fold" data-parent-fold>
+        <summary>那些不太好意思问的问题</summary>
+        <div class="content-fold-body">
       <SectionHead
         kicker="Parent FAQ"
         title="那些不太好意思问的<em>问题</em>"
@@ -404,6 +425,9 @@ const faqs = [
         }
       </div>
       <p class="medical-note"><Icon name="info" size={14} /> 本站内容为一般性学习建议，不构成医疗、心理或专业教学意见。若孩子有持续疼痛、听力不适、焦虑或发育相关疑问，请咨询相应专业人士。</p>
+    
+        </div>
+      </details>
     </div>
   </section>
 
@@ -416,6 +440,21 @@ const faqs = [
       </div>
     </div>
   </section>
+
+<script>
+  const parentFolds = Array.from(document.querySelectorAll<HTMLDetailsElement>("[data-parent-fold]"));
+  if (parentFolds.length) {
+    const openParentFold = () => {
+      const id = location.hash.replace("#", "");
+      if (!id) return;
+      parentFolds.forEach((fold) => {
+        if (fold.closest("section")?.id === id) fold.open = true;
+      });
+    };
+    openParentFold();
+    window.addEventListener("hashchange", openParentFold);
+  }
+</script>
 </BaseLayout>
 
 <script>

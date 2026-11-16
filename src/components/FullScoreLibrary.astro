@@ -428,7 +428,7 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
       }
     }
 
-    function setView(view: "staff" | "jianpu"): void {
+    function setView(view: "staff" | "jianpu", render = true): void {
       viewButtons.forEach((button) => {
         const active = button.dataset.scoreView === view;
         button.classList.toggle("is-active", active);
@@ -439,7 +439,12 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
       });
       if (staffStage) staffStage.hidden = view !== "staff";
       if (jianpuStage) jianpuStage.hidden = view !== "jianpu";
-      if (view === "jianpu" && currentFile) void renderJianpu(currentFile);
+      if (!render || !currentFile) return;
+      if (view === "jianpu") {
+        void renderJianpu(currentFile);
+      } else if (!renderEl?.querySelector("svg")) {
+        void renderScore(currentFile);
+      }
     }
 
     function openModal(button: HTMLButtonElement): void {
@@ -457,12 +462,15 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
       currentXml = "";
       currentXmlFile = "";
       clearJianpu();
-      setView("staff");
+      if (renderEl) renderEl.innerHTML = "";
+      const initialView = window.innerWidth < 700 ? "jianpu" : "staff";
+      setView(initialView, false);
       lastFocus = button;
       if (!modal.open) modal.showModal();
       document.body.classList.add("score-modal-open");
       modal.querySelector<HTMLButtonElement>("[data-score-close]")?.focus();
-      void renderScore(currentFile);
+      if (initialView === "jianpu") void renderJianpu(currentFile);
+      else void renderScore(currentFile);
     }
 
     function closeModal(): void {

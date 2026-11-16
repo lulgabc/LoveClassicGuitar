@@ -342,6 +342,13 @@ const first = parts[0];
     animation: hotspot-pulse 3.8s ease-in-out infinite;
   }
 
+  .hotspot::after {
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border-radius: 50%;
+  }
+
   .hotspot:hover,
   .hotspot[aria-pressed="true"] {
     color: #3e2a0d;

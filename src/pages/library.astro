@@ -118,13 +118,18 @@ const chooseTips = [
         title="值得订阅的<em>免费频道</em>"
         lead="不用全订阅。选一个主线频道，一个演奏频道，最多再加一个儿童频道就够用了。"
       />
-      <div class="channels-grid">
-        {CHANNELS.map((channel) => <ChannelCard channel={channel} />)}
-      </div>
-      <div class="channels-note">
-        <Icon name="info" size={15} />
-        <p>YouTube 可能根据地区显示广告和推荐。孩子观看时建议家长陪同或使用儿童模式；不要以自动播放作为“练琴背景”。</p>
-      </div>
+      <details class="content-fold">
+        <summary>展开 {CHANNELS.length} 个免费频道</summary>
+        <div class="content-fold-body">
+          <div class="channels-grid">
+            {CHANNELS.map((channel) => <ChannelCard channel={channel} />)}
+          </div>
+          <div class="channels-note">
+            <Icon name="info" size={15} />
+            <p>YouTube 可能根据地区显示广告和推荐。孩子观看时建议家长陪同或使用儿童模式；不要以自动播放作为“练琴背景”。</p>
+          </div>
+        </div>
+      </details>
     </div>
   </section>
 
@@ -135,6 +140,9 @@ const chooseTips = [
         title="书不用多，<em>一本吃透</em>就很好"
         lead="下面有免费公版教材，也有适合家长/老师参考的现代方法书。没有购物链接，本站不赚取任何佣金。"
       />
+      <details class="content-fold">
+        <summary>展开 {BOOKS.length} 本参考书</summary>
+        <div class="content-fold-body">
       <div class="books-grid">
         {
           BOOKS.map((book) => (
@@ -161,6 +169,8 @@ const chooseTips = [
         <Icon name="shield" size={18} />
         <div><strong>关于教材与谱子</strong><p>公共领域作品可以在 IMSLP 等网站阅读和打印，但现代版本、编辑指法、翻译版和商业教材仍受版权保护。请不要在网站或群里传播盗版 PDF。老师指定的教材，建议购买正版或使用图书馆。</p></div>
       </div>
+        </div>
+      </details>
     </div>
   </section>
 
@@ -192,6 +202,9 @@ const chooseTips = [
         title="考级是路标，<em>不是奖杯</em>"
         lead="如果孩子喜欢清晰的目标，考级可以提供曲目库和阶段感。但它不是必需品，也不该取代基础、兴趣和健康。"
       />
+      <details class="content-fold">
+        <summary>展开 {EXAM_BOARDS.length} 个考级体系</summary>
+        <div class="content-fold-body">
       <div class="exam-grid">
         {
           EXAM_BOARDS.map((exam, index) => (
@@ -211,6 +224,8 @@ const chooseTips = [
         <MascotBubble who="capi" text="如果考级让你紧张到不想碰琴，那就先不考。音乐的路很长，证书不能替你听声音。" tone="sun" />
         <a class="btn btn-ghost" href={url("/parents/#teacher")}>怎样和老师讨论目标 <Icon name="arrow-right" size={13} /></a>
       </div>
+        </div>
+      </details>
     </div>
   </section>
 
@@ -236,6 +251,45 @@ const chooseTips = [
 </BaseLayout>
 
 <style>
+  .content-fold {
+    margin-top: 4px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .content-fold summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 56px;
+    padding: 0 18px;
+    color: var(--violet-700);
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .content-fold summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .content-fold summary::after {
+    content: "＋";
+    margin-left: auto;
+    font-size: 18px;
+  }
+
+  .content-fold[open] summary::after {
+    content: "－";
+  }
+
+  .content-fold-body {
+    padding: 0 18px 18px;
+  }
+
   .slug {
     display: flex;
     flex-wrap: wrap;
