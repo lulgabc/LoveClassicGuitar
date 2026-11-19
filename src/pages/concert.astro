@@ -925,12 +925,22 @@ const shortGames = LISTENING_GAMES.slice(0, 4);
   }
 
   html[data-theme="night"] .listen-mode {
-    border-color: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 246, 234, 0.2);
   }
 
   html[data-theme="night"] .listen-mode.is-active {
-    border-color: rgba(255, 255, 255, 0.24);
-    background: rgba(255, 226, 122, 0.12);
-    box-shadow: 0 0 16px rgba(255, 226, 122, 0.2);
+    border-color: rgba(255, 246, 234, 0.3);
+    background: var(--sun-500);
+    color: #2b2030;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  html[data-theme="night"] .listen-mode.is-active strong,
+  html[data-theme="night"] .listen-mode.is-active .icon {
+    color: #2b2030;
+  }
+
+  html[data-theme="night"] .listen-mode.is-active small {
+    color: rgba(43, 32, 48, 0.72);
   }
 </style>

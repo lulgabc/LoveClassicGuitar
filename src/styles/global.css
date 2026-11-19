@@ -74,58 +74,58 @@
 
 html[data-theme="night"] {
   color-scheme: dark;
-  --bg: #171034;
-  --bg-2: #1d1442;
-  --surface: #241a4f;
-  --surface-2: #2a1f5a;
-  --surface-3: #33256b;
-  --ink: #fff7ff;
-  --ink-strong: #ffffff;
-  --ink-soft: #d8cdfa;
-  --muted: #b9a9e0;
-  --faint: #b9a9e0;
-  --line: rgba(255, 255, 255, 0.14);
-  --line-strong: rgba(255, 255, 255, 0.24);
-  --violet-800: #e0d5ff;
-  --violet-700: #c8b8ff;
-  --violet-600: #b79cff;
-  --violet-500: #a98bff;
-  --violet-300: #6f54cf;
-  --violet-wash: rgba(183, 156, 255, 0.14);
-  --violet-wash-2: rgba(183, 156, 255, 0.22);
-  --sky-700: #9ddfff;
-  --sky-500: #7bdcff;
-  --sky-200: #1e4e69;
-  --sky-wash: rgba(123, 220, 255, 0.14);
-  --pink-500: #ff7ac8;
-  --pink-200: #602c52;
-  --pink-wash: rgba(255, 122, 200, 0.14);
-  --pink-ink: #ff9ed8;
-  --mint-500: #7dffd0;
-  --mint-200: #1f5548;
-  --mint-wash: rgba(125, 255, 208, 0.12);
-  --mint-ink: #7dffd0;
-  --sun-500: #ffe27a;
-  --sun-700: #ffe27a;
-  --sun-200: #5f4c1d;
-  --sun-wash: rgba(255, 226, 122, 0.14);
-  --coral-500: #ff9b8c;
-  --coral-200: #61342f;
-  --coral-wash: rgba(255, 155, 140, 0.12);
-  --string-1: #ff7ac8;
+  --bg: #2b2030;
+  --bg-2: #342637;
+  --surface: #3b2b3f;
+  --surface-2: #46334a;
+  --surface-3: #523c56;
+  --ink: #fff6ea;
+  --ink-strong: #fffaf2;
+  --ink-soft: #ead8d0;
+  --muted: #cbb4b4;
+  --faint: #cbb4b4;
+  --line: rgba(255, 244, 230, 0.14);
+  --line-strong: rgba(255, 244, 230, 0.24);
+  --violet-800: #eadcff;
+  --violet-700: #d8c8ff;
+  --violet-600: #c8b4ff;
+  --violet-500: #b79cff;
+  --violet-300: #7a5bb5;
+  --violet-wash: rgba(216, 200, 255, 0.12);
+  --violet-wash-2: rgba(216, 200, 255, 0.2);
+  --sky-700: #b8e4f7;
+  --sky-500: #a8dcf5;
+  --sky-200: #294555;
+  --sky-wash: rgba(168, 220, 245, 0.12);
+  --pink-500: #ffb3d1;
+  --pink-200: #5a2f45;
+  --pink-wash: rgba(255, 179, 209, 0.12);
+  --pink-ink: #ffc9de;
+  --mint-500: #a8e8cf;
+  --mint-200: #245244;
+  --mint-wash: rgba(168, 232, 207, 0.12);
+  --mint-ink: #b9f0dd;
+  --sun-500: #ffe3a0;
+  --sun-700: #ffe3a0;
+  --sun-200: #5a4a2a;
+  --sun-wash: rgba(255, 227, 160, 0.12);
+  --coral-500: #ffb3a3;
+  --coral-200: #5a342e;
+  --coral-wash: rgba(255, 179, 163, 0.12);
+  --string-1: #ffb3d1;
   --string-2: #b79cff;
-  --string-3: #7bdcff;
-  --string-4: #7dffd0;
-  --string-5: #ffd28a;
+  --string-3: #a8dcf5;
+  --string-4: #a8e8cf;
+  --string-5: #ffd7a8;
   --string-6: #d7a278;
-  --header-bg: rgba(23, 16, 52, 0.9);
+  --header-bg: rgba(43, 32, 48, 0.92);
   --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.22);
-  --shadow: 0 16px 44px rgba(0, 0, 0, 0.32);
-  --shadow-lg: 0 26px 70px rgba(0, 0, 0, 0.4);
-  --shadow-button: 0 0 18px rgba(255, 122, 200, 0.28);
-  --sticker-outline: rgba(255, 255, 255, 0.06);
-  --sticker-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 0 24px rgba(183, 156, 255, 0.14), 0 16px 34px rgba(0, 0, 0, 0.3);
-  --sticker-shadow-hover: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 32px rgba(183, 156, 255, 0.2), 0 22px 44px rgba(0, 0, 0, 0.36);
+  --shadow: 0 16px 44px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 26px 70px rgba(0, 0, 0, 0.38);
+  --shadow-button: 0 5px 0 rgba(0, 0, 0, 0.3);
+  --sticker-outline: rgba(255, 246, 234, 0.1);
+  --sticker-shadow: 0 0 0 1px rgba(255, 246, 234, 0.08), 0 7px 0 rgba(0, 0, 0, 0.18), 0 16px 28px rgba(0, 0, 0, 0.24);
+  --sticker-shadow-hover: 0 0 0 1px rgba(255, 246, 234, 0.12), 0 10px 0 rgba(0, 0, 0, 0.2), 0 22px 36px rgba(0, 0, 0, 0.28);
 }
 
 *,
@@ -1271,287 +1271,115 @@ body::before {
 
 html[data-theme="night"] body {
   background:
-    radial-gradient(circle at 18% 8%, rgba(183, 156, 255, 0.2), transparent 30%),
-    radial-gradient(circle at 82% 14%, rgba(255, 122, 200, 0.14), transparent 28%),
-    radial-gradient(circle at 60% 88%, rgba(125, 255, 208, 0.1), transparent 30%),
+    radial-gradient(circle at 8% 12%, rgba(255, 179, 209, 0.1), transparent 30%),
+    radial-gradient(circle at 92% 8%, rgba(168, 232, 207, 0.08), transparent 28%),
+    radial-gradient(circle at 70% 88%, rgba(255, 227, 160, 0.07), transparent 30%),
     var(--bg);
 }
 
 html[data-theme="night"] body::before {
-  opacity: 0.5;
-  background-image:
-    radial-gradient(1px 1px at 20% 18%, rgba(255, 248, 213, 0.9), transparent),
-    radial-gradient(1.2px 1.2px at 70% 12%, rgba(255, 248, 213, 0.65), transparent),
-    radial-gradient(1px 1px at 42% 42%, rgba(198, 237, 255, 0.8), transparent),
-    radial-gradient(1.3px 1.3px at 84% 62%, rgba(255, 248, 213, 0.55), transparent),
-    radial-gradient(1px 1px at 12% 73%, rgba(210, 195, 255, 0.8), transparent);
-  background-size: 420px 360px;
-  mask-image: none;
-}
-
-.section-wash {
-  background: linear-gradient(
-    180deg,
-    transparent,
-    rgba(255, 229, 138, 0.16) 10%,
-    rgba(255, 229, 138, 0.16) 90%,
-    transparent
-  );
+  opacity: 0.35;
+  background-image: radial-gradient(rgba(255, 246, 234, 0.12) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent 82%);
 }
 
 html[data-theme="night"] .section-wash {
   background: linear-gradient(
     180deg,
     transparent,
-    rgba(183, 156, 255, 0.06) 10%,
-    rgba(183, 156, 255, 0.06) 90%,
+    rgba(255, 227, 160, 0.05) 10%,
+    rgba(255, 227, 160, 0.05) 90%,
     transparent
   );
 }
 
-.card {
-  border: 2px solid var(--ink);
-  border-radius: var(--radius);
-  box-shadow: var(--sticker-shadow);
-}
-
 html[data-theme="night"] .card {
-  border-color: rgba(255, 255, 255, 0.18);
-}
-
-.card-hover:hover {
-  transform: translateY(-5px) rotate(-0.5deg);
-  border-color: var(--ink);
-  box-shadow: var(--sticker-shadow-hover);
+  border-color: rgba(255, 246, 234, 0.22);
 }
 
 html[data-theme="night"] .card-hover:hover {
-  border-color: rgba(255, 255, 255, 0.28);
-}
-
-.btn {
-  border: 2.5px solid var(--ink);
-  background: var(--surface);
-  color: var(--ink);
-  box-shadow: 0 5px 0 var(--ink);
-}
-
-.btn:hover {
-  transform: translateY(-2px) rotate(-1deg);
-}
-
-.btn-primary {
-  color: var(--ink);
-  background: var(--pink-500);
-  border-color: var(--ink);
-  box-shadow: 0 5px 0 var(--ink);
-}
-
-.btn-primary:hover {
-  color: var(--ink);
-  box-shadow: 0 7px 0 var(--ink);
-}
-
-.btn-secondary {
-  color: var(--ink);
-  background: var(--sun-500);
-  border-color: var(--ink);
-  box-shadow: 0 5px 0 var(--ink);
-}
-
-.btn-secondary:hover {
-  color: var(--ink);
-  background: var(--sun-200);
-}
-
-.btn-sun {
-  color: var(--ink);
-  background: var(--sun-500);
-  border-color: var(--ink);
-  box-shadow: 0 5px 0 var(--ink);
-}
-
-.btn-sun:hover {
-  color: var(--ink);
-  box-shadow: 0 7px 0 var(--ink);
-}
-
-.btn-ghost {
-  color: var(--ink);
-  background: var(--surface);
-  border-color: var(--ink);
-  box-shadow: 0 4px 0 rgba(59, 43, 79, 0.18);
-}
-
-.btn-ghost:hover {
-  color: var(--ink);
-  background: var(--surface-2);
-  border-color: var(--ink);
+  border-color: rgba(255, 246, 234, 0.32);
 }
 
 html[data-theme="night"] .btn {
-  border-color: rgba(255, 255, 255, 0.22);
-  box-shadow: 0 0 18px rgba(255, 122, 200, 0.18);
+  border-color: rgba(255, 246, 234, 0.26);
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
 }
 
 html[data-theme="night"] .btn-primary {
-  color: #171034;
-  background: linear-gradient(135deg, var(--pink-500), var(--violet-500));
-  border-color: rgba(255, 255, 255, 0.28);
-  box-shadow: 0 0 22px rgba(255, 122, 200, 0.3);
+  color: #2b2030;
+  background: var(--pink-500);
+  border-color: rgba(255, 246, 234, 0.3);
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
 }
 
 html[data-theme="night"] .btn-secondary,
 html[data-theme="night"] .btn-sun {
-  color: #171034;
-  background: linear-gradient(135deg, var(--mint-500), var(--sky-500));
-  border-color: rgba(255, 255, 255, 0.28);
-  box-shadow: 0 0 22px rgba(125, 255, 208, 0.22);
+  color: #2b2030;
+  background: var(--sun-500);
+  border-color: rgba(255, 246, 234, 0.3);
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
 }
 
 html[data-theme="night"] .btn-ghost {
   color: var(--ink);
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: none;
+  background: rgba(255, 246, 234, 0.06);
+  border-color: rgba(255, 246, 234, 0.2);
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
 }
 
-.eyebrow {
-  border: 2px solid var(--ink);
-  background: var(--sun-200);
-  color: var(--ink);
-  box-shadow: 0 3px 0 var(--ink);
-  transform: rotate(-1deg);
-  text-transform: none;
-  letter-spacing: 0.04em;
-}
-
-.eyebrow .icon {
-  color: var(--pink-ink);
+html[data-theme="night"] .btn-primary:hover,
+html[data-theme="night"] .btn-secondary:hover,
+html[data-theme="night"] .btn-sun:hover {
+  box-shadow: 0 7px 0 rgba(0, 0, 0, 0.3);
 }
 
 html[data-theme="night"] .eyebrow {
-  border-color: rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--ink);
-  box-shadow: 0 0 14px rgba(183, 156, 255, 0.2);
+  border-color: rgba(255, 227, 160, 0.36);
+  background: rgba(255, 227, 160, 0.14);
+  color: var(--sun-500);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
 }
 
-.section-head h2 em {
-  color: var(--ink);
-  background: linear-gradient(transparent 58%, var(--sun-200) 58%);
-  padding-inline: 0.08em;
+html[data-theme="night"] .eyebrow .icon {
+  color: var(--sun-500);
 }
 
 html[data-theme="night"] .section-head h2 em {
-  color: var(--lemon, var(--sun-500));
-  background: none;
-  text-shadow: 0 0 18px rgba(255, 226, 122, 0.35);
-}
-
-.pill {
-  border: 1.5px solid var(--ink);
+  color: var(--ink);
+  background: linear-gradient(transparent 58%, rgba(255, 227, 160, 0.22) 58%);
+  text-shadow: none;
 }
 
 html[data-theme="night"] .pill {
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 246, 234, 0.2);
 }
 
-.chip {
-  border: 1.5px solid var(--line);
-}
-
-.site-header {
-  border-bottom: 2px solid var(--line);
-}
-
-.header-stars {
-  color: var(--ink);
-  background: var(--sun-500);
-  border: 2px solid var(--ink);
-  box-shadow: 0 3px 0 var(--ink);
-}
-
-.header-stars:hover {
-  color: var(--ink);
-  background: var(--sun-200);
-}
-
-.site-nav a[aria-current="page"] {
-  color: var(--ink);
-  background: var(--sun-200);
-  box-shadow: inset 0 0 0 1.5px var(--ink);
-}
-
-.site-nav a:hover {
-  color: var(--ink);
-  background: var(--sun-wash);
+html[data-theme="night"] .content-fold {
+  border-color: rgba(255, 246, 234, 0.22);
 }
 
 html[data-theme="night"] .header-stars {
-  color: var(--sun-500);
-  background: rgba(255, 226, 122, 0.12);
-  border-color: var(--sun-500);
-  box-shadow: 0 0 14px rgba(255, 226, 122, 0.18);
+  color: #2b2030;
+  background: var(--sun-500);
+  border-color: #2b2030;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
 }
 
 html[data-theme="night"] .header-stars:hover {
-  color: var(--sun-500);
-  background: rgba(255, 226, 122, 0.2);
+  color: #2b2030;
+  background: var(--sun-200);
 }
 
 html[data-theme="night"] .site-nav a[aria-current="page"] {
   color: var(--sun-500);
-  background: var(--violet-wash);
-  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.18);
+  background: transparent;
+  box-shadow: inset 0 -2px 0 var(--sun-500);
+  border-radius: 0;
 }
 
 html[data-theme="night"] .site-nav a:hover {
   color: var(--sun-500);
-  background: var(--violet-wash);
-}
-
-.content-fold {
-  border: 2px solid var(--ink);
-  box-shadow: var(--sticker-shadow);
-}
-
-html[data-theme="night"] .content-fold {
-  border-color: rgba(255, 255, 255, 0.18);
-}
-
-.home-hero .hero-actions .btn-primary,
-.home-hero .hero-actions .btn-sun,
-.fr-hero .btn-row .btn-sun {
-  position: relative;
-}
-
-.home-hero .hero-actions .btn-primary::after,
-.home-hero .hero-actions .btn-sun::after,
-.fr-hero .btn-row .btn-sun::after {
-  content: "★";
-  position: absolute;
-  top: -11px;
-  right: -9px;
-  display: grid;
-  place-items: center;
-  width: 27px;
-  height: 27px;
-  border: 2px solid var(--ink);
-  border-radius: 50%;
-  background: var(--sun-500);
-  color: var(--ink);
-  font-size: 12px;
-  line-height: 1;
-  box-shadow: 0 2px 0 var(--ink);
-  transform: rotate(12deg);
-  pointer-events: none;
-}
-
-html[data-theme="night"] .home-hero .hero-actions .btn-primary::after,
-html[data-theme="night"] .home-hero .hero-actions .btn-sun::after,
-html[data-theme="night"] .fr-hero .btn-row .btn-sun::after {
-  background: var(--sun-500);
-  border-color: var(--ink);
-  box-shadow: 0 0 14px rgba(255, 226, 122, 0.4);
+  background: rgba(255, 227, 160, 0.1);
 }

@@ -223,13 +223,13 @@ const { kicker, title, lead, compact = false } = Astro.props;
     inset: 12% 14% 4%;
     width: 72%;
     height: 84%;
-    filter: drop-shadow(0 0 18px rgba(255, 216, 111, 0.18));
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.2));
   }
 
   .art-star {
     position: absolute;
     color: #ffd86f;
-    filter: drop-shadow(0 0 8px rgba(255, 216, 111, 0.6));
+    filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.22));
   }
 
   .art-star-a {
@@ -318,17 +318,17 @@ const { kicker, title, lead, compact = false } = Astro.props;
   :global(html[data-theme="night"]) .page-hero {
     color: var(--ink);
     background:
-      radial-gradient(circle at 84% 15%, rgba(255, 226, 122, 0.12), transparent 25%),
-      radial-gradient(circle at 16% 0%, rgba(183, 156, 255, 0.26), transparent 35%),
-      radial-gradient(circle at 75% 85%, rgba(255, 122, 200, 0.12), transparent 32%),
+      radial-gradient(circle at 84% 15%, rgba(255, 227, 160, 0.1), transparent 25%),
+      radial-gradient(circle at 16% 0%, rgba(255, 179, 209, 0.1), transparent 35%),
+      radial-gradient(circle at 75% 85%, rgba(168, 232, 207, 0.08), transparent 32%),
       var(--bg);
-    border-bottom-color: rgba(255, 255, 255, 0.1);
+    border-bottom-color: rgba(255, 246, 234, 0.12);
   }
 
   :global(html[data-theme="night"]) .page-hero::after {
-    background-image: radial-gradient(#fff 1px, transparent 1px);
-    background-size: 90px 90px;
-    opacity: 0.25;
+    background-image: radial-gradient(rgba(255, 246, 234, 0.12) 1.2px, transparent 1.2px);
+    background-size: 24px 24px;
+    opacity: 0.35;
   }
 
   :global(html[data-theme="night"]) .page-hero-kicker {
@@ -340,9 +340,9 @@ const { kicker, title, lead, compact = false } = Astro.props;
   }
 
   :global(html[data-theme="night"]) .page-hero h1 :global(em) {
-    color: var(--sun-500);
-    background: none;
-    text-shadow: 0 0 18px rgba(255, 226, 122, 0.35);
+    color: var(--ink);
+    background: linear-gradient(180deg, transparent 58%, rgba(255, 227, 160, 0.22) 58%);
+    text-shadow: none;
   }
 
   :global(html[data-theme="night"]) .page-hero-lead {
@@ -350,7 +350,7 @@ const { kicker, title, lead, compact = false } = Astro.props;
   }
 
   :global(html[data-theme="night"]) .art-orbit::before {
-    border-color: rgba(255, 255, 255, 0.18);
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 28px rgba(183, 156, 255, 0.18), 0 18px 30px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 246, 234, 0.24);
+    box-shadow: 0 0 0 1px rgba(255, 246, 234, 0.08), 0 7px 0 rgba(0, 0, 0, 0.18), 0 16px 28px rgba(0, 0, 0, 0.24);
   }
 </style>

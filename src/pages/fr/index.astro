@@ -752,17 +752,17 @@ const quickLinks = [
   :global(html[data-theme="night"]) .fr-hero {
     color: var(--ink);
     background:
-      radial-gradient(circle at 82% 18%, rgba(255, 226, 122, 0.12), transparent 25%),
-      radial-gradient(circle at 8% 0%, rgba(183, 156, 255, 0.28), transparent 35%),
-      radial-gradient(circle at 88% 90%, rgba(255, 122, 200, 0.12), transparent 32%),
+      radial-gradient(circle at 82% 18%, rgba(255, 227, 160, 0.1), transparent 25%),
+      radial-gradient(circle at 8% 0%, rgba(255, 179, 209, 0.1), transparent 35%),
+      radial-gradient(circle at 88% 90%, rgba(168, 232, 207, 0.08), transparent 32%),
       var(--bg);
-    border-bottom-color: rgba(255, 255, 255, 0.1);
+    border-bottom-color: rgba(255, 246, 234, 0.12);
   }
 
   :global(html[data-theme="night"]) .hero-stars {
-    background-image: radial-gradient(#fff 1px, transparent 1px);
-    background-size: 90px 90px;
-    opacity: 0.25;
+    background-image: radial-gradient(rgba(255, 246, 234, 0.12) 1.2px, transparent 1.2px);
+    background-size: 24px 24px;
+    opacity: 0.35;
   }
 
   :global(html[data-theme="night"]) .fr-hero h1 {
@@ -770,9 +770,9 @@ const quickLinks = [
   }
 
   :global(html[data-theme="night"]) .fr-hero h1 span {
-    color: var(--sun-500);
-    background: none;
-    text-shadow: 0 0 18px rgba(255, 226, 122, 0.4);
+    color: var(--ink);
+    background: linear-gradient(180deg, transparent 58%, rgba(255, 227, 160, 0.22) 58%);
+    text-shadow: none;
   }
 
   :global(html[data-theme="night"]) .hero-lead {
@@ -780,27 +780,27 @@ const quickLinks = [
   }
 
   :global(html[data-theme="night"]) .fr-hero-copy .eyebrow {
-    color: var(--ink);
-    border-color: rgba(255, 255, 255, 0.18);
-    background: rgba(255, 255, 255, 0.06);
-    box-shadow: 0 0 14px rgba(183, 156, 255, 0.2);
+    color: var(--sun-500);
+    border-color: rgba(255, 227, 160, 0.36);
+    background: rgba(255, 227, 160, 0.14);
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
   }
 
   :global(html[data-theme="night"]) .hero-ghost {
     color: var(--ink);
-    border-color: rgba(255, 255, 255, 0.22);
-    background: rgba(255, 255, 255, 0.06);
-    box-shadow: none;
+    border-color: rgba(255, 246, 234, 0.22);
+    background: rgba(255, 246, 234, 0.06);
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
   }
 
   :global(html[data-theme="night"]) .hero-chips span {
     color: var(--muted);
-    border-color: var(--line);
-    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 246, 234, 0.2);
+    background: rgba(255, 246, 234, 0.05);
   }
 
   :global(html[data-theme="night"]) .fr-stats {
-    border-color: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 246, 234, 0.22);
     background: var(--surface);
     box-shadow: var(--sticker-shadow);
   }
@@ -819,6 +819,6 @@ const quickLinks = [
 
   :global(html[data-theme="night"]) .fr-stats a {
     color: var(--ink);
-    background: rgba(255, 226, 122, 0.12);
+    background: rgba(255, 227, 160, 0.14);
   }
 </style>
