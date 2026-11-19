@@ -141,7 +141,7 @@ const strings = isFr
     z-index: 60;
     height: var(--header-h);
     background: var(--header-bg);
-    border-bottom: 1px solid var(--line);
+    border-bottom: 2px solid var(--line);
     backdrop-filter: blur(18px) saturate(1.3);
     -webkit-backdrop-filter: blur(18px) saturate(1.3);
     transition: box-shadow 200ms ease, background 200ms ease;
@@ -177,9 +177,9 @@ const strings = isFr
     width: 44px;
     height: 44px;
     border-radius: 15px;
-    background: linear-gradient(145deg, #f7f1ff, #e1d5ff);
-    border: 1.5px solid #6b4dd4;
-    box-shadow: 0 3px 0 rgba(76, 49, 169, 0.18);
+    background: var(--sun-500);
+    border: 2px solid var(--ink);
+    box-shadow: 0 3px 0 var(--ink);
     transform: rotate(-3deg);
   }
 
@@ -237,14 +237,14 @@ const strings = isFr
   }
 
   .site-nav a:hover {
-    background: var(--violet-wash);
-    color: var(--violet-700);
+    background: var(--sun-wash);
+    color: var(--ink);
   }
 
   .site-nav a[aria-current="page"] {
-    color: var(--violet-700);
-    background: var(--violet-wash);
-    box-shadow: inset 0 0 0 1px rgba(116, 87, 242, 0.16);
+    color: var(--ink);
+    background: var(--sun-200);
+    box-shadow: inset 0 0 0 1.5px var(--ink);
   }
 
   .header-actions {
@@ -258,20 +258,21 @@ const strings = isFr
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    min-height: 38px;
-    padding: 0 10px;
-    border: 1.5px solid rgba(231, 176, 58, 0.3);
+    min-height: 40px;
+    padding: 0 12px;
+    border: 2px solid var(--ink);
     border-radius: 999px;
-    background: rgba(255, 216, 111, 0.14);
-    color: var(--sun-700);
+    background: var(--sun-500);
+    color: var(--ink);
     text-decoration: none;
     font-size: 11px;
     font-weight: 800;
+    box-shadow: 0 3px 0 var(--ink);
   }
 
   .header-stars:hover {
-    background: rgba(255, 216, 111, 0.24);
-    color: var(--sun-700);
+    background: var(--sun-200);
+    color: var(--ink);
   }
 
   .header-stars strong {
@@ -287,7 +288,7 @@ const strings = isFr
     height: 38px;
     padding: 0 8px;
     color: var(--ink-soft);
-    border: 1.5px solid var(--line);
+    border: 1.5px solid var(--line-strong);
     border-radius: 999px;
     background: var(--surface);
     font-family: var(--font-mono);
@@ -315,7 +316,7 @@ const strings = isFr
     width: 40px;
     height: 40px;
     padding: 0;
-    border: 1.5px solid var(--line);
+    border: 1.5px solid var(--line-strong);
     border-radius: 50%;
     color: var(--ink-soft);
     background: var(--surface);
@@ -476,5 +477,34 @@ const strings = isFr
       opacity: 1;
       transform: translateY(0) scale(1);
     }
+  }
+
+  :global(html[data-theme="night"]) .brand-mark {
+    background: rgba(255, 226, 122, 0.14);
+    border-color: var(--sun-500);
+    box-shadow: 0 0 16px rgba(255, 226, 122, 0.2);
+  }
+
+  :global(html[data-theme="night"]) .site-nav a[aria-current="page"] {
+    color: var(--sun-500);
+    background: var(--violet-wash);
+    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.18);
+  }
+
+  :global(html[data-theme="night"]) .site-nav a:hover {
+    color: var(--sun-500);
+    background: var(--violet-wash);
+  }
+
+  :global(html[data-theme="night"]) .header-stars {
+    color: var(--sun-500);
+    background: rgba(255, 226, 122, 0.12);
+    border-color: var(--sun-500);
+    box-shadow: 0 0 14px rgba(255, 226, 122, 0.18);
+  }
+
+  :global(html[data-theme="night"]) .header-stars:hover {
+    color: var(--sun-500);
+    background: rgba(255, 226, 122, 0.2);
   }
 </style>

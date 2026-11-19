@@ -69,13 +69,13 @@ const { kicker, title, lead, compact = false } = Astro.props;
     overflow: hidden;
     margin-bottom: clamp(18px, 2.4vw, 28px);
     padding-block: clamp(32px, 4.2vw, 50px) clamp(28px, 3.6vw, 44px);
-    color: #f8f1ff;
+    color: var(--ink);
     background:
-      radial-gradient(circle at 84% 15%, rgba(255, 216, 111, 0.14), transparent 25%),
-      radial-gradient(circle at 16% 0%, rgba(116, 87, 242, 0.55), transparent 35%),
-      radial-gradient(circle at 75% 85%, rgba(93, 202, 250, 0.16), transparent 32%),
-      linear-gradient(135deg, #25175c 0%, #1a1146 62%, #120c32 100%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      radial-gradient(circle at 84% 15%, rgba(255, 229, 138, 0.24), transparent 25%),
+      radial-gradient(circle at 16% 0%, rgba(255, 159, 196, 0.2), transparent 35%),
+      radial-gradient(circle at 75% 85%, rgba(126, 217, 182, 0.18), transparent 32%),
+      var(--bg);
+    border-bottom: 2px solid var(--line);
   }
 
   .page-hero::after {
@@ -83,13 +83,9 @@ const { kicker, title, lead, compact = false } = Astro.props;
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background-image:
-      radial-gradient(1.2px 1.2px at 12% 22%, rgba(255, 246, 205, 0.8), transparent),
-      radial-gradient(1px 1px at 42% 17%, rgba(206, 237, 255, 0.7), transparent),
-      radial-gradient(1px 1px at 66% 33%, rgba(255, 246, 205, 0.55), transparent),
-      radial-gradient(1.4px 1.4px at 88% 18%, rgba(255, 246, 205, 0.6), transparent),
-      radial-gradient(1px 1px at 77% 72%, rgba(206, 237, 255, 0.55), transparent);
-    opacity: 0.8;
+    background-image: radial-gradient(rgba(59, 43, 79, 0.1) 1.2px, transparent 1.2px);
+    background-size: 24px 24px;
+    opacity: 0.4;
   }
 
   .page-hero.compact {
@@ -137,7 +133,7 @@ const { kicker, title, lead, compact = false } = Astro.props;
     align-items: center;
     gap: 8px;
     margin-bottom: 10px;
-    color: #ffd86f;
+    color: var(--pink-ink);
     font-size: 10.5px;
     font-weight: 900;
     letter-spacing: 0.14em;
@@ -151,23 +147,23 @@ const { kicker, title, lead, compact = false } = Astro.props;
 
   .page-hero h1 {
     margin: 0;
-    color: #fffaf0;
+    color: var(--ink-strong);
     font-size: clamp(30px, 4.2vw, 46px);
     line-height: 1.15;
     letter-spacing: -0.025em;
-    text-shadow: 0 2px 0 rgba(20, 10, 55, 0.28);
+    text-shadow: none;
   }
 
   .page-hero h1 :global(em) {
     font-style: normal;
-    color: #ffdc80;
-    background: linear-gradient(180deg, transparent 68%, rgba(255, 216, 111, 0.25) 68%);
+    color: var(--ink);
+    background: linear-gradient(180deg, transparent 58%, var(--sun-200) 58%);
   }
 
   .page-hero-lead {
     max-width: 640px;
     margin-top: 10px;
-    color: #cfc3ed;
+    color: var(--ink-soft);
     font-size: clamp(14px, 1.35vw, 15.5px);
     line-height: 1.65;
   }
@@ -184,6 +180,20 @@ const { kicker, title, lead, compact = false } = Astro.props;
     width: min(100%, 330px);
     margin-inline: auto;
     aspect-ratio: 1;
+  }
+
+  .art-orbit::before {
+    content: "";
+    position: absolute;
+    inset: 3%;
+    z-index: -1;
+    border: 2.5px solid var(--ink);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 62% 22%, rgba(255, 216, 111, 0.18), transparent 23%),
+      radial-gradient(circle at 28% 56%, rgba(108, 214, 255, 0.24), transparent 35%),
+      linear-gradient(155deg, #3b2a82, #1a1146 58%, #120c32);
+    box-shadow: 0 0 0 6px var(--surface), 0 8px 0 rgba(59, 43, 79, 0.12), 0 18px 28px rgba(59, 43, 79, 0.12);
   }
 
   .orbit {
@@ -303,5 +313,44 @@ const { kicker, title, lead, compact = false } = Astro.props;
     .art-bat {
       animation: none;
     }
+  }
+
+  :global(html[data-theme="night"]) .page-hero {
+    color: var(--ink);
+    background:
+      radial-gradient(circle at 84% 15%, rgba(255, 226, 122, 0.12), transparent 25%),
+      radial-gradient(circle at 16% 0%, rgba(183, 156, 255, 0.26), transparent 35%),
+      radial-gradient(circle at 75% 85%, rgba(255, 122, 200, 0.12), transparent 32%),
+      var(--bg);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  :global(html[data-theme="night"]) .page-hero::after {
+    background-image: radial-gradient(#fff 1px, transparent 1px);
+    background-size: 90px 90px;
+    opacity: 0.25;
+  }
+
+  :global(html[data-theme="night"]) .page-hero-kicker {
+    color: var(--sun-500);
+  }
+
+  :global(html[data-theme="night"]) .page-hero h1 {
+    color: var(--ink);
+  }
+
+  :global(html[data-theme="night"]) .page-hero h1 :global(em) {
+    color: var(--sun-500);
+    background: none;
+    text-shadow: 0 0 18px rgba(255, 226, 122, 0.35);
+  }
+
+  :global(html[data-theme="night"]) .page-hero-lead {
+    color: var(--muted);
+  }
+
+  :global(html[data-theme="night"]) .art-orbit::before {
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 28px rgba(183, 156, 255, 0.18), 0 18px 30px rgba(0, 0, 0, 0.3);
   }
 </style>

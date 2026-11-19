@@ -11,7 +11,7 @@ export const SITE = {
   url: "https://lulgabc.github.io/LoveClassicGuitar",
   repo: "https://github.com/lulgabc/LoveClassicGuitar",
   author: "lulgabc",
-  updated: "2026-11-16",
+  updated: "2026-11-19",
 };
 
 export const NAV = [

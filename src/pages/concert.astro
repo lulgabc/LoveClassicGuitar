@@ -318,7 +318,7 @@ const shortGames = LISTENING_GAMES.slice(0, 4);
     min-height: 64px;
     padding: 12px 16px;
     color: var(--muted);
-    border: 1.5px solid var(--line);
+    border: 2px solid var(--ink);
     border-radius: var(--radius);
     background: var(--surface);
     text-align: left;
@@ -350,17 +350,15 @@ const shortGames = LISTENING_GAMES.slice(0, 4);
   }
 
   .listen-mode:hover {
-    border-color: var(--violet-300);
-    background: var(--violet-wash);
+    border-color: var(--ink);
+    background: var(--sun-wash);
   }
 
   .listen-mode.is-active {
     color: var(--ink);
-    border-color: var(--violet-500);
-    background:
-      radial-gradient(circle at 95% 0%, rgba(255, 216, 111, 0.16), transparent 40%),
-      var(--violet-wash);
-    box-shadow: 0 3px 0 rgba(102, 74, 215, 0.14);
+    border-color: var(--ink);
+    background: var(--sun-200);
+    box-shadow: 0 3px 0 var(--ink);
   }
 
   .listen-mode.is-active .icon {
@@ -924,5 +922,15 @@ const shortGames = LISTENING_GAMES.slice(0, 4);
     .fold-hint {
       display: none;
     }
+  }
+
+  html[data-theme="night"] .listen-mode {
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  html[data-theme="night"] .listen-mode.is-active {
+    border-color: rgba(255, 255, 255, 0.24);
+    background: rgba(255, 226, 122, 0.12);
+    box-shadow: 0 0 16px rgba(255, 226, 122, 0.2);
   }
 </style>

@@ -215,13 +215,13 @@ const quickLinks = [
     position: relative;
     overflow: hidden;
     padding: clamp(34px, 4.8vw, 58px) 0 clamp(26px, 4vw, 42px);
-    color: #f8f1ff;
+    color: var(--ink);
     background:
-      radial-gradient(circle at 82% 18%, rgba(255, 216, 111, 0.13), transparent 25%),
-      radial-gradient(circle at 8% 0%, rgba(116, 87, 242, 0.48), transparent 35%),
-      radial-gradient(circle at 88% 90%, rgba(93, 202, 250, 0.16), transparent 32%),
-      linear-gradient(135deg, #24165c 0%, #180f43 55%, #100b2b 100%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+      radial-gradient(circle at 82% 18%, rgba(255, 229, 138, 0.26), transparent 25%),
+      radial-gradient(circle at 8% 0%, rgba(255, 159, 196, 0.2), transparent 35%),
+      radial-gradient(circle at 88% 90%, rgba(126, 217, 182, 0.18), transparent 32%),
+      var(--bg);
+    border-bottom: 2px solid var(--line);
   }
 
   .home-hero::before {
@@ -229,13 +229,9 @@ const quickLinks = [
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background:
-      radial-gradient(1.3px 1.3px at 7% 20%, rgba(255, 246, 205, 0.8), transparent),
-      radial-gradient(1px 1px at 41% 12%, rgba(206, 237, 255, 0.75), transparent),
-      radial-gradient(1px 1px at 63% 35%, rgba(255, 246, 205, 0.55), transparent),
-      radial-gradient(1.4px 1.4px at 92% 44%, rgba(255, 246, 205, 0.65), transparent),
-      radial-gradient(1px 1px at 24% 78%, rgba(206, 237, 255, 0.55), transparent);
-    opacity: 0.7;
+    background-image: radial-gradient(rgba(59, 43, 79, 0.1) 1.2px, transparent 1.2px);
+    background-size: 24px 24px;
+    opacity: 0.35;
   }
 
   .hero-stars {
@@ -287,32 +283,34 @@ const quickLinks = [
   }
 
   .hero-copy .eyebrow {
-    color: #e3d9ff;
-    border-color: rgba(255, 255, 255, 0.16);
-    background: rgba(255, 255, 255, 0.08);
+    color: var(--ink);
+    border-color: var(--ink);
+    background: var(--sun-200);
     letter-spacing: 0.04em;
     text-transform: none;
-    backdrop-filter: blur(8px);
+    box-shadow: 0 3px 0 var(--ink);
+    backdrop-filter: none;
   }
 
   .hero-copy .eyebrow .icon {
-    color: #ffd86f;
+    color: var(--pink-ink);
   }
 
   .hero-copy h1 {
     margin: 18px 0 0;
-    color: #fffaf0;
+    color: var(--ink-strong);
     font-size: clamp(43px, 6.1vw, 78px);
     font-weight: 900;
     line-height: 1.08;
     letter-spacing: -0.045em;
-    text-shadow: 0 3px 0 rgba(17, 8, 44, 0.25);
+    text-shadow: none;
   }
 
   .hero-highlight {
     position: relative;
     display: inline-block;
-    color: #ffdc80;
+    color: var(--ink);
+    background: linear-gradient(transparent 58%, var(--sun-200) 58%);
     white-space: nowrap;
   }
 
@@ -330,7 +328,7 @@ const quickLinks = [
   .hero-lead {
     max-width: 590px;
     margin-top: 20px;
-    color: #cfc3ed;
+    color: var(--ink-soft);
     font-size: clamp(15px, 1.65vw, 17.5px);
     line-height: 1.85;
   }
@@ -340,16 +338,17 @@ const quickLinks = [
   }
 
   .hero-ghost {
-    color: #fff7ea;
-    border-color: rgba(255, 255, 255, 0.24);
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(8px);
+    color: var(--ink);
+    border-color: var(--ink);
+    background: var(--surface);
+    box-shadow: 0 4px 0 rgba(59, 43, 79, 0.18);
+    backdrop-filter: none;
   }
 
   .hero-ghost:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.4);
+    color: var(--ink);
+    background: var(--surface-2);
+    border-color: var(--ink);
   }
 
   .hero-chips {
@@ -363,18 +362,18 @@ const quickLinks = [
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 4px 8px;
-    color: rgba(243, 236, 255, 0.78);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 5px 9px;
+    color: var(--ink-soft);
+    border: 1.5px dashed var(--line-strong);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.045);
+    background: var(--surface);
     font-size: 10px;
-    font-weight: 700;
+    font-weight: 750;
     letter-spacing: 0.02em;
   }
 
   .hero-chips .icon {
-    color: rgba(255, 216, 111, 0.7);
+    color: var(--pink-ink);
   }
 
   .hero-visual {
@@ -396,10 +395,11 @@ const quickLinks = [
     grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(210px, 1.5fr);
     gap: 1px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.07);
-    backdrop-filter: blur(14px);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--sticker-shadow);
+    backdrop-filter: none;
   }
 
   .hero-stat {
@@ -408,11 +408,11 @@ const quickLinks = [
     justify-content: center;
     min-height: 78px;
     padding: 12px 16px;
-    background: rgba(15, 9, 42, 0.17);
+    background: var(--surface-2);
   }
 
   .hero-stat strong {
-    color: #fff7e3;
+    color: var(--ink);
     font-family: var(--font-display);
     font-size: 26px;
     font-weight: 900;
@@ -421,7 +421,7 @@ const quickLinks = [
 
   .hero-stat span {
     margin-top: 3px;
-    color: #a99acb;
+    color: var(--muted);
     font-size: 9.5px;
     font-weight: 700;
     letter-spacing: 0.05em;
@@ -431,8 +431,8 @@ const quickLinks = [
     flex-direction: row;
     align-items: center;
     gap: 8px;
-    color: #d8cafc;
-    background: rgba(116, 87, 242, 0.18);
+    color: var(--ink);
+    background: var(--sun-200);
     text-decoration: none;
     font-size: 11px;
     font-weight: 750;
@@ -441,8 +441,8 @@ const quickLinks = [
   }
 
   .hero-stat-link:hover {
-    color: #fff2cf;
-    background: rgba(255, 216, 111, 0.1);
+    color: var(--ink);
+    background: var(--sun-500);
   }
 
   .hero-stat-link .stat-icon {
@@ -451,13 +451,14 @@ const quickLinks = [
     width: 31px;
     height: 31px;
     border-radius: 50%;
-    color: #ffd86f;
-    background: rgba(255, 255, 255, 0.08);
+    color: var(--pink-ink);
+    background: var(--surface);
+    border: 1.5px solid var(--ink);
   }
 
   .hero-stat-link .icon:last-child {
     margin-left: auto;
-    color: #9d8bc9;
+    color: var(--muted);
   }
 
   .quick-section {
@@ -491,6 +492,30 @@ const quickLinks = [
     height: 160px;
     border-radius: 50%;
     background: var(--quick-soft);
+  }
+
+  .quick-card::after {
+    content: "";
+    position: absolute;
+    right: 20px;
+    top: 12px;
+    width: 58px;
+    height: 16px;
+    border-radius: 2px;
+    background: repeating-linear-gradient(45deg, rgba(255, 159, 196, 0.7) 0 5px, rgba(255, 255, 255, 0.55) 5px 10px);
+    transform: rotate(5deg);
+    opacity: 0.85;
+    pointer-events: none;
+  }
+
+  .quick-card:nth-child(2)::after {
+    background: repeating-linear-gradient(45deg, rgba(126, 217, 182, 0.7) 0 5px, rgba(255, 255, 255, 0.55) 5px 10px);
+    transform: rotate(-4deg);
+  }
+
+  .quick-card:nth-child(3)::after {
+    background: repeating-linear-gradient(45deg, rgba(169, 139, 255, 0.7) 0 5px, rgba(255, 255, 255, 0.55) 5px 10px);
+    transform: rotate(3deg);
   }
 
   .quick-icon {
@@ -1924,7 +1949,8 @@ const quickLinks = [
 
   @media (max-width: 900px) {
     .hero-visual {
-      display: none;
+      display: flex;
+      margin-top: 6px;
     }
 
     .hero-copy {
@@ -1974,5 +2000,88 @@ const quickLinks = [
     .hero-stars::after {
       animation: none;
     }
+  }
+
+  :global(html[data-theme="night"]) .home-hero {
+    color: var(--ink);
+    background:
+      radial-gradient(circle at 82% 18%, rgba(255, 226, 122, 0.12), transparent 25%),
+      radial-gradient(circle at 8% 0%, rgba(183, 156, 255, 0.28), transparent 35%),
+      radial-gradient(circle at 88% 90%, rgba(255, 122, 200, 0.12), transparent 32%),
+      var(--bg);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  :global(html[data-theme="night"]) .home-hero::before {
+    background-image: radial-gradient(#fff 1px, transparent 1px);
+    background-size: 90px 90px;
+    opacity: 0.25;
+  }
+
+  :global(html[data-theme="night"]) .hero-copy h1 {
+    color: var(--ink);
+  }
+
+  :global(html[data-theme="night"]) .hero-highlight {
+    color: var(--sun-500);
+    background: none;
+    text-shadow: 0 0 18px rgba(255, 226, 122, 0.4);
+  }
+
+  :global(html[data-theme="night"]) .hero-lead {
+    color: var(--muted);
+  }
+
+  :global(html[data-theme="night"]) .hero-copy .eyebrow {
+    color: var(--ink);
+    border-color: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 0 14px rgba(183, 156, 255, 0.2);
+  }
+
+  :global(html[data-theme="night"]) .hero-ghost {
+    color: var(--ink);
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: none;
+  }
+
+  :global(html[data-theme="night"]) .hero-chips span {
+    color: var(--muted);
+    border-color: var(--line);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  :global(html[data-theme="night"]) .hero-stats {
+    border-color: rgba(255, 255, 255, 0.18);
+    background: var(--surface);
+    box-shadow: var(--sticker-shadow);
+  }
+
+  :global(html[data-theme="night"]) .hero-stat {
+    background: var(--surface-2);
+  }
+
+  :global(html[data-theme="night"]) .hero-stat strong {
+    color: var(--ink);
+  }
+
+  :global(html[data-theme="night"]) .hero-stat span {
+    color: var(--muted);
+  }
+
+  :global(html[data-theme="night"]) .hero-stat-link {
+    color: var(--ink);
+    background: rgba(255, 226, 122, 0.12);
+  }
+
+  :global(html[data-theme="night"]) .hero-stat-link:hover {
+    background: rgba(255, 226, 122, 0.2);
+  }
+
+  :global(html[data-theme="night"]) .hero-stat-link .stat-icon {
+    color: var(--sun-500);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.18);
   }
 </style>
