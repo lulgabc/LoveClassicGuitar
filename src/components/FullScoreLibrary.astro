@@ -56,15 +56,15 @@ const t = isFr
       zoomOut: "Réduire",
       source: "Source",
       download: "Télécharger le MusicXML",
-      note: "Les 200 partitions viennent des arrangements GuitarLoot, utilisés avec sa permission de réutilisation avec attribution. Le site héberge les fichiers MusicXML et les rend avec OpenSheetMusicDisplay.",
+      note: "Les 200 partitions viennent des arrangements GuitarLoot, utilisés avec sa permission de réutilisation avec attribution. Le site héberge les fichiers MusicXML, génère une tablature à partir des hauteurs et rend la portée avec OpenSheetMusicDisplay.",
       scoreArea: "Partition rendue",
       staff: "Portée",
-      jianpu: "Jianpu",
+      tab: "Tablature",
       viewLabel: "Choisir le type de partition",
-      jianpuLoading: "Conversion du jianpu…",
-      jianpuError: "Échec de la conversion jianpu. Regarde la portée ou télécharge le MusicXML.",
-      jianpuHint: "Le jianpu affiche la mélodie principale ; la portée montre toutes les voix et les accords.",
-      lineLabel: (start: number, end: number) => `Mesures ${start}–${end}`,
+      tabLoading: "Génération de la tablature…",
+      tabError: "Échec de la génération de la tablature. Regarde la portée ou télécharge le MusicXML.",
+      tabHint: "Tablature : la ligne du haut est la 1re corde (mi aigu), celle du bas la 6e (mi grave). Le chiffre indique la case, 0 = corde à vide ; les doigtés sont proposés automatiquement et peuvent être adaptés avec le professeur ; la portée affiche le rythme.",
+      lineLabel: (start: number, end: number) => start === end ? `Mesure ${start}` : `Mesures ${start}–${end}`,
     }
   : {
       searchPlaceholder: "搜曲名、作曲家或练习重点…",
@@ -83,15 +83,15 @@ const t = isFr
       zoomOut: "缩小",
       source: "来源",
       download: "下载 MusicXML",
-      note: "200 首乐谱来自 GuitarLoot 的许可编配，按来源署名要求使用。本站托管 MusicXML 文件，并用 OpenSheetMusicDisplay 在页面内渲染。",
+      note: "200 首乐谱来自 GuitarLoot 的许可编配，按来源署名要求使用。本站托管 MusicXML 文件，默认用乐谱音高生成六线谱（TAB），也可以切换到 OpenSheetMusicDisplay 渲染的五线谱。",
       scoreArea: "乐谱渲染区域",
       staff: "五线谱",
-      jianpu: "简谱",
+      tab: "六线谱",
       viewLabel: "选择乐谱显示方式",
-      jianpuLoading: "正在转换简谱…",
-      jianpuError: "简谱转换失败。可以先看五线谱，或下载 MusicXML。",
-      jianpuHint: "简谱显示主旋律；完整和弦与声部请看五线谱。",
-      lineLabel: (start: number, end: number) => `第 ${start}–${end} 小节`,
+      tabLoading: "正在生成六线谱…",
+      tabError: "六线谱生成失败。可以看五线谱，或下载 MusicXML。",
+      tabHint: "六线谱：最上面是第 1 弦（高音 E），最下面是第 6 弦（低音 E）。数字表示第几品，0 表示空弦；指法由音高自动推荐，可按老师建议调整；节奏可切到五线谱查看。",
+      lineLabel: (start: number, end: number) => start === end ? `第 ${start} 小节` : `第 ${start}–${end} 小节`,
     };
 
 const step = 12;
@@ -178,20 +178,20 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
       <p class="full-score-meta" data-score-modal-meta></p>
       <div class="full-score-toolbar">
         <div class="score-view-switch" role="group" aria-label={t.viewLabel}>
-          <button type="button" class="is-active" data-score-view="staff" aria-pressed="true">{t.staff}</button>
-          <button type="button" data-score-view="jianpu" aria-pressed="false">{t.jianpu}</button>
+          <button type="button" class="is-active" data-score-view="tab" aria-pressed="true">{t.tab}</button>
+          <button type="button" data-score-view="staff" aria-pressed="false">{t.staff}</button>
         </div>
-        <button type="button" data-score-zoom-out data-staff-control aria-label={t.zoomOut}>−</button>
-        <button type="button" data-score-zoom-in data-staff-control aria-label={t.zoomIn}>+</button>
+        <button type="button" data-score-zoom-out data-staff-control aria-label={t.zoomOut} hidden>−</button>
+        <button type="button" data-score-zoom-in data-staff-control aria-label={t.zoomIn} hidden>+</button>
         <a data-score-source-link target="_blank" rel="noopener noreferrer">{t.source} <Icon name="external" size={11} /></a>
         <a data-score-download download>{t.download}</a>
       </div>
-      <div class="full-score-stage" data-staff-stage role="region" tabindex="0" aria-label={t.scoreArea}>
+      <div class="full-score-stage" data-staff-stage role="region" tabindex="0" aria-label={t.scoreArea} hidden>
         <div class="full-score-render" data-score-render></div>
       </div>
-      <div class="full-score-stage jianpu-stage" data-jianpu-stage role="region" tabindex="0" aria-label={t.jianpu} hidden>
-        <p class="jianpu-hint">{t.jianpuHint}</p>
-        <div class="jianpu-lines" data-jianpu-render></div>
+      <div class="full-score-stage tab-stage" data-tab-stage role="region" tabindex="0" aria-label={t.tab}>
+        <p class="tab-hint">{t.tabHint}</p>
+        <div class="tab-lines" data-tab-render></div>
       </div>
       <p class="full-score-tip" data-score-modal-tip></p>
       <div class="full-score-actions">
@@ -223,8 +223,8 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     const modalTip = root.querySelector<HTMLElement>("[data-score-modal-tip]");
     const renderEl = root.querySelector<HTMLElement>("[data-score-render]");
     const staffStage = root.querySelector<HTMLElement>("[data-staff-stage]");
-    const jianpuStage = root.querySelector<HTMLElement>("[data-jianpu-stage]");
-    const jianpuRender = root.querySelector<HTMLElement>("[data-jianpu-render]");
+    const tabStage = root.querySelector<HTMLElement>("[data-tab-stage]");
+    const tabRender = root.querySelector<HTMLElement>("[data-tab-render]");
     const viewButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-score-view]"));
     const staffControls = Array.from(root.querySelectorAll<HTMLElement>("[data-staff-control]"));
     const sourceLink = root.querySelector<HTMLAnchorElement>("[data-score-source-link]");
@@ -240,27 +240,26 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     let lastFocus: HTMLElement | null = null;
     let osmd: any = null;
     let osmdCtor: any = null;
-    let jianpuCtor: any = null;
     let jszipCtor: any = null;
     let currentFile = "";
     let currentXml = "";
     let currentXmlFile = "";
-    let jianpuRenderers: any[] = [];
+    let tabToken = 0;
 
     const labels = isFr
       ? {
           loading: "Rendu de la partition…",
           error: "Le rendu a échoué. Télécharge le MusicXML et ouvre-le dans MuseScore.",
-          jianpuLoading: "Conversion du jianpu…",
-          jianpuError: "Échec de la conversion jianpu. Regarde la portée ou télécharge le MusicXML.",
-          lineLabel: (start: number, end: number) => `Mesures ${start}–${end}`,
+          tabLoading: "Génération de la tablature…",
+          tabError: "Échec de la génération de la tablature. Regarde la portée ou télécharge le MusicXML.",
+          lineLabel: (start: number, end: number) => start === end ? `Mesure ${start}` : `Mesures ${start}–${end}`,
         }
       : {
           loading: "正在渲染乐谱…",
           error: "乐谱渲染失败。可以下载 MusicXML，用 MuseScore 打开。",
-          jianpuLoading: "正在转换简谱…",
-          jianpuError: "简谱转换失败。可以先看五线谱，或下载 MusicXML。",
-          lineLabel: (start: number, end: number) => `第 ${start}–${end} 小节`,
+          tabLoading: "正在生成六线谱…",
+          tabError: "六线谱生成失败。可以看五线谱，或下载 MusicXML。",
+          lineLabel: (start: number, end: number) => start === end ? `第 ${start} 小节` : `第 ${start}–${end} 小节`,
         };
 
     const countLabel = (shown: number, total: number) => isFr ? `${shown} / ${total} partitions` : `显示 ${shown} / ${total} 首`;
@@ -335,16 +334,9 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
       }
     }
 
-    function clearJianpu(): void {
-      jianpuRenderers.forEach((renderer) => {
-        try {
-          renderer.destroy();
-        } catch {
-          // ignore a renderer that was already destroyed
-        }
-      });
-      jianpuRenderers = [];
-      if (jianpuRender) jianpuRender.innerHTML = "";
+    function clearTab(): void {
+      tabToken += 1;
+      if (tabRender) tabRender.innerHTML = "";
     }
 
     async function getXml(file: string): Promise<string> {
@@ -379,56 +371,42 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
       return xml;
     }
 
-    async function renderJianpu(file: string): Promise<void> {
-      if (!jianpuRender || !file) return;
-      jianpuRender.innerHTML = `<p class="score-loading">${labels.jianpuLoading}</p>`;
+    async function renderTab(file: string): Promise<void> {
+      if (!tabRender || !file) return;
+      const token = ++tabToken;
+      tabRender.innerHTML = `<p class="score-loading">${labels.tabLoading}</p>`;
       try {
-        const [xml, jianpuModule] = await Promise.all([
-          getXml(file),
-          jianpuCtor ? Promise.resolve({ JianpuSVGRender: jianpuCtor }) : import("jianpurender"),
-        ]);
-        jianpuCtor = jianpuModule.JianpuSVGRender;
-        const { buildJianpuLines, parseMusicXml, selectMelody } = await import("../lib/jianpu");
-        const measures = selectMelody(parseMusicXml(xml));
-        const perLine = window.innerWidth < 640 ? 2 : 4;
-        const lines = buildJianpuLines(measures, perLine);
-        if (!lines.length) throw new Error("empty jianpu");
-        clearJianpu();
-        lines.forEach((line, index) => {
+        const xml = await getXml(file);
+        if (token !== tabToken) return;
+        const { assignTab, buildTabLines, parseMusicXml, renderTabLineSvg } = await import("../lib/tab");
+        const measures = assignTab(parseMusicXml(xml));
+        const perLine = window.innerWidth < 640 ? 1 : 4;
+        const lines = buildTabLines(measures, perLine);
+        if (!lines.length) throw new Error("empty tab");
+        tabRender.innerHTML = "";
+        lines.forEach((line) => {
           const section = document.createElement("section");
-          section.className = "jianpu-line";
+          section.className = "tab-line";
           const label = document.createElement("p");
-          label.className = "jianpu-line-label";
-          label.textContent = labels.lineLabel(line.startMeasure, line.endMeasure);
+          label.className = "tab-line-label";
+          const lineLabel = labels.lineLabel(line.startMeasure, line.endMeasure);
+          label.textContent = lineLabel;
           const holder = document.createElement("div");
-          holder.className = "jianpu-line-svg";
+          holder.className = "tab-line-svg";
+          holder.innerHTML = renderTabLineSvg(line, {
+            compact: window.innerWidth < 640,
+            lineLabel,
+          });
           section.append(label, holder);
-          jianpuRender.appendChild(section);
-          const renderer = new jianpuCtor(
-            {
-              notes: line.notes,
-              keySignatures: line.keySignatures,
-              timeSignatures: line.timeSignatures,
-              tempos: line.tempos,
-            },
-            {
-              noteHeight: window.innerWidth < 640 ? 22 : 26,
-              showBarNumbers: false,
-              showTempoMarking: index === 0,
-              noteSpacingFactor: 1.25,
-              noteColor: "#1b1247",
-              fontFamily: "sans-serif",
-            },
-            holder,
-          );
-          jianpuRenderers.push(renderer);
+          tabRender.appendChild(section);
         });
       } catch (error) {
-        jianpuRender.innerHTML = `<p class="score-error">${labels.jianpuError}</p>`;
+        if (token !== tabToken) return;
+        tabRender.innerHTML = `<p class="score-error">${labels.tabError}</p>`;
       }
     }
 
-    function setView(view: "staff" | "jianpu", render = true): void {
+    function setView(view: "staff" | "tab", render = true): void {
       viewButtons.forEach((button) => {
         const active = button.dataset.scoreView === view;
         button.classList.toggle("is-active", active);
@@ -438,10 +416,10 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
         control.hidden = view !== "staff";
       });
       if (staffStage) staffStage.hidden = view !== "staff";
-      if (jianpuStage) jianpuStage.hidden = view !== "jianpu";
+      if (tabStage) tabStage.hidden = view !== "tab";
       if (!render || !currentFile) return;
-      if (view === "jianpu") {
-        void renderJianpu(currentFile);
+      if (view === "tab") {
+        void renderTab(currentFile);
       } else if (!renderEl?.querySelector("svg")) {
         void renderScore(currentFile);
       }
@@ -461,16 +439,14 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
       currentFile = button.dataset.file ?? "";
       currentXml = "";
       currentXmlFile = "";
-      clearJianpu();
+      clearTab();
       if (renderEl) renderEl.innerHTML = "";
-      const initialView = window.innerWidth < 700 ? "jianpu" : "staff";
-      setView(initialView, false);
+      setView("tab", false);
       lastFocus = button;
       if (!modal.open) modal.showModal();
       document.body.classList.add("score-modal-open");
       modal.querySelector<HTMLButtonElement>("[data-score-close]")?.focus();
-      if (initialView === "jianpu") void renderJianpu(currentFile);
-      else void renderScore(currentFile);
+      void renderTab(currentFile);
     }
 
     function closeModal(): void {
@@ -485,7 +461,7 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     });
     modal?.addEventListener("close", () => {
       document.body.classList.remove("score-modal-open");
-      clearJianpu();
+      clearTab();
       lastFocus?.focus();
     });
     modal?.addEventListener("click", (event) => {
@@ -494,7 +470,7 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
 
     viewButtons.forEach((button) => {
       button.addEventListener("click", () => {
-        setView(button.dataset.scoreView === "jianpu" ? "jianpu" : "staff");
+        setView(button.dataset.scoreView === "staff" ? "staff" : "tab");
       });
     });
 
@@ -740,48 +716,84 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     display: none;
   }
 
-  .jianpu-stage {
-    background: #fffdf8;
+  .tab-stage {
+    background: var(--surface-2);
   }
 
-  .jianpu-hint {
+  .tab-hint {
     margin: 0;
     padding: 10px 14px 0;
-    color: #6b5a3e;
-    font-size: 8px;
-    font-weight: 700;
-    line-height: 1.45;
+    color: var(--muted);
+    font-size: 10.5px;
+    font-weight: 650;
+    line-height: 1.55;
   }
 
-  .jianpu-lines {
-    padding: 12px 14px;
+  .tab-lines {
+    padding: 10px 14px 14px;
   }
 
-  :global(.jianpu-line) {
+  :global(.tab-line) {
     margin-bottom: 16px;
   }
 
-  :global(.jianpu-line:last-child) {
+  :global(.tab-line:last-child) {
     margin-bottom: 0;
   }
 
-  :global(.jianpu-line-label) {
-    margin: 0 0 4px;
-    color: #7a5a2e;
+  :global(.tab-line-label) {
+    margin: 0 0 2px;
+    color: var(--muted);
     font-family: var(--font-mono);
-    font-size: 7.5px;
+    font-size: 9px;
     font-weight: 800;
     letter-spacing: 0.03em;
   }
 
-  :global(.jianpu-line-svg) {
+  :global(.tab-line-svg) {
     overflow-x: auto;
+    padding-bottom: 4px;
   }
 
-  :global(.jianpu-line-svg svg) {
+  :global(.tab-line-svg svg) {
     display: block;
-    max-width: 100%;
-    height: auto;
+    max-width: none;
+  }
+
+  :global(.tab-string) {
+    stroke: var(--line-strong);
+    stroke-width: 1;
+    opacity: 0.75;
+  }
+
+  :global(.tab-bar) {
+    stroke: var(--line-strong);
+    stroke-width: 1.2;
+  }
+
+  :global(.tab-measure-number) {
+    fill: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  :global(.tab-string-label) {
+    fill: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  :global(.tab-fret-bg) {
+    fill: var(--surface);
+  }
+
+  :global(.tab-fret) {
+    fill: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 800;
   }
 
   .full-score-modal {
@@ -926,7 +938,7 @@ const levelCounts = [1, 2, 3, 4, 5].map((level) => scores.filter((score) => scor
     overflow: auto;
     border: 1px solid var(--line);
     border-radius: 12px;
-    background: #fffdf8;
+    background: var(--surface-2);
   }
 
   .full-score-render {

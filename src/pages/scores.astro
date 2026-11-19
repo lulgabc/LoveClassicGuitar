@@ -24,7 +24,7 @@ const steps = [
 
 const sources = [
   { name: "GuitarLoot", url: "https://guitarloot.org.uk/", note: "200 首编配的来源。许可允许使用和改编，但需要保留来源署名。" },
-  { name: "OpenSheetMusicDisplay", url: "https://github.com/opensheetmusicdisplay/opensheetmusicdisplay", note: "站内 MusicXML 渲染引擎，支持缩放和多页乐谱。" },
+  { name: "OpenSheetMusicDisplay", url: "https://github.com/opensheetmusicdisplay/opensheetmusicdisplay", note: "站内 MusicXML 渲染引擎，用于五线谱视图，支持缩放和多页乐谱。" },
   { name: "IMSLP", url: "https://imslp.org/wiki/Category:For_guitar", note: "更多公共领域乐谱，按作品和版本查找。" },
   { name: "Mutopia", url: "https://www.mutopiaproject.org/", note: "更多自由授权的排版乐谱，适合打印。" },
 ];
@@ -32,7 +32,7 @@ const sources = [
 
 <BaseLayout
   title="乐谱库"
-  description="给孩子的古典吉他乐谱库：200 首完整 MusicXML 乐谱，按 5 个难度级别整理，站内可在五线谱和简谱之间切换、缩放和下载，附练习重点与来源说明。"
+  description="给孩子的古典吉他乐谱库：200 首完整 MusicXML 乐谱，按 5 个难度级别整理，站内默认显示六线谱（TAB），也可以切换到五线谱、缩放和下载，附练习重点与来源说明。"
 >
   <PageHero
     kicker="Partitions · 200 首"
@@ -68,7 +68,7 @@ const sources = [
       <SectionHead
         kicker="200 首练习乐谱"
         title="按难度和<em>练习重点</em>找一首"
-        lead="全部 200 首都能在站内打开完整乐谱，并在五线谱和简谱之间切换。按级别和练习重点筛选，再点“看乐谱”。"
+        lead="全部 200 首都能在站内打开完整乐谱，默认显示六线谱（TAB），也可以切换到五线谱。按级别和练习重点筛选，再点“看乐谱”。"
       />
       <FullScoreLibrary scores={SCORE_LIBRARY} lang="zh" />
     </div>

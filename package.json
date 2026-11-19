@@ -15,7 +15,6 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.4.11",
-    "jianpurender": "^1.8.1",
     "jszip": "^3.10.2",
     "opensheetmusicdisplay": "^2.3.1"
   },
